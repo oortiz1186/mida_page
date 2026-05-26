@@ -22,7 +22,7 @@ export default function EquipamientoPage() {
           {/* Lado izquierdo: Foto del hardware */}
           <div className="md:w-1/2 relative w-full h-[350px] md:h-[450px]">
             <Image 
-              src="/imagesEQUIPAMIENTO.png" 
+              src="/images/EQUIPAMIENTO.png" 
               alt="Servidores e Infraestructura Tecnológica"
               fill
               className="object-cover rounded-3xl shadow-xl border border-gray-100"
