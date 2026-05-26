@@ -2,6 +2,11 @@ import Image from "next/image"; // Asegúrate de incluir esta importación
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
+export const metadata = {
+  title: "Servidores e Infraestructura TI | MIDA",
+  description: "Suministro e instalación de estaciones de trabajo, servidores Dell PowerEdge homologados y soluciones de almacenamiento en red avanzado.",
+};
+
 export default function EquipamientoPage() {
   return (
     <main className="bg-white min-h-screen flex flex-col">

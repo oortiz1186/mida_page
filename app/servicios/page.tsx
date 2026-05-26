@@ -1,6 +1,11 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
+export const metadata = {
+  title: "Servicios de Consultoría Tecnológica y Soporte TI | MIDA",
+  description: "Portafolio integral de soluciones tecnológicas: Soporte especializado, base de datos SQL, redes seguras y capacitación corporativa.",
+};
+
 export default function ServiciosPage() {
   const serviciosDetallados = [
     {

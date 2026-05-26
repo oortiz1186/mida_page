@@ -2,6 +2,11 @@ import Image from "next/image"; // Asegúrate de tener esta importación
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
+export const metadata = {
+  title: "Sistemas CONTPAQi en León | MIDA Consultoría",
+  description: "Especialistas certificados en instalación, soporte, timbrado y renovación de licencias CONTPAQi Nóminas, Contabilidad y Comercial.",
+};
+
 export default function ContpaqiPage() {
   const soluciones = [
     { name: "CONTPAQi Nóminas", desc: "Gestiona el pago de tus colaboradores y cumple con las disposiciones de ley y timbrado de manera exacta." },
