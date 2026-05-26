@@ -1,19 +1,24 @@
-export default function Home() {
-  return (
-    <main>
+import Navbar from "../components/Navbar"
+import Hero from "../components/Hero"
+import Services from "../components/Services"
+import Footer from "../components/Footer"
 
-      <section className="min-h-screen flex flex-col justify-center items-center">
+export default function Home(){
 
-        <h1 className="text-6xl font-bold">
-          MIDA
-        </h1>
+return(
 
-        <p className="mt-4 text-xl">
-          Tecnología • Servicio • Soluciones
-        </p>
+<main>
 
-      </section>
+<Navbar/>
 
-    </main>
-  );
+<Hero/>
+
+<Services/>
+
+<Footer/>
+
+</main>
+
+)
+
 }
