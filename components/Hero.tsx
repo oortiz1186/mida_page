@@ -7,7 +7,7 @@ export default function Hero() {
       {/* IMAGEN DE FONDO ABSOLUTA */}
       <div className="absolute inset-0 z-0">
         <Image 
-          src="/images/OFICINA.png" 
+          src="/images/hero-bg.png"
           alt="Oficina MIDA"
           fill
           priority
