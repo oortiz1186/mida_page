@@ -1,40 +1,66 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
+import { infoEmpresa } from "../components/config/empresa"; // Importa tu configuración actual
 import "./globals.css";
-// 1. IMPORTAMOS EL BOTÓN DESDE LA CARPETA DE COMPONENTES
 import WhatsAppButton from "../components/WhatsAppButton";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// Puedes aprovechar para personalizar los textos que se ven en la pestaña del navegador
+// Metadatos globales base del sitio web optimizados
 export const metadata: Metadata = {
-  title: "MIDA - Consultoría Tecnológica",
-  description: "Soluciones de sistemas CONTPAQi y equipamiento de cómputo profesional.",
+  metadataBase: new URL(infoEmpresa.dominio), // <-- Ajuste del Paso 2: Define la URL base global para evitar errores de rutas relativas en producción
+  title: "MIDA | Consultoría TI, Soporte CONTPAQi y Servidores en León Gto",
+  description: "Optimizamos la infraestructura tecnológica de tu empresa. Especialistas certificados en sistemas CONTPAQi, servidores SQL y soporte técnico empresarial en León, Guanajuato.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  
+  // Objeto estructurado Schema.org mapeado con tus variables reales de infoEmpresa
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": infoEmpresa.nombre,
+    "image": `${infoEmpresa.dominio}/images/oficina.png`,
+    "telephone": `+${infoEmpresa.whatsappNumero}`, 
+    "url": infoEmpresa.dominio,
+    "email": infoEmpresa.correoContacto,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": infoEmpresa.direccionLinea1,
+      "addressLocality": "León",
+      "addressRegion": "Guanajuato",
+      "postalCode": "37530", 
+      "addressCountry": "MX"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 21.144415, 
+      "longitude": -101.691235
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    "priceRange": "$$$"
+  };
+
   return (
-    <html
-      lang="es" // Cambiado a "es" para el idioma en español de tu negocio
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        {/* Aquí se renderizan tus páginas automáticamente */}
+    <html lang="es">
+      <head>
+        {/* Inyección estructural JSON-LD para los robots de búsqueda de Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
+      <body className={`${inter.className} antialiased`}>
         {children}
-        
-        {/* 2. AGREGAMOS EL BOTÓN AQUÍ PARA QUE FLOTE DE FORMA GLOBAL */}
         <WhatsAppButton />
       </body>
     </html>

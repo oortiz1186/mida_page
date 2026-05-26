@@ -3,8 +3,8 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export const metadata = {
-  title: "Infraestructura TI y Soporte de Hardware | MIDA",
-  description: "Garantizamos el hardware ideal para tus sistemas, optimización de servidores SQL y estaciones de trabajo administrativas.",
+  title: "Infraestructura TI, Servidores SQL y Hardware en León | MIDA",
+  description: "Configuración y diagnóstico de servidores dedicados Dell PowerEdge y estaciones de trabajo administrativas. Garantiza la continuidad de tu negocio.",
 };
 
 export default function EquipamientoPage() {

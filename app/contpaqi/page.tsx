@@ -3,8 +3,8 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export const metadata = {
-  title: "Sistemas CONTPAQi Certificados | MIDA Consultoría",
-  description: "Asesoría especializada, instalación, soporte y renovación de licencias para toda la suite de sistemas CONTPAQi.",
+  title: "Soporte, Venta y Licenciamiento CONTPAQi en León | MIDA",
+  description: "Asesoría comercial y técnica experta en CONTPAQi Nóminas, Contabilidad y Comercial. Solucionamos errores de sistema y optimizamos tus bases de datos en León, Gto.",
 };
 
 export default function ContpaqiPage() {
