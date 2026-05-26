@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 // Puedes aprovechar para personalizar los textos que se ven en la pestaña del navegador
 export const metadata: Metadata = {
   title: "MIDA - Consultoría Tecnológica",
-  description: "Soluciones de infraestructura, sistemas CONTPAQi y equipamiento de cómputo profesional.",
+  description: "Soluciones de sistemas CONTPAQi y equipamiento de cómputo profesional.",
 };
 
 export default function RootLayout({
