@@ -1,3 +1,4 @@
+import Image from "next/image"; // Asegúrate de tener esta importación
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
@@ -13,15 +14,32 @@ export default function ContpaqiPage() {
     <main className="bg-white min-h-screen flex flex-col">
       <Navbar />
       
-      {/* Hero Interno */}
-      <section className="bg-gradient-to-br from-mida-primary to-mida-deep text-white pt-32 pb-20 text-center px-6">
-        <h1 className="text-4xl md:text-5xl font-bold">Sistemas CONTPAQi</h1>
-        <p className="mt-4 text-lg text-mida-gray/80 max-w-2xl mx-auto">
-          Especialistas certificados en licenciamiento, soporte, migración y puesta a punto de tu software empresarial.
-        </p>
+      {/* Nuevo Hero Interno con Imagen Lateral */}
+      <section className="bg-gradient-to-br from-mida-primary to-mida-deep text-white pt-36 pb-24 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 w-full">
+          <div className="md:w-1/2 space-y-4 text-center md:text-left">
+            <span className="text-xs font-bold uppercase tracking-widest text-mida-light bg-white/10 px-3 py-1 rounded-full">
+              Distribuidor Autorizado
+            </span>
+            <h1 className="text-4xl md:text-5xl font-bold">Sistemas CONTPAQi</h1>
+            <p className="text-lg text-mida-gray/80 max-w-xl">
+              Especialistas certificados en licenciamiento, soporte, migración y puesta a punto de tu software empresarial.
+            </p>
+          </div>
+          <div className="md:w-1/2 relative w-full h-[250px] md:h-[350px]">
+            <Image 
+              src="/images/CONTPAQI.PNG" 
+              alt="Administración con CONTPAQi"
+              fill
+              className="object-cover rounded-2xl shadow-xl border border-white/10"
+              sizes="(max-w-768px) 100vw, 50vw"
+              priority // Añadido para mejorar la carga de la imagen principal del Hero
+            />
+          </div>
+        </div>
       </section>
 
-      {/* Listado de Soluciones */}
+      {/* Listado de Soluciones (Mantenido de tu código actual) */}
       <section className="py-20 flex-grow max-w-7xl mx-auto px-6 w-full">
         <div className="grid md:grid-cols-2 gap-8">
           {soluciones.map((sol) => (
