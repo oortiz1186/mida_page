@@ -58,15 +58,16 @@ export default function EquipamientoPage() {
             </p>
           </div>
 
+          {/* CONTENEDOR CORREGIDO: Imagen a borde completo sin recuadros blancos */}
           <div className="flex justify-center items-center w-full">
-            <div className="relative w-full max-w-lg aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white p-2">
+            <div className="relative w-full max-w-lg aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
               <Image
                 src="/images/EQUIPAMIENTO.png"
                 alt="Equipamiento Tecnológico MIDA"
                 fill
                 priority
                 sizes="(max-w-768px) 100vw, 50vw"
-                className="object-contain"
+                className="object-cover" // Hace que cubra todo hasta el borde sin deformarse
               />
             </div>
           </div>
