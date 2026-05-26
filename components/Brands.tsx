@@ -3,25 +3,24 @@
 import Image from "next/image";
 
 export default function Brands() {
-  // Arreglo de objetos para renderizar las marcas de forma limpia y dinámica
   const marcas = [
     {
       id: 1,
       nombre: "CONTPAQi",
-      src: "/logo/logo-contpaqi.svg", // Reemplaza por tus rutas reales en public/
-      alt: "Distribuidor Comercial Certificado CONTPAQi",
+      src: "/logo/logo-contpaqi.svg",
+      alt: "Distribuidor Comercial Certificado CONTPAQi en León",
     },
     {
       id: 2,
       nombre: "Dell",
       src: "/logo/logo-dell.svg",
-      alt: "Infraestructura y Servidores Dell",
+      alt: "Infraestructura y Servidores Dedicados Dell PowerEdge",
     },
     {
       id: 3,
       nombre: "Intel",
       src: "/logo/logo-intel.svg",
-      alt: "Procesadores y Tecnología Intel",
+      alt: "Procesadores y Arquitectura de Cómputo Intel",
     },
     {
       id: 4,
@@ -37,7 +36,7 @@ export default function Brands() {
         
         {/* Título sutil institucional */}
         <p className="text-xs uppercase tracking-widest text-gray-400 font-bold">
-          Respaldados por las mejores marcas de la industria
+          Respaldados por las mejores marcas de la industria tecnológica
         </p>
 
         {/* Contenedor Grid Responsivo */}
@@ -45,19 +44,20 @@ export default function Brands() {
           {marcas.map((marca) => (
             <div
               key={marca.id}
-              className="w-full max-w-[140px] flex items-center justify-center filter grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300 ease-in-out cursor-pointer"
+              className="w-full max-w-[140px] flex items-center justify-center filter grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300 ease-in-out"
             >
               <Image
                 src={marca.src}
                 alt={marca.alt}
-                width={140}
-                height={50}
+                width={130}
+                height={45}
+                unoptimized // <-- Evita que Next.js intente redimensionar innecesariamente un archivo vectorial SVG
                 className="h-auto w-auto max-h-[45px] object-contain"
               />
             </div>
           ))}
         </div>
-
+        
       </div>
     </section>
   );

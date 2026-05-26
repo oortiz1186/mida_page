@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { infoEmpresa } from "../../components/config/empresa"; // <-- 1. Importamos tu archivo de variables globales
 
 export const metadata = {
   title: "Soporte, Venta y Licenciamiento CONTPAQi en León | MIDA",
@@ -20,70 +21,66 @@ export default function ContpaqiPage() {
       )
     },
     {
-      titulo: "Venta, Renovación y Actualizaciones",
-      descripcion: "Gestionamos de forma ágil la renovación anual de tus licencias tradicionales o en la nube, actualizaciones mayores de versión y adición de usuarios para que tu equipo nunca detenga su operación.",
+      titulo: "Soporte Técnico Especializado",
+      descripcion: "Solucionamos errores comunes de timbrado, fallas de conexión con bases de datos SQL, problemas con llaves de licenciamiento y configuraciones multiusuario de manera inmediata.",
       icono: (
         <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
         </svg>
       )
     },
     {
-      titulo: "Soporte Técnico Especializado",
-      descripcion: "Resolución inmediata de errores de timbrado, reconstrucción de índices en bases de datos corruptas, migraciones de servidor y soporte continuo ante actualizaciones del SAT.",
+      titulo: "Renovación y Venta de Licencias",
+      descripcion: "Te asesoramos para adquirir o renovar tus licencias anuales o tradicionales bajo esquemas óptimos, asegurando que tu negocio cuente siempre con las últimas actualizaciones fiscales.",
       icono: (
         <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      )
+    },
+    {
+      titulo: "Optimización de Bases de Datos SQL",
+      descripcion: "Mantenimiento y análisis estructural a tus instancias de Microsoft SQL Server para acelerar los reportes, resguardar tu información corporativa y evitar la corrupción de empresas.",
+      icono: (
+        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s8-1.79 8-4" />
         </svg>
       )
     }
   ];
 
+  // Construcción dinámica del enlace de chat usando el mensaje predeterminado
+  const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumero}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminado)}`;
+
   return (
     <main className="bg-mida-gray min-h-screen flex flex-col">
       <Navbar />
-
-      {/* HERO REDISEÑADO: Fondo oscuro de alto impacto */}
-      <section className="pt-44 pb-24 bg-mida-deep text-white px-6 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full relative z-10">
-          
-          {/* Texto en blanco y azul claro */}
-          <div className="text-left space-y-5">
-            <span className="inline-block text-mida-light font-bold text-xs uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full">
-              Consultoría en Software Empresarial
-            </span>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-white">
-              Soluciones de Cómputo y <span className="text-mida-light">Sistemas CONTPAQi</span>
-            </h1>
-            <p className="text-mida-gray/70 text-base md:text-lg leading-relaxed">
-              Somos asesores comerciales y técnicos certificados. Maximizamos el rendimiento de tus herramientas contables y administrativas garantizando el cumplimiento fiscal de tu negocio.
-            </p>
-          </div>
-
-          {/* Imagen resaltando sobre el fondo oscuro */}
-          <div className="flex justify-center items-center w-full">
-            <div className="relative w-full max-w-lg aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
-              <Image
-                src="/images/contpaqi.png"
-                alt="Sistemas y Licenciamiento CONTPAQi MIDA"
-                fill
-                priority
-                sizes="(max-w-768px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-          </div>
-
+      
+      {/* 2. ENCABEZADO OPTIMIZADO PARA MAQUETADO Y SEO */}
+      <section className="pt-40 pb-16 bg-mida-deep text-white px-6 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-4">
+          <span className="inline-block text-mida-light font-bold text-xs uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full">
+            Ecosistema de Software Empresarial
+          </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+            Especialistas Certificados en <span className="text-mida-light">Sistemas CONTPAQi</span>
+          </h1>
+          <p className="text-mida-gray/70 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            Garantizamos la continuidad fiscal y administrativa de tu empresa a través de integraciones estables, soporte técnico experto y soluciones oportunas de licenciamiento en León, Gto.
+          </p>
         </div>
-        {/* Textura sutil geométrica */}
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff04_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff03_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
       </section>
 
-      {/* GRID DE SERVICIOS (Fondo gris claro para contraste total) */}
-      <section className="py-24 bg-mida-gray">
-        <div className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 md:grid-cols-3 gap-8">
-          {serviciosContpaqi.map((servicio, index) => (
-            <div key={index} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+      {/* SECCIÓN DEL GRID DE SOLUCIONES */}
+      <section className="py-24 max-w-7xl mx-auto px-6 w-full flex-grow">
+        {/* 3. CLASES DE ANIMACIÓN SUAVE Y TRANSICIÓN DE RESPONSIVIDAD IMPLEMENTADAS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {serviciosContpaqi.map((servicio) => (
+            <div 
+              key={servicio.titulo} 
+              className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-in-out flex flex-col justify-between"
+            >
               <div className="space-y-4">
                 <div className="w-12 h-12 bg-mida-primary/10 rounded-2xl flex items-center justify-center shadow-inner">
                   {servicio.icono}
@@ -96,18 +93,29 @@ export default function ContpaqiPage() {
         </div>
       </section>
 
-      {/* CTA SECTION */}
+      {/* CTA SECTION TOTALMENTE HOMOLOGADA CON VARIABLES */}
       <section className="py-20 bg-white text-center px-6 border-t border-gray-100">
         <div className="max-w-3xl mx-auto space-y-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-mida-deep">
+          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-mida-deep">
             ¿Tu licencia de CONTPAQi está por vencer o necesitas actualizarla?
           </h2>
           <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-            Evita pausas imprevistas en tu facturación o cálculo de nómina. Gestionamos tus renovaciones y timbrados de forma rápida y 100% oficial.
+            Evita pausas imprevistas en tu facturación o cálculo de nómina. Gestionamos tus renovaciones y timbrados de forma rápida, oficial y con soporte técnico especializado.
           </p>
-          <div className="pt-4">
-            <a href="/contacto" className="inline-block bg-mida-primary text-white font-bold px-10 py-4 rounded-xl hover:bg-mida-deep transition-all shadow-md text-sm">
-              Contactar a un Asesor Certificado
+          <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a 
+              href="/contacto" 
+              className="w-full sm:w-auto bg-mida-primary text-white font-bold px-8 py-3.5 rounded-xl hover:bg-mida-deep transition-all shadow-md text-sm uppercase tracking-wider text-center"
+            >
+              Cotizar Licencia / Renovación
+            </a>
+            <a 
+              href={urlWhatsApp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto border border-gray-200 text-mida-deep font-bold px-8 py-3.5 rounded-xl hover:bg-mida-gray/40 transition-all text-sm uppercase tracking-wider text-center"
+            >
+              Atención Inmediata por WhatsApp
             </a>
           </div>
         </div>

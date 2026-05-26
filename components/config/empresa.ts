@@ -2,7 +2,8 @@ export const infoEmpresa = {
   nombre: "MIDA Tech Consulting",
   legal: "MIDA",
   dominio: "https://mida-page-qvwj.vercel.app",
-  
+  formspreeId: "xnjrojny",
+
   // Teléfonos y WhatsApp (Modifica aquí tus números reales)
   telefonoTexto: "477 329 5727",         // Cómo se ve en la pantalla
   telefonoEnlace: "4773295727",          // Sin espacios para que funcione el clic de llamada
