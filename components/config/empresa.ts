@@ -11,7 +11,7 @@ export const infoEmpresa = {
   whatsappMensajePredeterminado: "Hola MIDA, necesito asesoría o soporte técnico.",
 
   // Ubicación
-  direccionCompleta: "Blvr. Mariano Escobedo Pte. 4546, San Isidro de Jerez, 37530 León de los Aldama, Gto., México.",
+  direccionCompleta: "Blvr. Mariano Escobedo Pte. 4546 Int 402-A, San Isidro de Jerez, 37530 León de los Aldama, Gto., México.",
   direccionLinea1: "Blvr. Mariano Escobedo Pte. 4546, San Isidro de Jerez, Centro de Negocios Plaza K2",
   direccionLinea2: "León, Guanajuato, México.",
   

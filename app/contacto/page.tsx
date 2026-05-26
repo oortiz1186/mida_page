@@ -9,7 +9,6 @@ export default function ContactoPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Función que maneja el envío sin depender de las redirecciones de Formspree
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -26,10 +25,9 @@ export default function ContactoPage() {
       });
 
       if (response.ok) {
-        // ¡Aquí ocurre la magia! Redirecciona localmente a tu ruta relativa
         router.push("/gracias");
       } else {
-        alert("Hubo un detalle al enviar el mensaje. Por favor, intenta de nuevo o contáctanos por WhatsApp.");
+        alert("Hubo un inconveniente al enviar el formulario. Por favor, intenta de nuevo o contáctanos por WhatsApp.");
         setIsSubmitting(false);
       }
     } catch (error) {
@@ -43,73 +41,56 @@ export default function ContactoPage() {
       <Navbar />
       
       <section className="pt-40 pb-12 text-center px-6">
-        <h1 className="text-4xl font-bold text-mida-deep">Hablemos de tu Proyecto</h1>
-        <p className="mt-2 text-gray-600 max-w-xl mx-auto">
-          Platícanos qué soluciones o soporte requiere tu empresa y nos pondremos en contacto contigo a la brevedad.
+        <span className="inline-block text-mida-primary font-bold text-xs uppercase tracking-widest bg-mida-primary/10 px-4 py-1.5 rounded-full mb-3">
+          Contacto Comercial
+        </span>
+        <h1 className="text-4xl font-black text-mida-deep tracking-tight">Hablemos de tu Proyecto</h1>
+        <p className="mt-2 text-gray-600 max-w-xl mx-auto text-sm md:text-base">
+          Platícanos qué soluciones, licenciamiento o soporte requiere tu empresa y un consultor certificado se pondrá en contacto.
         </p>
       </section>
 
-      <section className="pb-24 flex-grow max-w-md mx-auto px-6 w-full">
-        {/* FORMULARIO CONTROLADO POR JS */}
+      <section className="pb-24 flex-grow max-w-xl mx-auto px-6 w-full">
         <form 
           onSubmit={handleSubmit}
-          className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col gap-5"
+          className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 flex flex-col gap-5"
         >
-          <div>
-            <label className="block text-sm font-semibold text-mida-deep mb-1">Nombre Completo</label>
-            <input 
-              name="name" 
-              type="text" 
-              required 
-              placeholder="Ej. Octavio Ortiz" 
-              className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" 
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-mida-deep mb-1">Nombre Completo</label>
+              <input name="name" type="text" required placeholder="Ej. Octavio Ortiz" className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-mida-deep mb-1">Empresa / Razón Social</label>
+              <input name="company" type="text" placeholder="Nombre de tu empresa" className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-mida-deep mb-1">Correo Corporativo</label>
+              <input name="email" type="email" required placeholder="correo@empresa.com" className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-mida-deep mb-1">WhatsApp de Contacto</label>
+              <input name="whatsapp" type="tel" required placeholder="Ej. 477 123 4567" className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" />
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-mida-deep mb-1">Correo Electrónico</label>
-            <input 
-              name="email" 
-              type="email" 
-              required 
-              placeholder="correo@empresa.com" 
-              className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" 
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-mida-deep mb-1">Número de WhatsApp</label>
-            <input 
-              name="whatsapp" 
-              type="tel" 
-              required 
-              placeholder="Ej. 477 123 4567" 
-              className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" 
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-mida-deep mb-1">¿En qué te podemos ayudar?</label>
-            <select 
-              name="subject" 
-              className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20 text-gray-600"
-            >
-              <option value="Licenciamiento CONTPAQi">Asesoría / Licenciamiento CONTPAQi</option>
-              <option value="Soporte Tecnico / Servidores">Soporte Técnico / Servidores</option>
-              <option value="Equipamiento Hardware">Equipamiento de Cómputo</option>
-              <option value="Otro">Otro Asunto</option>
+            <label className="block text-sm font-semibold text-mida-deep mb-1">¿Qué solución requiere tu negocio?</label>
+            <select name="service_required" className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20 text-gray-600">
+              <option value="Renovación / Venta CONTPAQi">Renovación o Compra de Licencias CONTPAQi</option>
+              <option value="Soporte Técnico CONTPAQi">Soporte Técnico y Errores de Sistemas</option>
+              <option value="Servidores y Bases de Datos SQL">Configuración de Servidores y SQL (Dell PowerEdge)</option>
+              <option value="Optimización de Computadoras / Redes">Optimización de Hardware Administrativo</option>
+              <option value="Otro">Otro Asunto Técnico</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-mida-deep mb-1">Mensaje</label>
-            <textarea 
-              name="message" 
-              rows={4} 
-              required 
-              placeholder="Cuéntanos un poco sobre los requerimientos de tu negocio..." 
-              className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" 
-            />
+            <label className="block text-sm font-semibold text-mida-deep mb-1">Mensaje o Escenario Actual</label>
+            <textarea name="message" rows={4} required placeholder="Cuéntanos brevemente sobre la problemática o requerimiento técnico de tu empresa..." className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" />
           </div>
 
           <button 
@@ -117,7 +98,7 @@ export default function ContactoPage() {
             disabled={isSubmitting}
             className="bg-mida-primary text-white py-3.5 rounded-xl font-bold hover:bg-mida-deep transition-all shadow-md mt-2 disabled:bg-gray-400"
           >
-            {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
+            {isSubmitting ? "Enviando Solicitud..." : "Enviar Mensaje Corporativo"}
           </button>
         </form>
       </section>
