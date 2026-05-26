@@ -8,20 +8,21 @@ export default function Navbar() {
 
   return (
     <header className="fixed w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
-      <nav className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      {/* Añadido max-w-7xl y px-6 globales para centrar y dar aire en móviles */}
+      <nav className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center w-full">
         
         {/* Logotipo Oficial */}
-        <a href="/" className="flex items-center hover:opacity-90 transition-opacity">
+        <a href="/" className="flex items-center hover:opacity-90 transition-opacity shrink-0">
           <Image 
             src="/logo/Logotipo-mida-azul.svg" 
             alt="MIDA Logo" 
-            width={130} 
-            height={40} 
+            width={120} 
+            height={36} 
             priority
           />
         </a>
         
-        {/* MENÚ PARA COMPUTADORA (Invisible en móviles) */}
+        {/* MENÚ PARA COMPUTADORA */}
         <div className="hidden md:flex gap-8 font-semibold text-mida-deep items-center">
           <a href="/" className="hover:text-mida-light transition-colors">Inicio</a>
           <a href="/servicios" className="hover:text-mida-light transition-colors">Servicios</a>
@@ -32,27 +33,25 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* BOTÓN HAMBURGUESA (Solo visible en móviles) */}
+        {/* BOTÓN HAMBURGUESA (Móviles) */}
         <button 
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-mida-deep focus:outline-none p-2"
+          className="md:hidden text-mida-deep focus:outline-none p-1.5 rounded-lg hover:bg-mida-gray/40 transition-colors"
           aria-label="Toggle Menu"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {isOpen ? (
-              // Icono de X (Cerrar)
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             ) : (
-              // Icono de Hamburguesa (Abrir)
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             )}
           </svg>
         </button>
       </nav>
 
-      {/* MENÚ DESPLEGABLE MÓVIL (Solo se muestra si isOpen es true) */}
+      {/* MENÚ DESPLEGABLE MÓVIL */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 flex flex-col gap-4 font-semibold text-mida-deep shadow-inner animate-fadeIn">
+        <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 flex flex-col gap-4 font-semibold text-mida-deep shadow-inner">
           <a href="/" onClick={() => setIsOpen(false)} className="py-2 hover:text-mida-light border-b border-gray-50">Inicio</a>
           <a href="/servicios" onClick={() => setIsOpen(false)} className="py-2 hover:text-mida-light border-b border-gray-50">Servicios</a>
           <a href="/contpaqi" onClick={() => setIsOpen(false)} className="py-2 hover:text-mida-light border-b border-gray-50">CONTPAQi</a>

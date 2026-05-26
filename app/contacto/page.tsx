@@ -22,6 +22,9 @@ export default function ContactoPage() {
           method="POST"
           className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col gap-5"
         >
+          {/* CONFIGURACIÓN FLEXIBLE: Funciona en local, Vercel y dominio final */}
+          <input type="hidden" name="_next" value="/gracias" />
+          
           <div>
             <label className="block text-sm font-semibold text-mida-deep mb-1">Nombre Completo</label>
             <input 
@@ -44,7 +47,6 @@ export default function ContactoPage() {
             />
           </div>
 
-          {/* NUEVO CAMPO: NÚMERO DE WHATSAPP */}
           <div>
             <label className="block text-sm font-semibold text-mida-deep mb-1">Número de WhatsApp</label>
             <input 
