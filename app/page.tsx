@@ -10,8 +10,6 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Services />
-      
-      {/* Agregamos la etiqueta aquí para que pinte las Preguntas Frecuentes */}
       <FAQ />
       
       <Footer />
