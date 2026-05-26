@@ -28,7 +28,7 @@ export default function ContpaqiPage() {
           </div>
           <div className="md:w-1/2 relative w-full h-[250px] md:h-[350px]">
             <Image 
-              src="/images/CONTPAQI.PNG" 
+              src="/images/contpaqi.png" 
               alt="Administración con CONTPAQi"
               fill
               className="object-cover rounded-2xl shadow-xl border border-white/10"
