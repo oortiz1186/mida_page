@@ -7,21 +7,21 @@ export default function Hero() {
       {/* IMAGEN DE FONDO ABSOLUTA */}
       <div className="absolute inset-0 z-0">
         <Image 
-          src="/images/OFICINA.png" 
+          src="/images/OFICINA.PNG" 
           alt="Oficina MIDA"
           fill
           priority
           className="object-cover"
           sizes="100vw"
         />
-        {/* Capa de color (Overlay) con tus azules oficiales para dar contraste al texto */}
-        <div className="absolute inset-0 bg-gradient-to-br from-mida-primary/90 via-mida-deep/85 to-black/40 mix-blend-multiply" />
+        {/* Capa de color (Overlay) optimizada para máxima legibilidad del texto */}
+        <div className="absolute inset-0 bg-gradient-to-br from-mida-primary/95 via-mida-deep/90 to-black/70 mix-blend-multiply" />
       </div>
 
-      {/* CONTENIDO DE TEXTO (ENCIMA DE LA FOTO) */}
+      {/* CONTENIDO DE TEXTO */}
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="max-w-3xl space-y-6 text-center md:text-left">
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight drop-shadow-sm">
+          <h1 className="text-5xl md:text-7xl font-bold leading-tight drop-shadow-md">
             Tecnología que <br /> 
             <span className="opacity-95 text-mida-light">impulsa empresas</span>
           </h1>
