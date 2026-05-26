@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { infoEmpresa } from "../components/config/empresa"; // Importa tu configuración actual
+import { infoEmpresa } from "../components/config/empresa";
 import "./globals.css";
 import WhatsAppButton from "../components/WhatsAppButton";
 
-const inter = Inter({ subsets: ["latin"] });
+// Configuración de la fuente Inter optimizada para Next.js
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-sans", // Se alinea perfectamente con tu configuración de globals.css
+});
 
-// Metadatos globales base del sitio web optimizados
+// Metadatos globales base del sitio web optimizados para SEO
 export const metadata: Metadata = {
-  metadataBase: new URL(infoEmpresa.dominio), // <-- Ajuste del Paso 2: Define la URL base global para evitar errores de rutas relativas en producción
+  metadataBase: new URL(infoEmpresa.dominio),
   title: "MIDA | Consultoría TI, Soporte CONTPAQi y Servidores en León Gto",
   description: "Optimizamos la infraestructura tecnológica de tu empresa. Especialistas certificados en sistemas CONTPAQi, servidores SQL y soporte técnico empresarial en León, Guanajuato.",
 };
@@ -51,16 +55,19 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="es">
+    <html lang="es" className={`${inter.variable}`}>
       <head>
-        {/* Inyección estructural JSON-LD para los robots de búsqueda de Google */}
+        {/* Inyección segura y nativa del marcado estructurado para Google */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className="antialiased">
+        {/* Renderizado de las páginas secundarias y de inicio */}
         {children}
+        
+        {/* Botón flotante de WhatsApp unificado para todo el sitio */}
         <WhatsAppButton />
       </body>
     </html>
