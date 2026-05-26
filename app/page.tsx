@@ -1,32 +1,41 @@
+import { infoEmpresa } from "../components/config/empresa"; // <-- Centralización de SEO
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
+import Brands from "../components/Brands"; 
 import Services from "../components/Services";
-import Brands from "../components/Brands"; // 
 import FAQ from "../components/FAQ";
+import CTA from "../components/CTA"; // <-- Importación del cierre comercial
 import Footer from "../components/Footer";
 
+// Optimizamos los metadatos dinámicamente con tu configuración global
 export const metadata = {
-  title: "MIDA | Consultoría TI, Soporte CONTPAQi y Servidores en León Gto",
+  title: `${infoEmpresa.nombreEstructura || "MIDA"} | Consultoría TI, Soporte CONTPAQi y Servidores en León Gto`,
   description: "Optimizamos la infraestructura tecnológica de tu empresa. Especialistas certificados en sistemas CONTPAQi, servidores SQL y soporte técnico empresarial en León, Guanajuato.",
 };
 
 export default function Home() {
   return (
-    <main className="bg-white">
+    <main className="bg-white min-h-screen flex flex-col">
       {/* Menú de navegación fijo en la parte superior */}
       <Navbar />
       
-      {/* Hero Section con el nuevo fondo oscuro unificado */}
-      <Hero />
-      
-      {/* 2. Reemplazamos la sección de texto plano anterior por el componente dinámico */}
-      <Brands />
+      {/* Contenido principal ordenado estratégicamente */}
+      <div className="flex-grow">
+        {/* Hero Section con propuesta de valor clara */}
+        <Hero />
+        
+        {/* Carrusel / Grid de marcas aliadas (CONTPAQi, Dell, Intel, HP) */}
+        <Brands />
 
-      {/* Sección de servicios principales */}
-      <Services />
+        {/* Módulos de servicios técnicos y comerciales */}
+        <Services />
 
-      {/* Sección de acordeones de preguntas frecuentes */}
-      <FAQ />
+        {/* Sección de acordeones para romper objeciones frecuentes */}
+        <FAQ />
+        
+        {/* Bloque de conversión final (Llamado a la Acción antes del cierre) */}
+        <CTA />
+      </div>
       
       {/* Cierre institucional de la página */}
       <Footer />
