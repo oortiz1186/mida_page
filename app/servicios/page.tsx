@@ -34,7 +34,7 @@ export default function ServiciosPage() {
       <Navbar />
 
       {/* Encabezado Principal */}
-      <section className="bg-gradient-to-br from-mida-primary to-mida-deep text-white pt-32 pb-20 text-center px-6">
+      <section className="bg-gradient-to-br from-mida-primary to-mida-deep text-white pt-40 pb-20 text-center px-6">
         <h1 className="text-4xl md:text-5xl font-bold">Portafolio de Soluciones</h1>
         <p className="mt-4 text-lg text-mida-gray/80 max-w-2xl mx-auto">
           Servicios tecnológicos integrales diseñados con precisión y coherencia para potenciar la infraestructura de tu negocio.

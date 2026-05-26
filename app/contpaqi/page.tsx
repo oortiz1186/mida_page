@@ -14,8 +14,8 @@ export default function ContpaqiPage() {
     <main className="bg-white min-h-screen flex flex-col">
       <Navbar />
       
-      {/* Nuevo Hero Interno con Imagen Lateral */}
-      <section className="bg-gradient-to-br from-mida-primary to-mida-deep text-white pt-36 pb-24 px-6">
+      {/* Hero Interno con Imagen Lateral */}
+      <section className="bg-gradient-to-br from-mida-primary to-mida-deep text-white pt-40 pb-24 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 w-full">
           <div className="md:w-1/2 space-y-4 text-center md:text-left">
             <span className="text-xs font-bold uppercase tracking-widest text-mida-light bg-white/10 px-3 py-1 rounded-full">
