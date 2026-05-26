@@ -1,9 +1,43 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export default function ContactoPage() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Función que maneja el envío sin depender de las redirecciones de Formspree
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      const response = await fetch("https://formspree.io/f/xnjrojny", {
+        method: "POST",
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        // ¡Aquí ocurre la magia! Redirecciona localmente a tu ruta relativa
+        router.push("/gracias");
+      } else {
+        alert("Hubo un detalle al enviar el mensaje. Por favor, intenta de nuevo o contáctanos por WhatsApp.");
+        setIsSubmitting(false);
+      }
+    } catch (error) {
+      alert("Error de conexión. Intenta de nuevo.");
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <main className="bg-mida-gray min-h-screen flex flex-col">
       <Navbar />
@@ -16,15 +50,11 @@ export default function ContactoPage() {
       </section>
 
       <section className="pb-24 flex-grow max-w-md mx-auto px-6 w-full">
-        {/* FORMULARIO CONECTADO A FORMSPREE */}
+        {/* FORMULARIO CONTROLADO POR JS */}
         <form 
-          action="https://formspree.io/f/xnjrojny" 
-          method="POST"
+          onSubmit={handleSubmit}
           className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col gap-5"
         >
-          {/* CONFIGURACIÓN FLEXIBLE: Funciona en local, Vercel y dominio final */}
-          <input type="hidden" name="_next" value="/gracias" />
-          
           <div>
             <label className="block text-sm font-semibold text-mida-deep mb-1">Nombre Completo</label>
             <input 
@@ -84,9 +114,10 @@ export default function ContactoPage() {
 
           <button 
             type="submit" 
-            className="bg-mida-primary text-white py-3.5 rounded-xl font-bold hover:bg-mida-deep transition-all shadow-md mt-2"
+            disabled={isSubmitting}
+            className="bg-mida-primary text-white py-3.5 rounded-xl font-bold hover:bg-mida-deep transition-all shadow-md mt-2 disabled:bg-gray-400"
           >
-            Enviar Mensaje
+            {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
           </button>
         </form>
       </section>
