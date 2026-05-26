@@ -29,7 +29,7 @@ export default function EquipamientoPage() {
     },
     {
       titulo: "Equipamiento de Trabajo y Continuidad",
-      descripcion: "Suministramos y configuramos estaciones de trabajo optimizadas para perfiles contables and administrativos. Además, implementamos esquemas de almacenamiento en red (NAS) para respaldos automatizados de tu empresa.",
+      descripcion: "Suministramos y configuramos estaciones de trabajo optimizadas para perfiles contables y administrativos. Además, implementamos esquemas de almacenamiento en red (NAS) para respaldos automatizados de tu empresa.",
       icono: (
         <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -58,16 +58,15 @@ export default function EquipamientoPage() {
             </p>
           </div>
 
-          {/* CONTENEDOR OPTIMIZADO: Elimina el bloque rígido blanco */}
           <div className="flex justify-center items-center w-full">
-            <div className="relative w-full max-w-lg aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-4 flex items-center justify-center">
+            <div className="relative w-full max-w-lg aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white p-2">
               <Image
                 src="/images/EQUIPAMIENTO.png"
                 alt="Equipamiento Tecnológico MIDA"
                 fill
                 priority
                 sizes="(max-w-768px) 100vw, 50vw"
-                className="object-contain p-4" // El padding extra evita que toque los bordes translúcidos
+                className="object-contain"
               />
             </div>
           </div>
@@ -89,3 +88,31 @@ export default function EquipamientoPage() {
                   {solucion.icono}
                 </div>
                 <h3 className="text-xl font-bold text-mida-deep">{solucion.titulo}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{solucion.descripcion}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA SECTION: Fondo gris sutil para marcar la separación con el Footer */}
+      <section className="py-20 bg-mida-gray/40 text-center px-6 border-t border-gray-100">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-mida-deep">
+            ¿Planeas mejorar la infraestructura técnica de tu empresa?
+          </h2>
+          <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+            Te asesoramos para elegir y optimizar el hardware idóneo compatible con tus bases de datos corporativas.
+          </p>
+          <div className="pt-4">
+            <a href="/contacto" className="inline-block bg-mida-primary text-white font-bold px-10 py-4 rounded-xl hover:bg-mida-deep transition-all shadow-md text-sm">
+              Solicitar Asesoría de Hardware
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </main>
+  );
+}
