@@ -1,25 +1,20 @@
 import Navbar from "../components/Navbar"
 import Hero from "../components/Hero"
 import Services from "../components/Services"
+import FAQ from "../components/FAQ" // Importado correctamente
 import Footer from "../components/Footer"
-import FAQ from "../components/FAQ"
 
-export default function Home(){
-
-return(
-
-<main>
-
-<Navbar/>
-
-<Hero/>
-
-<Services/>
-
-<Footer/>
-
-</main>
-
-)
-
+export default function Home() {
+  return (
+    <main>
+      <Navbar />
+      <Hero />
+      <Services />
+      
+      {/* Agregamos la etiqueta aquí para que pinte las Preguntas Frecuentes */}
+      <FAQ />
+      
+      <Footer />
+    </main>
+  )
 }
