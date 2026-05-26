@@ -10,9 +10,12 @@ export default function Hero() {
           <span className="inline-block text-mida-light font-bold text-xs uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full">
             Consultoría TI & Soporte Certificado
           </span>
-          <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight text-white">
+          
+          {/* CAMBIO DETECTADO Y CORREGIDO: Ajuste responsivo fluido para evitar textos rotos en móviles */}
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-tight text-white">
             Impulsamos la tecnología de tu <span className="text-mida-light">empresa</span>
           </h1>
+          
           <p className="text-mida-gray/70 text-base md:text-lg leading-relaxed max-w-xl">
             Especialistas en la integración, soporte y licenciamiento de sistemas CONTPAQi, optimización de servidores SQL y soluciones de hardware a la medida de tu operación.
           </p>

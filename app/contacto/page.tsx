@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { infoEmpresa } from "../../components/config/empresa"; // Ajusta la ruta según tus carpetas
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export default function ContactoPage() {
-  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -16,22 +15,22 @@ export default function ContactoPage() {
     const formData = new FormData(e.currentTarget);
 
     try {
+      // Usamos tu ID de Formspree o endpoint de envío
       const response = await fetch("https://formspree.io/f/xnjrojny", {
         method: "POST",
         body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
+        headers: { 'Accept': 'application/json' }
       });
 
       if (response.ok) {
-        router.push("/gracias");
+        alert("¡Solicitud enviada con éxito! Un consultor de MIDA se pondrá en contacto pronto.");
+        (e.target as HTMLFormElement).reset();
       } else {
-        alert("Hubo un inconveniente al enviar el formulario. Por favor, intenta de nuevo o contáctanos por WhatsApp.");
-        setIsSubmitting(false);
+        alert("Hubo un detalle al enviar. Intenta de nuevo o dale clic al botón de WhatsApp.");
       }
     } catch (error) {
-      alert("Error de conexión. Intenta de nuevo.");
+      alert("Error de red. Intenta de nuevo.");
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -46,7 +45,7 @@ export default function ContactoPage() {
         </span>
         <h1 className="text-4xl font-black text-mida-deep tracking-tight">Hablemos de tu Proyecto</h1>
         <p className="mt-2 text-gray-600 max-w-xl mx-auto text-sm md:text-base">
-          Platícanos qué soluciones, licenciamiento o soporte requiere tu empresa y un consultor certificado se pondrá en contacto.
+          Escríbenos para agendar una sesión de diagnóstico técnico o cotizar tus licencias de software.
         </p>
       </section>
 
@@ -83,14 +82,13 @@ export default function ContactoPage() {
               <option value="Renovación / Venta CONTPAQi">Renovación o Compra de Licencias CONTPAQi</option>
               <option value="Soporte Técnico CONTPAQi">Soporte Técnico y Errores de Sistemas</option>
               <option value="Servidores y Bases de Datos SQL">Configuración de Servidores y SQL (Dell PowerEdge)</option>
-              <option value="Optimización de Computadoras / Redes">Optimización de Hardware Administrativo</option>
-              <option value="Otro">Otro Asunto Técnico</option>
+              <option value="Optimización de Computadoras">Optimización de Hardware Administrativo</option>
             </select>
           </div>
 
           <div>
             <label className="block text-sm font-semibold text-mida-deep mb-1">Mensaje o Escenario Actual</label>
-            <textarea name="message" rows={4} required placeholder="Cuéntanos brevemente sobre la problemática o requerimiento técnico de tu empresa..." className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" />
+            <textarea name="message" rows={4} required placeholder="Cuéntanos un poco sobre los sistemas o hardware que usa tu empresa actualmente..." className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-mida-primary bg-mida-gray/20" />
           </div>
 
           <button 

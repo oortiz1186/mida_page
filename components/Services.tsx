@@ -81,7 +81,7 @@ export default function Services() {
           {servicios.map((item) => (
             <div 
               key={item.title} 
-              className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 ease-in-out flex flex-col justify-between"
             >
               {/* Contenedor del Icono dinámico */}
               <div className="w-12 h-12 bg-mida-primary/10 rounded-xl flex items-center justify-center mb-6">
