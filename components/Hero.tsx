@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="pt-44 pb-24 bg-mida-deep text-white px-6 relative overflow-hidden">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full relative z-10">
         
-        {/* Columna Izquierda: Mensaje Comercial e Impacto */}
+        {/* Columna Izquierda: Mensaje y CTAs */}
         <div className="text-left space-y-6">
           <span className="inline-block text-mida-light font-bold text-xs uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full">
             Consultoría TI & Soporte Certificado
@@ -32,10 +32,9 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Columna Derecha: Imagen de Oficina/Dashboard Tecnológico */}
+        {/* Columna Derecha: Imagen Principal a Borde Completo */}
         <div className="flex justify-center items-center w-full">
           <div className="relative w-full max-w-lg aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
-            {/* Usamos una imagen de tu stock que refleje la operación ejecutiva o flujos de datos */}
             <Image
               src="/images/oficina.png" 
               alt="MIDA Consultoría Tecnológica Avanzada"
@@ -49,7 +48,7 @@ export default function Hero() {
 
       </div>
 
-      {/* Fondo geométrico fino sutil */}
+      {/* Trama de puntos sutil de fondo */}
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff04_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
     </section>
   );
