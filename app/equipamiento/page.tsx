@@ -42,24 +42,24 @@ export default function EquipamientoPage() {
     <main className="bg-mida-gray min-h-screen flex flex-col">
       <Navbar />
 
-      {/* HERO SECTION */}
-      <section className="pt-40 pb-20 bg-gradient-to-b from-white to-mida-gray/30 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full">
+      {/* HERO REDISEÑADO: Fondo oscuro corporativo */}
+      <section className="pt-44 pb-24 bg-mida-deep text-white px-6 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full relative z-10">
           
           <div className="text-left space-y-5">
-            <span className="inline-block text-mida-primary font-bold text-xs uppercase tracking-widest bg-mida-primary/10 px-4 py-1.5 rounded-full">
+            <span className="inline-block text-mida-light font-bold text-xs uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full">
               Soporte de Hardware Corporativo
             </span>
-            <h1 className="text-4xl md:text-5xl font-black text-mida-deep tracking-tight leading-tight">
-              La Infraestructura Correcta para tu Operación
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-white">
+              La Infraestructura Correcta para tu <span className="text-mida-light">Operación</span>
             </h1>
-            <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+            <p className="text-mida-gray/70 text-base md:text-lg leading-relaxed">
               El software necesita un motor físico confiable. Nos encargamos de asegurar, habilitar y dar soporte preventivo y correctivo al equipamiento clave de tu negocio.
             </p>
           </div>
 
           <div className="flex justify-center items-center w-full">
-            <div className="relative w-full max-w-lg aspect-[4/3] rounded-3xl overflow-hidden shadow-xl border border-gray-100 bg-white">
+            <div className="relative w-full max-w-lg aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
               <Image
                 src="/images/EQUIPAMIENTO.png"
                 alt="Equipamiento Tecnológico MIDA"
@@ -72,39 +72,41 @@ export default function EquipamientoPage() {
           </div>
 
         </div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff04_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
       </section>
 
-      {/* GRID DE SOLUCIONES */}
-      <section className="py-16 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 md:grid-cols-3 gap-8">
-        {soluciones.map((solucion, index) => (
-          <div key={index} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-mida-primary/10 rounded-2xl flex items-center justify-center shadow-inner">
-                {solucion.icono}
+      {/* GRID DE SOLUCIONES (Fondo gris claro) */}
+      <section className="py-24 bg-mida-gray">
+        <div className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+          {soluciones.map((solucion, index) => (
+            <div key={index} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-mida-primary/10 rounded-2xl flex items-center justify-center shadow-inner">
+                  {solucion.icono}
+                </div>
+                <h3 className="text-xl font-bold text-mida-deep">{solucion.titulo}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{solucion.descripcion}</p>
               </div>
-              <h3 className="text-xl font-bold text-mida-deep">{solucion.titulo}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{solucion.descripcion}</p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
 
       {/* CTA SECTION */}
-      <section className="py-20 bg-mida-deep text-white text-center px-6 relative overflow-hidden">
-        <div className="max-w-3xl mx-auto space-y-6 relative z-10">
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+      <section className="py-20 bg-white text-center px-6 border-t border-gray-100">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-mida-deep">
             ¿Planeas mejorar la infraestructura técnica de tu empresa?
           </h2>
-          <p className="text-mida-gray/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
             Te asesoramos para elegir y optimizar el hardware idóneo compatible con tus bases de datos corporativas.
           </p>
           <div className="pt-4">
-            <a href="/contacto" className="inline-block bg-mida-primary text-white font-bold px-10 py-4 rounded-xl hover:bg-white hover:text-mida-deep transition-all shadow-lg text-sm">
+            <a href="/contacto" className="inline-block bg-mida-primary text-white font-bold px-10 py-4 rounded-xl hover:bg-mida-deep transition-all shadow-md text-sm">
               Solicitar Asesoría de Hardware
             </a>
           </div>
         </div>
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
       </section>
 
       <Footer />
