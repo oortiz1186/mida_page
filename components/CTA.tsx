@@ -41,11 +41,6 @@ export default function CTA() {
             Enviar un Correo
           </a>
         </div>
-        
-        {/* Agregamos una nota de contacto rápido opcional usando la variable de WhatsApp */}
-        <p className="mt-8 text-xs text-gray-500">
-          O contáctanos directo al <a href={urlWhatsApp} target="_blank" rel="noopener noreferrer" className="font-bold text-mida-primary hover:underline">{infoEmpresa.whatsappTexto}</a>
-        </p>
       </div>
     </section>
   );
