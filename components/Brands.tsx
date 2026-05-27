@@ -48,7 +48,8 @@ export default function Brands() {
                   - Mantenemos a CONTPAQi con su espacio amplio.
                   - Incrementamos el ancho máximo de Dell, Intel y HP de 130px a 170px (max-w-[150px] md:max-w-[170px]) para permitirles expandirse.
                 */
-                className={`w-full flex items-center justify-center filter grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300 ease-in-out transform hover:scale-105 h-16
+               
+                className={`w-full flex items-center justify-center opacity-75 hover:opacity-100 transition-all duration-300 ease-in-out transform hover:scale-105 h-16
                   ${esContpaqi ? "max-w-[240px] md:max-w-[340px]" : "max-w-[150px] md:max-w-[170px]"}
                 `}
               >
