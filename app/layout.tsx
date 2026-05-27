@@ -3,14 +3,14 @@ import { Inter } from "next/font/google";
 import { infoEmpresa } from "../components/config/empresa";
 import "./globals.css";
 import WhatsAppButton from "../components/WhatsAppButton";
+// 1. IMPORTAMOS EL COMPONENTE OFICIAL DE NEXT.JS
+import { GoogleAnalytics } from "@next/third-parties/google"; 
 
-// Configuración de la fuente Inter optimizada para Next.js
 const inter = Inter({ 
   subsets: ["latin"],
-  variable: "--font-sans", // Se alinea perfectamente con tu configuración de globals.css
+  variable: "--font-sans",
 });
 
-// Metadatos globales base del sitio web optimizados para SEO
 export const metadata: Metadata = {
   metadataBase: new URL(infoEmpresa.dominio),
   title: "MIDA | Consultoría TI, Soporte CONTPAQi y Servidores en León Gto",
@@ -23,7 +23,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   
-  // Objeto estructurado Schema.org mapeado con tus variables reales de infoEmpresa
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -57,18 +56,20 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable}`}>
       <head>
-        {/* Inyección segura y nativa del marcado estructurado para Google */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="antialiased">
-        {/* Renderizado de las páginas secundarias y de inicio */}
         {children}
         
-        {/* Botón flotante de WhatsApp unificado para todo el sitio */}
         <WhatsAppButton />
+
+        {/* 2. INYECCIÓN AUTOMÁTICA DEL SCRIPT DE MEDICIÓN */}
+        {infoEmpresa.googleAnalyticsId && (
+          <GoogleAnalytics gaId={infoEmpresa.googleAnalyticsId} />
+        )}
       </body>
     </html>
   );

@@ -1,26 +1,24 @@
 "use client";
 
-import Image from "next/image";
-
 export default function Brands() {
   const marcas = [
     {
       id: 1,
       nombre: "CONTPAQi",
-      src: "/logo/logo-contpaqi.svg",
-      alt: "Distribuidor Comercial Certificado CONTPAQi en León",
+      src: "/logo/logo-contpaqi.svg", 
+      alt: "Distribuidor Comercial Certificado CONTPAQi",
     },
     {
       id: 2,
       nombre: "Dell",
       src: "/logo/logo-dell.svg",
-      alt: "Infraestructura y Servidores Dedicados Dell PowerEdge",
+      alt: "Infraestructura y Servidores Dell",
     },
     {
       id: 3,
       nombre: "Intel",
       src: "/logo/logo-intel.svg",
-      alt: "Procesadores y Arquitectura de Cómputo Intel",
+      alt: "Procesadores y Tecnología Intel",
     },
     {
       id: 4,
@@ -31,33 +29,46 @@ export default function Brands() {
   ];
 
   return (
-    <section className="py-16 bg-white border-y border-gray-100 w-full">
-      <div className="max-w-7xl mx-auto px-6 text-center space-y-8">
+    <section className="py-20 bg-white border-y border-gray-100 w-full">
+      <div className="max-w-7xl mx-auto px-6 text-center space-y-10">
         
-        {/* Título sutil institucional */}
         <p className="text-xs uppercase tracking-widest text-gray-400 font-bold">
-          Respaldados por las mejores marcas de la industria tecnológica
+          Respaldados por las mejores marcas de la industria
         </p>
 
-        {/* Contenedor Grid Responsivo */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 items-center justify-items-center w-full">
-          {marcas.map((marca) => (
-            <div
-              key={marca.id}
-              className="w-full max-w-[140px] flex items-center justify-center filter grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300 ease-in-out"
-            >
-              <Image
-                src={marca.src}
-                alt={marca.alt}
-                width={130}
-                height={45}
-                unoptimized // <-- Evita que Next.js intente redimensionar innecesariamente un archivo vectorial SVG
-                className="h-auto w-auto max-h-[45px] object-contain"
-              />
-            </div>
-          ))}
+        {/* Grid de 4 columnas perfectamente alineadas */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12 items-center justify-items-center w-full">
+          {marcas.map((marca) => {
+            const esContpaqi = marca.nombre === "CONTPAQi";
+            
+            return (
+              <div
+                key={marca.id}
+                /* AJUSTE DE CONTENEDORES:
+                  - Mantenemos a CONTPAQi con su espacio amplio.
+                  - Incrementamos el ancho máximo de Dell, Intel y HP de 130px a 170px (max-w-[150px] md:max-w-[170px]) para permitirles expandirse.
+                */
+                className={`w-full flex items-center justify-center filter grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300 ease-in-out transform hover:scale-105 h-16
+                  ${esContpaqi ? "max-w-[240px] md:max-w-[340px]" : "max-w-[150px] md:max-w-[170px]"}
+                `}
+              >
+                <img
+                  src={marca.src}
+                  alt={marca.alt}
+                  /* ESCALADO MAESTRO DE IMÁGENES:
+                    - CONTPAQi se queda en su escala ideal (h-16 en móvil, h-20 en escritorio con scale).
+                    - Subimos la altura de los otros logos: pasaron de h-10 a h-14 en móvil, y a h-16 en escritorio de forma nativa.
+                  */
+                  className={`object-contain ${
+                    esContpaqi 
+                      ? "h-16 md:h-20 w-full scale-125 md:scale-135" 
+                      : "h-14 md:h-16 w-auto"
+                  }`}
+                />
+              </div>
+            );
+          })}
         </div>
-        
       </div>
     </section>
   );

@@ -19,4 +19,7 @@ export const infoEmpresa = {
   
   // Redes o Correos por si los necesitas en el futuro
   correoContacto: "dulce@mida.mx",
+
+  // Ajuste Analítica: Añadimos tu ID de Google Analytics 4
+  googleAnalyticsId: "G-XXXXXXX",
 };

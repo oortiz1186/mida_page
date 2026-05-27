@@ -1,94 +1,73 @@
+"use client";
+
 export default function Services() {
   const servicios = [
-    { 
-      title: "Consultoría Tecnológica", 
-      desc: "Acompañamiento empresarial estratégico para optimizar tus procesos operativos.",
-      icon: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-        </svg>
-      )
+    {
+      id: 1,
+      titulo: "Sistemas CONTPAQi",
+      descripcion: "Instalación, soporte, capacitación y renovación de licencias oficiales (Nóminas, Contabilidad, Comercial) para optimizar tu gestión fiscal.",
+      imagen: "/images/servicio1.png", // <-- Foto enfocada a administración y procesos
+      enlace: "/contpaqi"
     },
-    { 
-      title: "Sistemas CONTPAQi", 
-      desc: "Licenciamiento, instalación, configuración y timbrado digital sin complicaciones.",
-      icon: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-      )
+    {
+      id: 2,
+      titulo: "Infraestructura de Servidores y SQL",
+      descripcion: "Configuración de servidores dedicados, bases de datos SQL de alta velocidad y arreglos RAID para la continuidad de tu negocio.",
+      imagen: "/images/servicio2.png", // <-- Foto de hardware premium en rack
+      enlace: "/equipamiento"
     },
-    { 
-      title: "Equipamiento de Cómputo", 
-      desc: "Hardware homologado, servidores y equipos de alto rendimiento para tu negocio.",
-      icon: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v4a2 2 0 00-2-2M7 7h.01M7 15h.01" />
-        </svg>
-      )
-    },
-    { 
-      title: "Soporte Especializado", 
-      desc: "Resolución de incidencias técnicas en redes, servidores y bases de datos SQL.",
-      icon: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      )
-    },
-    { 
-      title: "Capacitación", 
-      desc: "Formación a la medida para que tu equipo domine el software y las herramientas.",
-      icon: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      )
-    },
-    { 
-      title: "Infraestructura TI", 
-      desc: "Diseño y despliegue de redes seguras y arquitecturas estables.",
-      icon: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-      )
+    {
+      id: 3,
+      titulo: "Soporte Técnico y Cómputo",
+      descripcion: "Equipamiento de hardware empresarial, pólizas de mantenimiento preventivo y optimización de sistemas informáticos corporativos.",
+      imagen: "/images/servicio3.png", // <-- Foto de consultoría y diagnóstico técnico
+      enlace: "/contacto"
     }
   ];
 
   return (
-    // CAMBIO: Se inyecta el id="servicios" para habilitar la navegación interna
-    <section id="servicios" className="py-24 bg-mida-gray scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="servicios" className="py-24 bg-mida-gray/30 w-full">
+      <div className="max-w-7xl mx-auto px-6 space-y-12">
         
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-mida-deep tracking-tight">
-            Nuestros Servicios
+        {/* Encabezado Institucional */}
+        <div className="text-center space-y-3">
+          <span className="text-mida-primary font-bold text-xs uppercase tracking-widest bg-mida-primary/10 px-4 py-1.5 rounded-full">
+            Soluciones Especializadas
+          </span>
+          <h2 className="text-3xl md:text-4xl font-black text-mida-deep">
+            Servicios diseñados para la continuidad de tu negocio
           </h2>
-          <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-sm md:text-base">
-            Soluciones integrales diseñadas con precisión y coherencia tecnológica para impulsar tu negocio.
-          </p>
         </div>
 
-        {/* CAMBIO: Grid responsivo optimizado (1 col en móvil, 2 cols en tablet, 3 cols en desktop) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {servicios.map((item) => (
+        {/* Grid dinámico con imágenes de cobertura */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {servicios.map((servicio) => (
             <div 
-              key={item.title} 
-              className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 ease-in-out flex flex-col justify-between"
+              key={servicio.id} 
+              className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
             >
-              <div>
-                <div className="w-12 h-12 bg-mida-primary/10 rounded-xl flex items-center justify-center mb-6">
-                  {item.icon}
+              {/* Contenedor de la fotografía con efecto Zoom al hacer Hover */}
+              <div className="h-48 w-full overflow-hidden bg-mida-deep relative">
+                <img 
+                  src={servicio.imagen} 
+                  alt={servicio.titulo} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                />
+              </div>
+
+              {/* Bloque de contenido y textos explicativos */}
+              <div className="p-8 flex-grow flex flex-col justify-between space-y-6">
+                <div className="space-y-3">
+                  <h3 className="text-xl font-bold text-mida-deep">{servicio.titulo}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{servicio.descripcion}</p>
                 </div>
-                <h3 className="text-xl font-bold text-mida-deep mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {item.desc}
-                </p>
+                
+                <a 
+                  href={servicio.enlace}
+                  className="inline-flex items-center text-mida-primary font-bold text-xs uppercase tracking-wider hover:text-mida-deep transition-colors"
+                >
+                  Saber más <span className="ml-1.5 transition-transform group-hover:translate-x-1">→</span>
+                </a>
               </div>
             </div>
           ))}
