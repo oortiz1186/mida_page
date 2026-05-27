@@ -20,28 +20,28 @@ export default function Services() {
       id: 3,
       titulo: "Pólizas de Soporte TI",
       descripcion: "Mantenimiento preventivo y correctivo ilimitado para los equipos de cómputo y sistemas de tu empresa con tiempos de respuesta prioritarios.",
-      imagen: "/images/servicio-soporte.webp",
+      imagen: "/images/servicio3.png",
       enlace: "/contacto"
     },
     {
       id: 4,
       titulo: "Hardware y Cómputo Corporativo",
       descripcion: "Venta, equipamiento y configuración de equipo de cómputo de alto rendimiento y servidores de las marcas líderes del mercado.",
-      imagen: "/images/servicio-computo.webp",
+      imagen: "/images/servicio4.png",
       enlace: "/equipamiento"
     },
     {
       id: 5,
       titulo: "Redes y Conectividad",
       descripcion: "Diseño e implementación de cableado estructurado, redes de voz y datos, y optimización de routers para un entorno empresarial veloz y estable.",
-      imagen: "/images/servicio-redes.webp",
+      imagen: "/images/servicio5.png",
       enlace: "/contacto"
     },
     {
       id: 6,
       titulo: "Seguridad y Respaldos",
       descripcion: "Blindaje perimetral contra amenazas de red, licenciamiento antivirus corporativo y sistemas de respaldo automatizados en la nube y locales.",
-      imagen: "/images/servicio-seguridad.webp",
+      imagen: "/images/servicio6.png",
       enlace: "/contacto"
     }
   ];
