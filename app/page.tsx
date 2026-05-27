@@ -9,7 +9,7 @@ import Footer from "../components/Footer";
 
 // Optimizamos los metadatos dinámicamente con tu configuración global
 export const metadata = {
-  title: `${infoEmpresa.nombreEstructura || "MIDA"} | Consultoría TI, Soporte CONTPAQi y Servidores en León Gto`,
+  title: `${infoEmpresa.nombre || "MIDA"} | Consultoría TI, Soporte CONTPAQi y Servidores en León Gto`,
   description: "Optimizamos la infraestructura tecnológica de tu empresa. Especialistas certificados en sistemas CONTPAQi, servidores SQL y soporte técnico empresarial en León, Guanajuato.",
 };
 
