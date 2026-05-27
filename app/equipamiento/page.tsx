@@ -1,20 +1,20 @@
+"use client";
+
+// IMPORTANTE: Importamos el componente de optimización nativo de Next.js
 import Image from "next/image";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { infoEmpresa } from "../../components/config/empresa"; // <-- 1. Importación de variables globales
-
-export const metadata = {
-  title: "Infraestructura TI, Servidores SQL y Hardware en León | MIDA",
-  description: "Configuración y diagnóstico de servidores dedicados Dell PowerEdge y estaciones de trabajo administrativas. Garantiza la continuidad de tu negocio.",
-};
+import { infoEmpresa } from "../../components/config/empresa";
 
 export default function EquipamientoPage() {
   const soluciones = [
     {
       titulo: "Servidores para Aplicaciones y Bases de Datos",
       descripcion: "No solo te damos el equipo; diagnosticamos, configuramos y dejamos a punto servidores dedicados (como Dell PowerEdge) preparados específicamente para soportar tus bases de datos SQL y asegurar la estabilidad de tu información.",
+      // 1. Agregamos las rutas de tus assets optimizados
+      imagen: "/images/equipo-servidores.webp",
       icono: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s8-1.79 8-4" />
         </svg>
       )
@@ -22,8 +22,9 @@ export default function EquipamientoPage() {
     {
       titulo: "Estaciones de Trabajo y Equipamiento",
       descripcion: "Suministro e instalación de computadoras de escritorio y laptops homologadas para uso administrativo y operativo. Equipos listos para trabajar con la velocidad que tu empresa necesita.",
+      imagen: "/images/equipo-computo.webp",
       icono: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       )
@@ -31,8 +32,9 @@ export default function EquipamientoPage() {
     {
       titulo: "Redes y Conectividad Corporativa",
       descripcion: "Diseño e implementación de cableado estructurado, ruteadores y puntos de acceso inalámbricos para asegurar que la comunicación entre tus terminales y servidores sea rápida, limpia y sin caídas.",
+      imagen: "/images/equipo-redes.webp",
       icono: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
         </svg>
       )
@@ -40,15 +42,15 @@ export default function EquipamientoPage() {
     {
       titulo: "Políticas de Respaldo y Seguridad",
       descripcion: "Configuración de arreglos de discos (RAID), sistemas de alimentación ininterrumpida (No-Breaks) y respaldos automatizados en la nube o almacenamiento local para blindar tu operación ante apagones o fallas mecánicas.",
+      imagen: "/images/equipo-seguridad.webp",
       icono: (
-        <svg className="w-6 h-6 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
       )
     }
   ];
 
-  // Construcción de URL dinámica para el CTA de WhatsApp corporativo
   const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumero}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminado)}`;
 
   return (
@@ -71,21 +73,41 @@ export default function EquipamientoPage() {
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff03_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
       </section>
 
-      {/* SECCIÓN DEL GRID DE SOLUCIONES DE HARDWARE */}
+      {/* SECCIÓN DEL GRID DE SOLUCIONES DE HARDWARE CON IMÁGENES */}
       <section className="py-24 max-w-7xl mx-auto px-6 w-full flex-grow">
-        {/* 2. Optimización Responsiva del Grid (1 col móvil, 2 cols en pantallas medianas en adelante) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {soluciones.map((solucion) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {soluciones.map((solucion, index) => (
             <div 
               key={solucion.titulo} 
-              className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-in-out flex flex-col justify-between"
+              className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-in-out flex flex-col group"
             >
-              <div className="space-y-4">
-                <div className="w-12 h-12 bg-mida-primary/10 rounded-2xl flex items-center justify-center shadow-inner">
-                  {solucion.icono}
+              {/* 2. CONTENEDOR DE IMAGEN OPTIMIZADO CON NEXT.JS */}
+              <div className="h-52 w-full overflow-hidden bg-mida-deep relative">
+                <Image 
+                  src={solucion.imagen} 
+                  alt={solucion.titulo}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                  // 3. Prioridad de carga alta para las dos primeras tarjetas sobre el "fold" de la pantalla
+                  priority={index < 2}
+                />
+              </div>
+
+              {/* Contenido de texto alineado */}
+              <div className="p-8 flex-grow flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3.5">
+                    {/* Icono corporativo al lado del título */}
+                    <div className="w-9 h-9 bg-mida-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      {solucion.icono}
+                    </div>
+                    <h3 className="text-xl font-bold text-mida-deep">{solucion.titulo}</h3>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed pl-12">
+                    {solucion.descripcion}
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-mida-deep">{solucion.titulo}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{solucion.descripcion}</p>
               </div>
             </div>
           ))}
