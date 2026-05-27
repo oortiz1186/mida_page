@@ -1,6 +1,5 @@
 "use client";
 
-// IMPORTANTE: Importamos el componente de optimización nativo de Next.js
 import Image from "next/image";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -11,7 +10,6 @@ export default function ContpaqiPage() {
     {
       titulo: "Instalación y Configuración Certificada",
       descripcion: "Implementamos sistemas como CONTPAQi Nóminas, Contabilidad y Comercial bajo arquitecturas seguras en red o terminales remotas, garantizando el correcto timbrado fiscal.",
-      // 1. Agregamos la ruta de tu asset optimizado
       imagen: "/images/contpaqi-instalacion.webp", 
       icono: (
         <svg className="w-5 h-5 text-mida-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -52,13 +50,31 @@ export default function ContpaqiPage() {
     }
   ];
 
+  const metodologiaPasos = [
+    {
+      step: "01",
+      title: "Diagnóstico",
+      desc: "Auditamos tu infraestructura actual y bases de datos SQL para identificar riesgos y áreas de optimización técnica antes de intervenir."
+    },
+    {
+      step: "02",
+      title: "Implementación",
+      desc: "Ejecutamos la configuración certificada de tus sistemas con procesos diseñados para minimizar la interrupción de tu operación fiscal."
+    },
+    {
+      step: "03",
+      title: "Blindaje",
+      desc: "Establecemos un soporte preventivo continuo, monitoreo de respaldos y atención prioritaria para asegurar que tu negocio nunca se detenga."
+    }
+  ];
+
   const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumero}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminado)}`;
 
   return (
     <main className="bg-mida-gray min-h-screen flex flex-col">
       <Navbar />
       
-      {/* ENCABEZADO OPTIMIZADO PARA MAQUETADO Y SEO */}
+      {/* 1. ENCABEZADO */}
       <section className="pt-40 pb-16 bg-mida-deep text-white px-6 relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center relative z-10 space-y-4">
           <span className="inline-block text-mida-light font-bold text-xs uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full">
@@ -74,16 +90,14 @@ export default function ContpaqiPage() {
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff03_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
       </section>
 
-      {/* SECCIÓN DEL GRID DE SOLUCIONES CON IMÁGENES MODERNAS */}
-      <section className="py-24 max-w-7xl mx-auto px-6 w-full flex-grow">
-        {/* Cambiamos a un grid simétrico de 2 columnas en tablets/desktop */}
+      {/* 2. GRID DE SOLUCIONES */}
+      <section className="py-24 max-w-7xl mx-auto px-6 w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {serviciosContpaqi.map((servicio, index) => (
             <div 
               key={servicio.titulo} 
               className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-in-out flex flex-col group"
             >
-              {/* 2. CONTENEDOR DE LA IMAGEN ULTRA VELOZ (Relación de aspecto moderna de Next.js) */}
               <div className="h-52 w-full overflow-hidden bg-mida-deep relative">
                 <Image 
                   src={servicio.imagen} 
@@ -91,16 +105,12 @@ export default function ContpaqiPage() {
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                  // 3. Cargamos de forma prioritaria las primeras dos imágenes para que abran instantáneamente
                   priority={index < 2}
                 />
               </div>
-
-              {/* Contenido de texto y su icono flotante */}
               <div className="p-8 flex-grow flex flex-col justify-between relative">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3.5">
-                    {/* El icono ahora acompaña al título de forma elegante */}
                     <div className="w-9 h-9 bg-mida-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
                       {servicio.icono}
                     </div>
@@ -116,8 +126,42 @@ export default function ContpaqiPage() {
         </div>
       </section>
 
-      {/* CTA SECTION TOTALMENTE HOMOLOGADA CON VARIABLES */}
-      <section className="py-20 bg-white text-center px-6 border-t border-gray-100">
+      {/* 3. NUEVA SECCIÓN: METODOLOGÍA (PUNTO 2 DE TU ANÁLISIS) */}
+      <section className="py-24 bg-white border-y border-gray-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-3xl md:text-4xl font-black text-mida-deep tracking-tight">
+              Metodología de Soporte Certificado
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
+              No solo instalamos software; blindamos la operación de tu empresa mediante un proceso técnico riguroso.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {metodologiaPasos.map((item) => (
+              <div 
+                key={item.step} 
+                className="relative p-10 rounded-3xl bg-mida-gray/10 border border-transparent hover:border-mida-primary/20 hover:bg-white hover:shadow-2xl transition-all duration-500 group"
+              >
+                <div className="absolute top-6 right-8 text-5xl font-black text-mida-primary/5 group-hover:text-mida-primary/10 transition-colors">
+                  {item.step}
+                </div>
+                <h3 className="text-xl font-bold text-mida-deep group-hover:text-mida-primary transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-gray-600 text-sm mt-4 leading-relaxed">
+                  {item.desc}
+                </p>
+                <div className="mt-6 w-10 h-1 bg-mida-primary/20 group-hover:w-20 transition-all duration-500" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. CTA SECTION */}
+      <section className="py-20 bg-mida-gray/30 text-center px-6">
         <div className="max-w-3xl mx-auto space-y-6">
           <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-mida-deep">
             ¿Tu licencia de CONTPAQi está por vencer o necesitas actualizarla?
@@ -136,7 +180,7 @@ export default function ContpaqiPage() {
               href={urlWhatsApp}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto border border-gray-200 text-mida-deep font-bold px-8 py-3.5 rounded-xl hover:bg-mida-gray/40 transition-all text-sm uppercase tracking-wider text-center"
+              className="w-full sm:w-auto border border-gray-200 text-mida-deep bg-white font-bold px-8 py-3.5 rounded-xl hover:bg-mida-gray/40 transition-all text-sm uppercase tracking-wider text-center"
             >
               Atención Inmediata por WhatsApp
             </a>

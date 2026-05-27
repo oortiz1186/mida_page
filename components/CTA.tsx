@@ -1,7 +1,14 @@
+"use client";
+
+import { infoEmpresa } from "./config/empresa";
+
 export default function CTA() {
+  // Construcción del enlace dinámico para WhatsApp
+  const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumero}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminado)}`;
+
   return (
     <section className="bg-mida-gray/40 py-24 px-6 text-center border-t border-b border-gray-100 relative overflow-hidden">
-      {/* Círculo decorativo muy sutil en una esquina */}
+      {/* Círculos decorativos */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-mida-primary/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-mida-light/10 rounded-full blur-3xl pointer-events-none" />
       
@@ -15,7 +22,7 @@ export default function CTA() {
         </h2>
         
         <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-          En MIDA, combinamos precisión técnica con visión de negocio para que la tecnología trabaje a tu favor. Protege tus sistemas y optimiza tu rendimiento operativo.
+          En {infoEmpresa.legal}, combinamos precisión técnica con visión de negocio para que la tecnología trabaje a tu favor. Protege tus sistemas y optimiza tu rendimiento operativo.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
@@ -25,13 +32,20 @@ export default function CTA() {
           >
             Solicitar una Asesoría
           </a>
+          
+          {/* Usamos el correo centralizado de empresa.ts */}
           <a 
-            href="mailto:contacto@midatech.mx" 
+            href={`mailto:${infoEmpresa.correoContacto}`}
             className="bg-white border border-gray-200 hover:bg-mida-gray text-mida-deep px-8 py-4 rounded-xl font-bold transition-all shadow-sm text-sm uppercase tracking-wider"
           >
             Enviar un Correo
           </a>
         </div>
+        
+        {/* Agregamos una nota de contacto rápido opcional usando la variable de WhatsApp */}
+        <p className="mt-8 text-xs text-gray-500">
+          O contáctanos directo al <a href={urlWhatsApp} target="_blank" rel="noopener noreferrer" className="font-bold text-mida-primary hover:underline">{infoEmpresa.whatsappTexto}</a>
+        </p>
       </div>
     </section>
   );
