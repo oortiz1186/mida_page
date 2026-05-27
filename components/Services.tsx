@@ -1,5 +1,8 @@
 "use client";
 
+// IMPORTANTE: Importamos el componente de optimización nativo de Next.js
+import Image from "next/image";
+
 export default function Services() {
   const servicios = [
     {
@@ -32,6 +35,7 @@ export default function Services() {
     },
     {
       id: 5,
+      titulo: "Hardware y Cómputo Corporativo", // Manteniendo el mapeo de tus 6 servicios
       titulo: "Redes y Conectividad",
       descripcion: "Diseño e implementación de cableado estructurado, redes de voz y datos, y optimización de routers para un entorno empresarial veloz y estable.",
       imagen: "/images/servicio5.png",
@@ -60,19 +64,28 @@ export default function Services() {
           </h2>
         </div>
 
-        {/* Grid Dinámico: Pasa automáticamente a 3 columnas en escritorio (2 filas perfectas) */}
+        {/* Grid Dinámico de 3 Columnas */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {servicios.map((servicio) => (
             <div 
               key={servicio.id} 
               className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
             >
-              {/* Contenedor de la fotografía con efecto Zoom suave */}
+              {/* Contenedor de la fotografía con Next.js Image Component */}
               <div className="h-48 w-full overflow-hidden bg-mida-deep relative">
-                <img 
+                <Image 
                   src={servicio.imagen} 
-                  alt={servicio.titulo} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                  alt={servicio.titulo}
+                  /* Optimizamos usando 'fill' para que la imagen se adapte al contenedor 
+                    con herencia de relación de aspecto.
+                  */
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                  /* Las primeras tarjetas visibles en pantallas estándar se cargan con prioridad 
+                    alta para evitar el retraso visual inicial.
+                  */
+                  priority={servicio.id <= 3}
                 />
               </div>
 
