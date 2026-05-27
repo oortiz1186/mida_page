@@ -6,21 +6,42 @@ export default function Services() {
       id: 1,
       titulo: "Sistemas CONTPAQi",
       descripcion: "Instalación, soporte, capacitación y renovación de licencias oficiales (Nóminas, Contabilidad, Comercial) para optimizar tu gestión fiscal.",
-      imagen: "/images/servicio1.png", // <-- Foto enfocada a administración y procesos
+      imagen: "/images/servicio1.png",
       enlace: "/contpaqi"
     },
     {
       id: 2,
       titulo: "Infraestructura de Servidores y SQL",
-      descripcion: "Configuración de servidores dedicados, bases de datos SQL de alta velocidad y arreglos RAID para la continuidad de tu negocio.",
-      imagen: "/images/servicio2.png", // <-- Foto de hardware premium en rack
+      descripcion: "Configuración de servidores dedicados, optimización de bases de datos SQL de alta velocidad y arreglos RAID para la continuidad de tu negocio.",
+      imagen: "/images/servicio2.png",
       enlace: "/equipamiento"
     },
     {
       id: 3,
-      titulo: "Soporte Técnico y Cómputo",
-      descripcion: "Equipamiento de hardware empresarial, pólizas de mantenimiento preventivo y optimización de sistemas informáticos corporativos.",
-      imagen: "/images/servicio3.png", // <-- Foto de consultoría y diagnóstico técnico
+      titulo: "Pólizas de Soporte TI",
+      descripcion: "Mantenimiento preventivo y correctivo ilimitado para los equipos de cómputo y sistemas de tu empresa con tiempos de respuesta prioritarios.",
+      imagen: "/images/servicio-soporte.webp",
+      enlace: "/contacto"
+    },
+    {
+      id: 4,
+      titulo: "Hardware y Cómputo Corporativo",
+      descripcion: "Venta, equipamiento y configuración de equipo de cómputo de alto rendimiento y servidores de las marcas líderes del mercado.",
+      imagen: "/images/servicio-computo.webp",
+      enlace: "/equipamiento"
+    },
+    {
+      id: 5,
+      titulo: "Redes y Conectividad",
+      descripcion: "Diseño e implementación de cableado estructurado, redes de voz y datos, y optimización de routers para un entorno empresarial veloz y estable.",
+      imagen: "/images/servicio-redes.webp",
+      enlace: "/contacto"
+    },
+    {
+      id: 6,
+      titulo: "Seguridad y Respaldos",
+      descripcion: "Blindaje perimetral contra amenazas de red, licenciamiento antivirus corporativo y sistemas de respaldo automatizados en la nube y locales.",
+      imagen: "/images/servicio-seguridad.webp",
       enlace: "/contacto"
     }
   ];
@@ -39,14 +60,14 @@ export default function Services() {
           </h2>
         </div>
 
-        {/* Grid dinámico con imágenes de cobertura */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Grid Dinámico: Pasa automáticamente a 3 columnas en escritorio (2 filas perfectas) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {servicios.map((servicio) => (
             <div 
               key={servicio.id} 
               className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
             >
-              {/* Contenedor de la fotografía con efecto Zoom al hacer Hover */}
+              {/* Contenedor de la fotografía con efecto Zoom suave */}
               <div className="h-48 w-full overflow-hidden bg-mida-deep relative">
                 <img 
                   src={servicio.imagen} 
@@ -55,7 +76,7 @@ export default function Services() {
                 />
               </div>
 
-              {/* Bloque de contenido y textos explicativos */}
+              {/* Contenido de texto */}
               <div className="p-8 flex-grow flex flex-col justify-between space-y-6">
                 <div className="space-y-3">
                   <h3 className="text-xl font-bold text-mida-deep">{servicio.titulo}</h3>
