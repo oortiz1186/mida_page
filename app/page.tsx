@@ -23,15 +23,9 @@ export default function Home() {
       <div className="flex-grow">
         {/* Hero Section con propuesta de valor clara */}
         <Hero />
-        
-        {/* Carrusel / Grid de marcas aliadas (CONTPAQi, Dell, Intel, HP) */}
-        <Brands />
 
         {/* Módulos de servicios técnicos y comerciales */}
         <Services />
-
-        {/* Sección de acordeones para romper objeciones frecuentes */}
-        <FAQ />
         
         {/* Bloque de conversión final (Llamado a la Acción antes del cierre) */}
         <CTA />

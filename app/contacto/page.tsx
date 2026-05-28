@@ -1,22 +1,29 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { infoEmpresa } from "../../components/config/empresa"; // <-- Centralización homologada
+import { useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { infoEmpresa } from "../../components/config/empresa";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export default function ContactoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [, startTransition] = useTransition();
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
+    if (!captchaToken) {
+      alert("Por favor, completa la verificación de seguridad (reCAPTCHA) para continuar.");
+      return;
+    }
+
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
+    formData.append("g-recaptcha-response", captchaToken);
 
     try {
-      // Consumimos el dominio o una cadena directa para el endpoint de Formspree de forma segura
       const response = await fetch("https://formspree.io/f/xnjrojny", {
         method: "POST",
         body: formData,
@@ -24,16 +31,16 @@ export default function ContactoPage() {
       });
 
       if (response.ok) {
-        startTransition(() => {
-          window.location.href = "/gracias";
-        });
+        window.location.href = "/gracias";
       } else {
         alert("Hubo un detalle al enviar tu solicitud. Por favor, intenta de nuevo o chatea directamente con nosotros por WhatsApp.");
         setIsSubmitting(false);
+        recaptchaRef.current?.reset();
       }
     } catch (error) {
       alert("Error de conexión a la red. Por favor, verifica tu conexión e intenta nuevamente.");
       setIsSubmitting(false);
+      recaptchaRef.current?.reset();
     }
   };
 
@@ -59,7 +66,7 @@ export default function ContactoPage() {
       {/* SECCIÓN DOS COLUMNAS: FORMULARIO + DATOS DE EMPRESA */}
       <section className="py-16 max-w-7xl mx-auto px-6 w-full flex-grow grid grid-cols-1 lg:grid-cols-3 gap-12">
         
-        {/* COLUMNA IZQUIERDA Y CENTRAL: EL FORMULARIO */}
+        {/* COLUMNA IZQUIERDA: FORMULARIO */}
         <div className="lg:col-span-2 bg-white p-8 sm:p-10 rounded-3xl border border-gray-100 shadow-sm space-y-6">
           <div className="border-b border-gray-100 pb-4">
             <h2 className="text-xl font-bold text-mida-deep">Formulario de Requerimientos Técnicos</h2>
@@ -70,62 +77,52 @@ export default function ContactoPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-mida-deep mb-2">Nombre Completo</label>
-                <input 
-                  type="text" name="name" required placeholder="Ej. Octavio Ortiz" 
-                  className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep" 
-                />
+                <input type="text" name="name" required placeholder="Ej. Octavio Ortiz" className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep" />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-mida-deep mb-2">Empresa o Razón Social</label>
-                <input 
-                  type="text" name="company" required placeholder="Ej. Logística de León" 
-                  className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep" 
-                />
+                <input type="text" name="company" required placeholder="Ej. Logística de León" className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-mida-deep mb-2">Correo Electrónico Corporativo</label>
-                <input 
-                  type="email" name="email" required placeholder="ejemplo@empresa.com" 
-                  className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep" 
-                />
+                <input type="email" name="email" required placeholder="ejemplo@empresa.com" className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep" />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-mida-deep mb-2">Teléfono de Contacto (WhatsApp)</label>
-                <input 
-                  type="tel" name="phone" required placeholder="477 123 4567" 
-                  className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep" 
-                />
+                <input type="tel" name="phone" required placeholder="477 123 4567" className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep" />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-mida-deep mb-2">Línea de Solución Requerida</label>
-              <select 
-                name="service_type" required 
-                className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep font-medium"
-              >
+              <select name="service_type" required className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep font-medium">
                 <option value="">-- Selecciona una categoría --</option>
-                <option value="Sistemas CONTPAQi">Ecosistema de Software CONTPAQi (Nóminas, Contabilidad, Comercial)</option>
-                <option value="Soporte e Infraestructura">Infraestructura de Servidores Dedicados y SQL</option>
-                <option value="Optimización de Computadoras">Optimización e Infraestructura de Hardware Administrativo</option>
-                <option value="Consultoría General">Consultoría TI y Auditoría de Redes</option>
+                <option value="Sistemas CONTPAQi">Ecosistema de Software CONTPAQi</option>
+                <option value="Soporte e Infraestructura">Infraestructura de Servidores y SQL</option>
+                <option value="Optimización de Computadoras">Optimización de Hardware</option>
+                <option value="Consultoría General">Consultoría TI y Auditoría</option>
               </select>
             </div>
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-mida-deep mb-2">Mensaje o Escenario Actual</label>
-              <textarea 
-                name="message" rows={4} required 
-                placeholder="Cuéntanos brevemente sobre el escenario o problemática técnica que presenta tu empresa actualmente..." 
-                className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep leading-relaxed" 
+              <textarea name="message" rows={4} required placeholder="Cuéntanos tu problemática..." className="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/10 transition-all bg-mida-gray/30 text-mida-deep leading-relaxed" />
+            </div>
+
+            <div className="flex justify-center py-2">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={infoEmpresa.recaptchaSiteKey}
+                onChange={(token) => setCaptchaToken(token)}
               />
             </div>
 
             <button 
-              type="submit" disabled={isSubmitting}
+              type="submit" 
+              disabled={isSubmitting || !captchaToken}
               className="w-full bg-mida-primary text-white py-4 rounded-xl font-bold hover:bg-mida-deep transition-all shadow-md mt-2 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm uppercase tracking-wider"
             >
               {isSubmitting ? "Enviando Requerimientos..." : "Enviar Mensaje Corporativo"}
@@ -133,7 +130,7 @@ export default function ContactoPage() {
           </form>
         </div>
 
-        {/* COLUMNA DERECHA: INFORMACIÓN CORPORATIVA (Mapeada con tus variables reales) */}
+        {/* COLUMNA DERECHA: INFORMACIÓN CORPORATIVA */}
         <div className="bg-mida-deep text-white p-8 sm:p-10 rounded-3xl flex flex-col justify-between relative overflow-hidden shadow-lg">
           <div className="space-y-8 relative z-10">
             <div>
@@ -141,7 +138,6 @@ export default function ContactoPage() {
               <p className="text-mida-gray/60 text-xs mt-1">Atención directa de lunes a viernes en horarios de oficina.</p>
             </div>
 
-            {/* CORRECCIÓN DE CAMPOS: Aquí ya se consume infoEmpresa de manera activa */}
             <div className="space-y-6">
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-white/10 rounded-xl shrink-0 text-mida-light">
@@ -152,7 +148,7 @@ export default function ContactoPage() {
                   <a href={`tel:${infoEmpresa.telefonoEnlace}`} className="text-sm font-semibold hover:text-mida-light transition-colors">{infoEmpresa.telefonoTexto}</a>
                 </div>
               </div>
-
+              
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-white/10 rounded-xl shrink-0 text-mida-light">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -183,7 +179,6 @@ export default function ContactoPage() {
           
           <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-mida-primary/10 rounded-full blur-2xl pointer-events-none" />
         </div>
-
       </section>
 
       <Footer />
