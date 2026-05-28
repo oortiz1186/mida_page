@@ -5,10 +5,17 @@ import "./globals.css";
 import WhatsAppButton from "../components/WhatsAppButton";
 // 1. IMPORTAMOS EL COMPONENTE OFICIAL DE NEXT.JS
 import { GoogleAnalytics } from "@next/third-parties/google"; 
+import { DM_Sans } from "next/font/google";
 
 const inter = Inter({ 
   subsets: ["latin"],
   variable: "--font-sans",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-dm-sans",
 });
 
 export const metadata: Metadata = {
@@ -61,7 +68,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased">
+      <body className= {dmSans.className}>
         {children}
         
         <WhatsAppButton />
