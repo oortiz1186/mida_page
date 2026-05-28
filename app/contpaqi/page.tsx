@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { infoEmpresa } from "../../components/config/empresa"; // Asegúrate de tener este import si usas el CTA
 
 export default function ContpaqiPage() {
   const categorias = [
@@ -39,11 +40,35 @@ export default function ContpaqiPage() {
     }
   ];
 
+  const serviciosContpaqi = [
+    {
+      titulo: "Instalación y Configuración Certificada",
+      descripcion: "Implementamos sistemas como CONTPAQi Nóminas, Contabilidad y Comercial bajo arquitecturas seguras.",
+      imagen: "/images/contpaqi-instalacion.webp"
+    },
+    {
+      titulo: "Soporte Técnico Especializado",
+      descripcion: "Solucionamos errores de timbrado, fallas SQL y problemas de licenciamiento de manera inmediata.",
+      imagen: "/images/contpaqi-soporte.webp"
+    },
+    {
+      titulo: "Renovación y Venta de Licencias",
+      descripcion: "Asesoría para adquirir o renovar licencias asegurando que siempre tengas las últimas actualizaciones.",
+      imagen: "/images/contpaqi-licencias.webp"
+    },
+    {
+      titulo: "Optimización de Bases de Datos SQL",
+      descripcion: "Mantenimiento a tus instancias de SQL Server para acelerar reportes y evitar corrupción de datos.",
+      imagen: "/images/contpaqi-sql.webp"
+    }
+  ];
+
   return (
     <main className="bg-gray-50 min-h-screen flex flex-col">
       <Navbar />
 
       <section className="py-24 max-w-7xl mx-auto px-6 space-y-20">
+        {/* Productos Existentes */}
         <div className="text-center">
           <h1 className="text-4xl md:text-5xl font-black text-mida-deep">Soluciones CONTPAQi</h1>
         </div>
@@ -56,28 +81,36 @@ export default function ContpaqiPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {cat.productos.map((prod) => (
                 <div key={prod.nombre} className="bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group">
-                  
-                  {/* Contenedor Fijo: w-24 h-24 asegura que todos los logos ocupen el mismo espacio */}
                   <div className="w-24 h-24 mb-8 flex items-center justify-center relative">
-                    <Image 
-                      src={prod.img} 
-                      alt={prod.nombre} 
-                      width={96} 
-                      height={96}
-                      className="object-contain w-full h-full transition-transform duration-500 group-hover:scale-110"
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    />
+                    <Image src={prod.img} alt={prod.nombre} width={96} height={96} className="object-contain w-full h-full transition-transform duration-500 group-hover:scale-110" />
                   </div>
-                  
                   <h4 className="font-bold text-mida-deep text-lg mb-3 leading-tight">{prod.nombre}</h4>
-                  <p className="text-gray-500 text-sm leading-relaxed flex-grow">
-                    {prod.desc}
-                  </p>
+                  <p className="text-gray-500 text-sm leading-relaxed flex-grow">{prod.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         ))}
+
+        {/* Nueva Sección de Servicios Integrada */}
+        <div className="pt-10">
+          <h2 className="text-2xl font-bold text-mida-primary mb-10 border-b-2 border-mida-primary/10 pb-2">
+            Nuestros Servicios Profesionales
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {serviciosContpaqi.map((servicio) => (
+              <div key={servicio.titulo} className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300">
+                <div className="h-48 w-full relative">
+                  <Image src={servicio.imagen} alt={servicio.titulo} fill className="object-cover" />
+                </div>
+                <div className="p-8">
+                  <h3 className="text-xl font-bold text-mida-deep mb-3">{servicio.titulo}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{servicio.descripcion}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <Footer />
