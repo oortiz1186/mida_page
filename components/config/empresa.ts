@@ -12,6 +12,8 @@ export const infoEmpresa = {
   whatsappTexto: "477 188 8836",         // Cómo se ve en el Footer
   whatsappNumero: "5214771888836",       // Código de país + número (sin espacios ni el "+")
   whatsappMensajePredeterminado: "Hola MIDA, necesito asesoría o soporte técnico.",
+  whatsappNumeroBot: "5214776624271",       // Código de país + número (sin espacios ni el "+")
+  whatsappMensajePredeterminadoBot: "Hola, necesito atención de MIDA",
 
   // Ubicación
   direccionCompleta: "Blvr. Mariano Escobedo Pte. 4546 Int 402-A, San Isidro de Jerez, Centro de Negocios Plaza K2, 37530 León de los Aldama, Gto., México.",

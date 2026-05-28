@@ -1,23 +1,24 @@
 "use client";
 
-import { infoEmpresa } from "./config/empresa"; // <--- Importamos la configuración
+import { infoEmpresa } from "./config/empresa";
 
 export default function WhatsAppButton() {
-  // Codificamos el mensaje para que sea válido dentro de una URL de navegador
-  const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumero}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminado)}`;
+  const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumeroBot}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminadoBot)}`;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-center group">
       
+      {/* Texto de ayuda (Aparece al hacer hover en el grupo) */}
       <a
         href={urlWhatsApp}
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-white text-mida-deep text-xs font-bold px-4 py-2.5 rounded-l-full shadow-lg border border-gray-100 -mr-4 pr-6 transition-all duration-300 hover:text-mida-primary"
+        className="bg-white text-mida-deep text-xs font-bold px-4 py-2.5 rounded-l-full shadow-lg border border-gray-100 -mr-4 pr-6 transition-all duration-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible hover:text-mida-primary"
       >
         ¿Necesitas ayuda? Chatea con nosotros
       </a>
 
+      {/* Botón Circular con Icono */}
       <a
         href={urlWhatsApp}
         target="_blank"
