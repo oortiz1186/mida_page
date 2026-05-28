@@ -49,6 +49,8 @@ function obtenerMensajeTexto(body: any) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    console.log("WEBHOOK EVOLUTION:");
+    console.log(JSON.stringify(body, null, 2));
 
     const mensajeNuevo = obtenerMensajeTexto(body);
     const numeroCliente = body?.data?.key?.remoteJid?.split("@")[0];
@@ -86,31 +88,31 @@ Mensaje del usuario:
       case "VENTAS":
         await enviarMensajeWhatsApp(
           numeroCliente,
-          `Gracias por contactar a MIDA. Para compra o renovación de licencias, comunícate con ventas aquí:\n\nhttps://wa.me/${WHATSAPP_VENTAS}`
+          `Gracias por contactar a MIDA. Para compra o renovación de licencias, comunícate con ventas aquí:\n\nhttps://wa.me/${WHATSAPP_VENTAS}`,
         );
         break;
 
       case "NUEVO":
         await enviarMensajeWhatsApp(
           numeroCliente,
-          "Gracias por contactar a MIDA. Te hemos colocado en espera. En breve un asesor disponible te atenderá."
+          "Gracias por contactar a MIDA. Te hemos colocado en espera. En breve un asesor disponible te atenderá.",
         );
 
         await enviarMensajeWhatsApp(
           GRUPO_ASESORES,
-          `🚨 Cliente en espera desde la página web MIDA\n\n📱 Cliente: https://wa.me/${numeroCliente}\n💬 Mensaje: ${mensajeNuevo}\n\nFavor de tomar el caso.`
+          `🚨 Cliente en espera desde la página web MIDA\n\n📱 Cliente: https://wa.me/${numeroCliente}\n💬 Mensaje: ${mensajeNuevo}\n\nFavor de tomar el caso.`,
         );
         break;
 
       case "RECURRENTE":
         await enviarMensajeWhatsApp(
           numeroCliente,
-          "Perfecto. Si ya tienes un asesor asignado, por favor continúa la conversación con él. Si no recuerdas quién te atiende, escribe: *No recuerdo mi asesor*."
+          "Perfecto. Si ya tienes un asesor asignado, por favor continúa la conversación con él. Si no recuerdas quién te atiende, escribe: *No recuerdo mi asesor*.",
         );
 
         await enviarMensajeWhatsApp(
           GRUPO_ASESORES,
-          `🔁 Cliente recurrente solicita atención\n\n📱 Cliente: https://wa.me/${numeroCliente}\n💬 Mensaje: ${mensajeNuevo}`
+          `🔁 Cliente recurrente solicita atención\n\n📱 Cliente: https://wa.me/${numeroCliente}\n💬 Mensaje: ${mensajeNuevo}`,
         );
         break;
 
@@ -125,7 +127,7 @@ Elige una opción:
 1. Soy cliente nuevo y necesito soporte
 2. Ya tengo un asesor asignado
 3. Quiero comprar una licencia
-4. Quiero renovar una licencia`
+4. Quiero renovar una licencia`,
         );
         break;
     }
@@ -139,7 +141,7 @@ Elige una opción:
     console.error("Error en el Webhook:", error);
     return NextResponse.json(
       { error: "Error procesando el mensaje" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
