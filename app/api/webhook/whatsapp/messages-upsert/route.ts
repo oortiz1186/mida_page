@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL!;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY!;
-const INSTANCE_NAME = process.env.INSTANCE_NAME || "teste";
+const INSTANCE_NAME = process.env.INSTANCE_NAME || "mida";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
 
 const mensajesProcesados = new Set<string>();
@@ -58,7 +58,8 @@ Mensaje del usuario:
   const data = await response.json();
 
   if (!response.ok) {
-    return `Error Gemini: ${data?.error?.message || "No se pudo generar respuesta"}`;
+    console.error("ERROR GEMINI:", data);
+    return "Gracias por escribirnos. En breve un asesor de MIDA te atenderá.";
   }
 
   return (
@@ -72,15 +73,26 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const event = body?.event;
-    const messageId = body?.data?.key?.id;
-    const fromMe = body?.data?.key?.fromMe;
-    const remoteJid = body?.data?.key?.remoteJid;
-    const mensaje = body?.data?.message?.conversation;
+    const data = body?.data;
+
+    const messageId = data?.key?.id;
+    const fromMe = data?.key?.fromMe;
+
+    const remoteJid =
+      data?.key?.remoteJidAlt ||
+      data?.key?.remoteJid;
+
+    const mensaje =
+      data?.message?.conversation ||
+      data?.message?.extendedTextMessage?.text ||
+      data?.message?.imageMessage?.caption ||
+      data?.message?.videoMessage?.caption;
 
     console.log("EVENTO:", event);
     console.log("ID MENSAJE:", messageId);
     console.log("REMOTE JID:", remoteJid);
     console.log("FROM ME:", fromMe);
+    console.log("MENSAJE:", mensaje);
 
     if (event !== "messages.upsert") {
       return NextResponse.json({ success: true, message: "Evento ignorado" });
@@ -90,7 +102,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, message: "Mensaje propio ignorado" });
     }
 
-    if (!messageId || !mensaje) {
+    if (!messageId || !remoteJid || !mensaje) {
       return NextResponse.json({ success: true, message: "Mensaje inválido" });
     }
 
@@ -100,11 +112,10 @@ export async function POST(req: Request) {
 
     mensajesProcesados.add(messageId);
 
-    if (remoteJid?.includes("@lid")) {
-      return NextResponse.json({ success: true, message: "Mensaje LID ignorado" });
-    }
-
-    const numero = remoteJid.replace("@s.whatsapp.net", "");
+    const numero = remoteJid
+      .replace("@s.whatsapp.net", "")
+      .replace("@lid", "")
+      .replace("@g.us", "");
 
     const respuestaIA = await generarRespuestaIA(mensaje);
 
@@ -135,7 +146,6 @@ export async function POST(req: Request) {
       enviadoA: numero,
       respuestaIA,
     });
-
   } catch (error) {
     console.error("ERROR EN WEBHOOK:", error);
 
