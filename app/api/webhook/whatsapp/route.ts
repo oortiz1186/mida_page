@@ -14,18 +14,18 @@ export async function GET() {
 
 async function generarRespuestaIA(mensaje: string) {
   const prompt = `
-Eres un asistente virtual de MIDA.
+Eres el asistente virtual de MIDA.
 
-Responde de forma amable, clara y breve.
+Responde de forma amable, profesional y útil.
 No inventes información.
-Si el usuario quiere atención humana, indícale que un asesor puede continuar la conversación.
+Si no sabes algo, indícalo claramente.
 
 Mensaje del usuario:
 "${mensaje}"
 `;
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: "POST",
       headers: {
@@ -34,7 +34,11 @@ Mensaje del usuario:
       body: JSON.stringify({
         contents: [
           {
-            parts: [{ text: prompt }],
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
           },
         ],
       }),
@@ -43,7 +47,14 @@ Mensaje del usuario:
 
   const data = await response.json();
 
+  console.log("STATUS GEMINI:", response.status);
   console.log("RESPUESTA GEMINI:", JSON.stringify(data, null, 2));
+
+  if (!response.ok) {
+    return `Error Gemini: ${
+      data?.error?.message || "No se pudo generar respuesta"
+    }`;
+  }
 
   return (
     data?.candidates?.[0]?.content?.parts?.[0]?.text ||
@@ -60,13 +71,13 @@ export async function POST(req: Request) {
 
     const mensaje = body?.data?.message?.conversation;
 
-    // Temporal: número de prueba
+    // Temporal para pruebas
     const numero = "5214776336652";
 
-    if (!mensaje || !numero) {
+    if (!mensaje) {
       return NextResponse.json({
         success: true,
-        message: "No era un mensaje válido",
+        message: "No era un mensaje de texto",
       });
     }
 
@@ -96,18 +107,21 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      enviadoA: numero,
-      enviado: respuestaIA,
+      mensajeRecibido: mensaje,
+      respuestaIA,
       evolutionStatus: response.status,
-      evolutionResult: result,
     });
 
   } catch (error) {
     console.error("ERROR EN WEBHOOK:", error);
 
     return NextResponse.json(
-      { error: "Error interno" },
-      { status: 500 }
+      {
+        error: "Error interno",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
