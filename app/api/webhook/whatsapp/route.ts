@@ -93,7 +93,13 @@ export async function POST(req: Request) {
       });
     }
 
-    const respuestaIA = await generarRespuestaIA(userMessage);
+    const respuestaIA = String(
+      (await generarRespuestaIA(userMessage)) || "",
+    ).trim();
+
+    console.log("RESPUESTA IA FINAL:", respuestaIA);
+    console.log("TIPO RESPUESTA IA:", typeof respuestaIA);
+    console.log("NUMERO DESTINO:", remoteJid.replace("@s.whatsapp.net", ""));
 
     const evolutionResponse = await fetch(
       `${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE_NAME}`,
@@ -105,7 +111,7 @@ export async function POST(req: Request) {
         },
         body: JSON.stringify({
           number: remoteJid.replace("@s.whatsapp.net", ""),
-          text: respuestaIA,
+          text: String(respuestaIA),
         }),
       },
     );
