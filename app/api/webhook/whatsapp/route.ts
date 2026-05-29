@@ -38,6 +38,11 @@ async function generarRespuestaIA(mensajeUsuario: string) {
 
     return "Gracias por escribirnos a MIDA. En este momento estoy teniendo un pequeño problema para responder automáticamente, pero con gusto podemos apoyarte con licencias CONTPAQi®, soporte técnico, equipos de cómputo o servidores. ¿Sobre qué servicio necesitas información?";
   }
+  const texto =
+    data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+    "Hola 👋 gracias por escribir a MIDA. ¿Sobre qué servicio necesitas información?";
+
+  return texto;
 }
 
 export async function POST(req: Request) {
