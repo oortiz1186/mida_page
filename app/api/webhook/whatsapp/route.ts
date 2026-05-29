@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { MIDA_PROMPT } from "@/lib/midaPrompt";
+import { supabase } from "@/lib/supabase";
 
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;
@@ -102,6 +103,50 @@ export async function POST(req: Request) {
       (await generarRespuestaIA(userMessage)) || "",
     ).trim();
 
+    const phone = remoteJid.replace("@s.whatsapp.net", "");
+    const name = data?.pushName || "Sin nombre";
+    const messageId = data?.key?.id || null;
+
+    const { data: contact, error: contactError } = await supabase
+      .from("whatsapp_contacts")
+      .upsert(
+        {
+          phone,
+          name,
+          updated_at: new Date().toISOString(),
+        },
+        {
+          onConflict: "phone",
+        },
+      )
+      .select()
+      .single();
+
+    if (contactError) {
+      console.error("ERROR GUARDANDO CONTACTO:", contactError);
+    }
+
+    if (contact) {
+      await supabase.from("whatsapp_messages").insert([
+        {
+          contact_id: contact.id,
+          phone,
+          name,
+          message_id: messageId,
+          role: "user",
+          content: userMessage,
+        },
+        {
+          contact_id: contact.id,
+          phone,
+          name,
+          message_id: null,
+          role: "assistant",
+          content: respuestaIA,
+        },
+      ]);
+    }
+
     console.log("RESPUESTA IA FINAL:", respuestaIA);
     console.log("TIPO RESPUESTA IA:", typeof respuestaIA);
     console.log("NUMERO DESTINO:", remoteJid.replace("@s.whatsapp.net", ""));
@@ -115,7 +160,7 @@ export async function POST(req: Request) {
           apikey: EVOLUTION_API_KEY || "",
         },
         body: JSON.stringify({
-          number: remoteJid.replace("@s.whatsapp.net", ""),
+          number: phone,
           text: String(respuestaIA),
         }),
       },
