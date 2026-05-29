@@ -14,11 +14,13 @@ export async function GET() {
 
 async function generarRespuestaIA(mensaje: string) {
   const prompt = `
-Eres el asistente virtual de MIDA.
+Eres el asistente virtual de MIDA, una empresa que ofrece soluciones tecnológicas, desarrollo web, automatización, soporte técnico y asesoría digital.
 
-Responde de forma amable, profesional y útil.
-No inventes información.
-Si no sabes algo, indícalo claramente.
+Tu objetivo es atender a posibles clientes por WhatsApp, explicar servicios de forma clara y canalizar cuando sea necesario con un asesor humano.
+
+Responde breve, amable y profesional.
+No inventes precios.
+Si preguntan por costos, indica que un asesor puede dar una cotización personalizada.
 
 Mensaje del usuario:
 "${mensaje}"
@@ -42,7 +44,7 @@ Mensaje del usuario:
           },
         ],
       }),
-    }
+    },
   );
 
   const data = await response.json();
@@ -97,7 +99,7 @@ export async function POST(req: Request) {
             text: respuestaIA,
           },
         }),
-      }
+      },
     );
 
     const result = await response.text();
@@ -111,7 +113,6 @@ export async function POST(req: Request) {
       respuestaIA,
       evolutionStatus: response.status,
     });
-
   } catch (error) {
     console.error("ERROR EN WEBHOOK:", error);
 
@@ -121,7 +122,7 @@ export async function POST(req: Request) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
