@@ -12,7 +12,7 @@ export const infoEmpresa = {
   whatsappTexto: "477 188 8836",         // Cómo se ve en el Footer
   whatsappNumero: "5214771888836",       // Código de país + número (sin espacios ni el "+")
   whatsappMensajePredeterminado: "Hola MIDA, necesito asesoría o soporte técnico.",
-  whatsappNumeroBot: "5214776624271",       // Código de país + número (sin espacios ni el "+")
+  whatsappNumeroBot: "5214776336652",       // Código de país + número (sin espacios ni el "+")
   whatsappMensajePredeterminadoBot: "Hola, necesito atención de MIDA",
 
   // Ubicación
