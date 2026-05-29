@@ -4,7 +4,7 @@ import Image from "next/image";
 import { infoEmpresa } from "../components/config/empresa";
 
 export default function Hero() {
-  const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumero}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminado)}`;
+  const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumeroBot}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminadoBot)}`;
 
   return (
     <section className="relative min-h-screen flex items-center bg-mida-deep text-white pt-28 overflow-hidden w-full">

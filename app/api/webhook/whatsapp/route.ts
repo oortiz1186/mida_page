@@ -4,6 +4,7 @@ const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL!;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY!;
 const INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || "mida";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
+const WHATSAPP_GRUPO_ASESORES = process.env.WHATSAPP_GRUPO_ASESORES!;
 
 const mensajesProcesados = new Set<string>();
 
@@ -52,7 +53,7 @@ Mensaje del usuario:
           },
         ],
       }),
-    }
+    },
   );
 
   const data = await response.json();
@@ -72,10 +73,9 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    console.log(
-      "WEBHOOK COMPLETO:",
-      JSON.stringify(body, null, 2)
-    );
+    console.log("REMOTE JID:", body?.data?.key?.remoteJid);
+
+    console.log("WEBHOOK RECIBIDO:", body?.event);
 
     const event = body?.event;
     const data = body?.data;
@@ -83,9 +83,7 @@ export async function POST(req: Request) {
     const messageId = data?.key?.id;
     const fromMe = data?.key?.fromMe;
 
-    const remoteJid =
-      data?.key?.remoteJidAlt ||
-      data?.key?.remoteJid;
+    const remoteJid = data?.key?.remoteJidAlt || data?.key?.remoteJid;
 
     const mensaje =
       data?.message?.conversation ||
@@ -113,6 +111,12 @@ export async function POST(req: Request) {
       });
     }
 
+    if (remoteJid.includes("@g.us")) {
+      return NextResponse.json({
+        success: true,
+        message: "Grupo ignorado",
+      });
+    }
     if (!messageId || !remoteJid || !mensaje) {
       return NextResponse.json({
         success: true,
@@ -138,6 +142,20 @@ export async function POST(req: Request) {
 
     console.log("RESPUESTA IA:", respuestaIA);
 
+    if (WHATSAPP_GRUPO_ASESORES) {
+      await fetch(`${EVOLUTION_API_URL}/message/sendText/${INSTANCE_NAME}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: EVOLUTION_API_KEY,
+        },
+        body: JSON.stringify({
+          number: WHATSAPP_GRUPO_ASESORES,
+          text: `📩 Nuevo mensaje recibido en MIDA Bot\n\nCliente: ${numero}\nMensaje: ${mensaje}`,
+        }),
+      });
+    }
+
     const response = await fetch(
       `${EVOLUTION_API_URL}/message/sendText/${INSTANCE_NAME}`,
       {
@@ -150,7 +168,7 @@ export async function POST(req: Request) {
           number: numero,
           text: respuestaIA,
         }),
-      }
+      },
     );
 
     const result = await response.text();
@@ -163,7 +181,6 @@ export async function POST(req: Request) {
       enviadoA: numero,
       respuestaIA,
     });
-
   } catch (error) {
     console.error("ERROR EN WEBHOOK:", error);
 
@@ -173,7 +190,7 @@ export async function POST(req: Request) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
