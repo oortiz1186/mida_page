@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-
 export async function GET() {
   return Response.json({
     ok: true,
@@ -34,17 +33,22 @@ export async function POST(req: Request) {
 
     const respuesta = `Hola 👋 recibí tu mensaje: "${mensaje}"`;
 
-    const response = await fetch(`${EVOLUTION_API_URL}/message/sendText/${INSTANCE_NAME}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: EVOLUTION_API_KEY,
+    const response = await fetch(
+      `${EVOLUTION_API_URL}/message/sendText/${INSTANCE_NAME}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: EVOLUTION_API_KEY,
+        },
+        body: JSON.stringify({
+          number: numero,
+          textMessage: {
+            text: respuesta,
+          },
+        }),
       },
-      body: JSON.stringify({
-        number: numero,
-        text: respuesta,
-      }),
-    });
+    );
 
     const result = await response.text();
 
@@ -57,13 +61,9 @@ export async function POST(req: Request) {
       evolutionStatus: response.status,
       evolutionResult: result,
     });
-
   } catch (error) {
     console.error("ERROR EN WEBHOOK:", error);
 
-    return NextResponse.json(
-      { error: "Error interno" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }
