@@ -20,9 +20,7 @@ export async function POST(req: Request) {
 
     const mensaje = body?.data?.message?.conversation;
 
-    const numero = body?.data?.key?.remoteJid
-      ?.replace("@s.whatsapp.net", "")
-      ?.replace("@lid", "");
+    const numero = "5214776336652";
 
     console.log("MENSAJE:", mensaje);
     console.log("NUMERO PARA RESPONDER:", numero);
