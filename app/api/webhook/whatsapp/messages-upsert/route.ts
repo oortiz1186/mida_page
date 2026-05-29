@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 
+const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL!;
+const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY!;
+const INSTANCE_NAME = process.env.INSTANCE_NAME || "teste";
+
 export async function GET() {
-  return Response.json({
+  return NextResponse.json({
     ok: true,
     message: "Webhook activo",
   });
 }
-
-const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL!;
-const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY!;
-const INSTANCE_NAME = process.env.INSTANCE_NAME!;
 
 export async function POST(req: Request) {
   try {
@@ -19,10 +19,15 @@ export async function POST(req: Request) {
     console.log(JSON.stringify(body, null, 2));
 
     const mensaje = body?.data?.message?.conversation;
-    const numero = body?.sender;
+
+    const numero = body?.data?.key?.remoteJid
+      ?.replace("@s.whatsapp.net", "")
+      ?.replace("@lid", "");
 
     console.log("MENSAJE:", mensaje);
     console.log("NUMERO PARA RESPONDER:", numero);
+    console.log("SENDER:", body?.sender);
+    console.log("REMOTE JID:", body?.data?.key?.remoteJid);
 
     if (!mensaje || !numero) {
       return NextResponse.json({
@@ -47,7 +52,7 @@ export async function POST(req: Request) {
             text: respuesta,
           },
         }),
-      },
+      }
     );
 
     const result = await response.text();
@@ -57,13 +62,18 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
+      enviadoA: numero,
       enviado: respuesta,
       evolutionStatus: response.status,
       evolutionResult: result,
     });
+
   } catch (error) {
     console.error("ERROR EN WEBHOOK:", error);
 
-    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error interno" },
+      { status: 500 }
+    );
   }
 }
