@@ -151,7 +151,12 @@ export async function POST(req: Request) {
         },
         body: JSON.stringify({
           number: WHATSAPP_GRUPO_ASESORES,
-          text: `📩 Nuevo mensaje recibido en MIDA Bot\n\nCliente: ${numero}\nMensaje: ${mensaje}`,
+          text: `📩 Nuevo lead en MIDA Bot
+
+👤 Cliente: ${numero}
+💬 Mensaje: ${mensaje}
+
+Sugerencia: revisar conversación y contactar si requiere cotización o seguimiento.`,
         }),
       });
     }
