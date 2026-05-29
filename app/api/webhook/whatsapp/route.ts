@@ -25,7 +25,7 @@ async function generarRespuestaIA(mensajeUsuario: string) {
           },
         ],
       }),
-    }
+    },
   );
 
   const data = await response.json();
@@ -33,10 +33,11 @@ async function generarRespuestaIA(mensajeUsuario: string) {
   console.log("STATUS GEMINI:", response.status);
   console.log("RESPUESTA GEMINI:", JSON.stringify(data));
 
-  return (
-    data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-    "Gracias por escribirnos. En breve un asesor de MIDA podrá apoyarte con más información."
-  );
+  if (!response.ok) {
+    console.error("ERROR GEMINI:", data);
+
+    return "Gracias por escribirnos a MIDA. En este momento estoy teniendo un pequeño problema para responder automáticamente, pero con gusto podemos apoyarte con licencias CONTPAQi®, soporte técnico, equipos de cómputo o servidores. ¿Sobre qué servicio necesitas información?";
+  }
 }
 
 export async function POST(req: Request) {
@@ -106,7 +107,7 @@ export async function POST(req: Request) {
           number: remoteJid.replace("@s.whatsapp.net", ""),
           text: respuestaIA,
         }),
-      }
+      },
     );
 
     const evolutionData = await evolutionResponse.json();
@@ -127,7 +128,7 @@ export async function POST(req: Request) {
         success: false,
         error: "Error procesando webhook",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
