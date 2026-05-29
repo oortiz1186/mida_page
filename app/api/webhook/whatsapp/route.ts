@@ -3,12 +3,52 @@ import { NextResponse } from "next/server";
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL!;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY!;
 const INSTANCE_NAME = process.env.INSTANCE_NAME || "teste";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
 
 export async function GET() {
   return NextResponse.json({
     ok: true,
-    message: "Webhook activo",
+    message: "Webhook activo con IA",
   });
+}
+
+async function generarRespuestaIA(mensaje: string) {
+  const prompt = `
+Eres un asistente virtual de MIDA.
+
+Responde de forma amable, clara y breve.
+No inventes información.
+Si el usuario quiere atención humana, indícale que un asesor puede continuar la conversación.
+
+Mensaje del usuario:
+"${mensaje}"
+`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [{ text: prompt }],
+          },
+        ],
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  console.log("RESPUESTA GEMINI:", JSON.stringify(data, null, 2));
+
+  return (
+    data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+    "Gracias por escribirnos. En breve te atenderemos."
+  );
 }
 
 export async function POST(req: Request) {
@@ -20,12 +60,8 @@ export async function POST(req: Request) {
 
     const mensaje = body?.data?.message?.conversation;
 
+    // Temporal: número de prueba
     const numero = "5214776336652";
-
-    console.log("MENSAJE:", mensaje);
-    console.log("NUMERO PARA RESPONDER:", numero);
-    console.log("SENDER:", body?.sender);
-    console.log("REMOTE JID:", body?.data?.key?.remoteJid);
 
     if (!mensaje || !numero) {
       return NextResponse.json({
@@ -34,7 +70,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const respuesta = `Hola 👋 recibí tu mensaje: "${mensaje}"`;
+    const respuestaIA = await generarRespuestaIA(mensaje);
 
     const response = await fetch(
       `${EVOLUTION_API_URL}/message/sendText/${INSTANCE_NAME}`,
@@ -47,7 +83,7 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           number: numero,
           textMessage: {
-            text: respuesta,
+            text: respuestaIA,
           },
         }),
       }
@@ -61,7 +97,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       enviadoA: numero,
-      enviado: respuesta,
+      enviado: respuestaIA,
       evolutionStatus: response.status,
       evolutionResult: result,
     });
