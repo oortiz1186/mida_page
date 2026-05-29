@@ -1,27 +1,13 @@
 import { NextResponse } from "next/server";
+import { MIDA_PROMPT } from "@/lib/midaPrompt";
 
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;
-const EVOLUTION_INSTANCE_NAME =
-  process.env.EVOLUTION_INSTANCE_NAME || "mida";
+const EVOLUTION_INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || "mida";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-async function generarRespuestaIA(mensajeUsuario: string) {
-  const promptSistema = `
-Eres un asistente virtual humano, amable y didáctico para MIDA.
-
-Tu forma de responder:
-- Habla en español claro y natural.
-- Sé amable, cercano y profesional.
-- No respondas como robot.
-- No uses menús rígidos.
-- Responde breve, máximo 4 párrafos.
-- Si la persona quiere atención humana, dile que con gusto puede ser canalizada con un asesor.
-- Si no sabes algo específico, no inventes. Di que puedes ayudar a canalizarlo.
-- No des diagnósticos médicos, legales o financieros.
-- Tu objetivo es orientar, explicar y acompañar.
-`;
+const promptSistema = MIDA_PROMPT;
 
   const response = await fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
@@ -45,7 +31,7 @@ Tu forma de responder:
           },
         ],
       }),
-    }
+    },
   );
 
   const data = await response.json();
@@ -133,7 +119,7 @@ export async function POST(req: Request) {
           number: remoteJid.replace("@s.whatsapp.net", ""),
           text: respuestaIA,
         }),
-      }
+      },
     );
 
     const evolutionData = await evolutionResponse.json();
@@ -154,7 +140,7 @@ export async function POST(req: Request) {
         success: false,
         error: "Error procesando webhook",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
