@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL!;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY!;
-const INSTANCE_NAME = process.env.INSTANCE_NAME || "mida";
+const INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || "mida";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
 
 const mensajesProcesados = new Set<string>();
@@ -72,6 +72,11 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
+    console.log(
+      "WEBHOOK COMPLETO:",
+      JSON.stringify(body, null, 2)
+    );
+
     const event = body?.event;
     const data = body?.data;
 
@@ -95,19 +100,31 @@ export async function POST(req: Request) {
     console.log("MENSAJE:", mensaje);
 
     if (event !== "messages.upsert") {
-      return NextResponse.json({ success: true, message: "Evento ignorado" });
+      return NextResponse.json({
+        success: true,
+        message: "Evento ignorado",
+      });
     }
 
     if (fromMe) {
-      return NextResponse.json({ success: true, message: "Mensaje propio ignorado" });
+      return NextResponse.json({
+        success: true,
+        message: "Mensaje propio ignorado",
+      });
     }
 
     if (!messageId || !remoteJid || !mensaje) {
-      return NextResponse.json({ success: true, message: "Mensaje inválido" });
+      return NextResponse.json({
+        success: true,
+        message: "Mensaje inválido",
+      });
     }
 
     if (mensajesProcesados.has(messageId)) {
-      return NextResponse.json({ success: true, message: "Mensaje duplicado ignorado" });
+      return NextResponse.json({
+        success: true,
+        message: "Mensaje duplicado ignorado",
+      });
     }
 
     mensajesProcesados.add(messageId);
@@ -119,6 +136,8 @@ export async function POST(req: Request) {
 
     const respuestaIA = await generarRespuestaIA(mensaje);
 
+    console.log("RESPUESTA IA:", respuestaIA);
+
     const response = await fetch(
       `${EVOLUTION_API_URL}/message/sendText/${INSTANCE_NAME}`,
       {
@@ -129,9 +148,7 @@ export async function POST(req: Request) {
         },
         body: JSON.stringify({
           number: numero,
-          textMessage: {
-            text: respuestaIA,
-          },
+          text: respuestaIA,
         }),
       }
     );
@@ -146,12 +163,17 @@ export async function POST(req: Request) {
       enviadoA: numero,
       respuestaIA,
     });
+
   } catch (error) {
     console.error("ERROR EN WEBHOOK:", error);
 
     return NextResponse.json(
-      { error: "Error interno" },
-      { status: 500 }
+      {
+        error: "Error interno",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
