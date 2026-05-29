@@ -4,13 +4,11 @@ import { MIDA_PROMPT } from "@/lib/midaPrompt";
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;
 const EVOLUTION_INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || "mida";
-
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-const promptSistema = MIDA_PROMPT;
-
+async function generarRespuestaIA(mensajeUsuario: string) {
   const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
     {
       method: "POST",
       headers: {
@@ -19,19 +17,15 @@ const promptSistema = MIDA_PROMPT;
       },
       body: JSON.stringify({
         system_instruction: {
-          parts: [{ text: promptSistema }],
+          parts: [{ text: MIDA_PROMPT }],
         },
         contents: [
           {
-            parts: [
-              {
-                text: mensajeUsuario,
-              },
-            ],
+            parts: [{ text: mensajeUsuario }],
           },
         ],
       }),
-    },
+    }
   );
 
   const data = await response.json();
@@ -39,11 +33,10 @@ const promptSistema = MIDA_PROMPT;
   console.log("STATUS GEMINI:", response.status);
   console.log("RESPUESTA GEMINI:", JSON.stringify(data));
 
-  const texto =
+  return (
     data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-    "Gracias por escribirnos. En breve un asesor de MIDA podrá apoyarte con más información.";
-
-  return texto;
+    "Gracias por escribirnos. En breve un asesor de MIDA podrá apoyarte con más información."
+  );
 }
 
 export async function POST(req: Request) {
@@ -57,10 +50,7 @@ export async function POST(req: Request) {
     const data = body?.data;
 
     if (event !== "messages.upsert") {
-      return NextResponse.json({
-        success: true,
-        message: "Evento ignorado",
-      });
+      return NextResponse.json({ success: true, message: "Evento ignorado" });
     }
 
     const remoteJid = data?.key?.remoteJid;
@@ -68,10 +58,7 @@ export async function POST(req: Request) {
     const messageType = data?.messageType;
 
     if (!remoteJid) {
-      return NextResponse.json({
-        success: true,
-        message: "Sin remoteJid",
-      });
+      return NextResponse.json({ success: true, message: "Sin remoteJid" });
     }
 
     if (remoteJid.includes("@g.us")) {
@@ -119,7 +106,7 @@ export async function POST(req: Request) {
           number: remoteJid.replace("@s.whatsapp.net", ""),
           text: respuestaIA,
         }),
-      },
+      }
     );
 
     const evolutionData = await evolutionResponse.json();
@@ -140,7 +127,7 @@ export async function POST(req: Request) {
         success: false,
         error: "Error procesando webhook",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
