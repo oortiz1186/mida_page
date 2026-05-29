@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
 
+export async function GET() {
+  return Response.json({
+    ok: true,
+    message: "Webhook activo",
+  });
+}
+
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL!;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY!;
 const INSTANCE_NAME = process.env.INSTANCE_NAME!;
@@ -12,18 +19,21 @@ export async function POST(req: Request) {
     console.log(JSON.stringify(body, null, 2));
 
     const mensaje = body?.data?.message?.conversation;
-    const numero = body?.data?.key?.remoteJid;
+    const numero = body?.sender;
+
+    console.log("MENSAJE:", mensaje);
+    console.log("NUMERO PARA RESPONDER:", numero);
 
     if (!mensaje || !numero) {
       return NextResponse.json({
         success: true,
-        message: "No era un mensaje de texto válido",
+        message: "No era un mensaje válido",
       });
     }
 
     const respuesta = `Hola 👋 recibí tu mensaje: "${mensaje}"`;
 
-    await fetch(`${EVOLUTION_API_URL}/message/sendText/${INSTANCE_NAME}`, {
+    const response = await fetch(`${EVOLUTION_API_URL}/message/sendText/${INSTANCE_NAME}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,9 +45,16 @@ export async function POST(req: Request) {
       }),
     });
 
+    const result = await response.text();
+
+    console.log("STATUS EVOLUTION:", response.status);
+    console.log("RESPUESTA EVOLUTION:", result);
+
     return NextResponse.json({
       success: true,
       enviado: respuesta,
+      evolutionStatus: response.status,
+      evolutionResult: result,
     });
 
   } catch (error) {
