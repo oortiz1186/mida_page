@@ -19,11 +19,20 @@ export async function POST(req: Request) {
     }
 
     const remoteJid = data?.key?.remoteJid;
+    if (remoteJid.includes("@g.us")) {
+      return NextResponse.json({
+        success: true,
+        message: "Mensaje de grupo ignorado",
+      });
+    }
     const fromMe = data?.key?.fromMe;
     const messageType = data?.messageType;
 
     if (fromMe) {
-      return NextResponse.json({ success: true, message: "Mensaje propio ignorado" });
+      return NextResponse.json({
+        success: true,
+        message: "Mensaje propio ignorado",
+      });
     }
 
     let userMessage = "";
@@ -57,7 +66,7 @@ export async function POST(req: Request) {
           number: remoteJid,
           text: respuesta,
         }),
-      }
+      },
     );
 
     const evolutionData = await evolutionResponse.json();
@@ -78,7 +87,7 @@ export async function POST(req: Request) {
         success: false,
         error: "Error procesando webhook",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
