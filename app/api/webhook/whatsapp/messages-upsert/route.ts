@@ -14,13 +14,23 @@ export async function GET() {
 
 async function generarRespuestaIA(mensaje: string) {
   const prompt = `
-Eres el asistente virtual de MIDA, una empresa que ofrece soluciones tecnológicas, desarrollo web, automatización, soporte técnico y asesoría digital.
+Eres MIDA AI, el asistente comercial de MIDA.
 
-Tu objetivo es atender a posibles clientes por WhatsApp, explicar servicios de forma clara y canalizar cuando sea necesario con un asesor humano.
+MIDA ofrece soluciones tecnológicas para empresas y emprendedores:
+- Desarrollo de páginas web.
+- Automatización de procesos.
+- Inteligencia artificial.
+- Chatbots para WhatsApp.
+- Soporte técnico.
+- Consultoría tecnológica.
+- Capacitación en herramientas digitales e IA.
 
-Responde breve, amable y profesional.
-No inventes precios.
-Si preguntan por costos, indica que un asesor puede dar una cotización personalizada.
+Reglas:
+- Responde breve, amable y profesional.
+- No inventes precios.
+- Si preguntan costos, indica que un asesor puede dar una cotización personalizada.
+- Haz preguntas para entender la necesidad del cliente.
+- No respondas con mensajes demasiado largos.
 
 Mensaje del usuario:
 "${mensaje}"
@@ -36,15 +46,11 @@ Mensaje del usuario:
       body: JSON.stringify({
         contents: [
           {
-            parts: [
-              {
-                text: prompt,
-              },
-            ],
+            parts: [{ text: prompt }],
           },
         ],
       }),
-    },
+    }
   );
 
   const data = await response.json();
@@ -70,6 +76,24 @@ export async function POST(req: Request) {
 
     console.log("WEBHOOK RECIBIDO:");
     console.log(JSON.stringify(body, null, 2));
+
+    console.log("EVENTO:", body?.event);
+    console.log("ID MENSAJE:", body?.data?.key?.id);
+    console.log("FROM ME:", body?.data?.key?.fromMe);
+
+    if (body?.event !== "messages.upsert") {
+      return NextResponse.json({
+        success: true,
+        message: "Evento ignorado",
+      });
+    }
+
+    if (body?.data?.key?.fromMe) {
+      return NextResponse.json({
+        success: true,
+        message: "Mensaje propio ignorado",
+      });
+    }
 
     const mensaje = body?.data?.message?.conversation;
 
@@ -99,7 +123,7 @@ export async function POST(req: Request) {
             text: respuestaIA,
           },
         }),
-      },
+      }
     );
 
     const result = await response.text();
@@ -122,7 +146,7 @@ export async function POST(req: Request) {
       },
       {
         status: 500,
-      },
+      }
     );
   }
 }
