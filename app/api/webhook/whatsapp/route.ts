@@ -260,6 +260,9 @@ ${userMessage}`,
 Cliente: ${name}
 Teléfono: ${phone}
 
+Abrir chat:
+https://wa.me/${phone}
+
 Asesor asignado: ${cliente.advisors.name}
 
 Mensaje:
