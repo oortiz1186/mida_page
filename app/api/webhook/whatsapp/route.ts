@@ -49,18 +49,6 @@ async function generarRespuestaIA(mensajeUsuario: string) {
 function detectarIntencion(mensaje: string) {
   const texto = mensaje.toLowerCase();
 
-  const palabrasVenta = [
-    "cotización",
-    "cotizacion",
-    "precio",
-    "comprar",
-    "licencia",
-    "renovar",
-    "renovación",
-    "contratar",
-    "contpaqi",
-  ];
-
   const palabrasSoporte = [
     "error",
     "falla",
@@ -70,16 +58,33 @@ function detectarIntencion(mensaje: string) {
     "no funciona",
     "no abre",
     "no factura",
+    "no timbra",
     "timbrar",
     "timbrado",
+    "no puedo",
   ];
 
-  if (palabrasVenta.some((p) => texto.includes(p))) {
-    return "venta";
-  }
+  const palabrasVenta = [
+    "cotización",
+    "cotizacion",
+    "precio",
+    "comprar",
+    "costo",
+    "cuánto cuesta",
+    "cuanto cuesta",
+    "licencia",
+    "renovar",
+    "renovación",
+    "contratar",
+    "adquirir",
+  ];
 
   if (palabrasSoporte.some((p) => texto.includes(p))) {
     return "soporte";
+  }
+
+  if (palabrasVenta.some((p) => texto.includes(p))) {
+    return "venta";
   }
 
   return "general";
@@ -223,6 +228,9 @@ export async function POST(req: Request) {
 
 Cliente: ${name}
 Teléfono: ${phone}
+
+Abrir chat:
+https://wa.me/${phone}
 
 Mensaje:
 ${userMessage}`,
