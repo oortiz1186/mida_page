@@ -46,6 +46,62 @@ async function generarRespuestaIA(mensajeUsuario: string) {
   return texto;
 }
 
+function detectarIntencion(mensaje: string) {
+  const texto = mensaje.toLowerCase();
+
+  const palabrasVenta = [
+    "cotización",
+    "cotizacion",
+    "precio",
+    "comprar",
+    "licencia",
+    "renovar",
+    "renovación",
+    "contratar",
+    "contpaqi",
+  ];
+
+  const palabrasSoporte = [
+    "error",
+    "falla",
+    "problema",
+    "soporte",
+    "ayuda",
+    "no funciona",
+    "no abre",
+    "no factura",
+    "timbrar",
+    "timbrado",
+  ];
+
+  if (palabrasVenta.some((p) => texto.includes(p))) {
+    return "venta";
+  }
+
+  if (palabrasSoporte.some((p) => texto.includes(p))) {
+    return "soporte";
+  }
+
+  return "general";
+}
+
+async function enviarMensajeWhatsApp(destino: string, mensaje: string) {
+  return await fetch(
+    `${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE_NAME}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: EVOLUTION_API_KEY || "",
+      },
+      body: JSON.stringify({
+        number: destino,
+        text: mensaje,
+      }),
+    },
+  );
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -103,6 +159,10 @@ export async function POST(req: Request) {
       (await generarRespuestaIA(userMessage)) || "",
     ).trim();
 
+    const intencion = detectarIntencion(userMessage);
+
+    console.log("INTENCION DETECTADA:", intencion);
+
     const phone = remoteJid.replace("@s.whatsapp.net", "");
     const name = data?.pushName || "Sin nombre";
     const messageId = data?.key?.id || null;
@@ -145,6 +205,63 @@ export async function POST(req: Request) {
           content: respuestaIA,
         },
       ]);
+    }
+
+    if (intencion === "venta") {
+      const { data: ventas } = await supabase
+        .from("advisors")
+        .select("*")
+        .eq("role", "ventas")
+        .eq("active", true)
+        .limit(1)
+        .single();
+
+      if (ventas) {
+        await enviarMensajeWhatsApp(
+          ventas.whatsapp,
+          `🔔 NUEVA OPORTUNIDAD DE VENTA
+
+Cliente: ${name}
+Teléfono: ${phone}
+
+Mensaje:
+${userMessage}`,
+        );
+
+        console.log("ALERTA DE VENTA ENVIADA");
+      }
+    }
+
+    if (intencion === "soporte") {
+      const { data: cliente } = await supabase
+        .from("clients")
+        .select(
+          `
+      *,
+      advisors(*)
+    `,
+        )
+        .eq("phone", phone)
+        .single();
+
+      if (cliente?.advisors) {
+        await enviarMensajeWhatsApp(
+          cliente.advisors.whatsapp,
+          `🛠️ SOLICITUD DE SOPORTE
+
+Cliente: ${name}
+Teléfono: ${phone}
+
+Asesor asignado: ${cliente.advisors.name}
+
+Mensaje:
+${userMessage}`,
+        );
+
+        console.log("ALERTA ENVIADA AL ASESOR");
+      } else {
+        console.log("CLIENTE SIN ASESOR ASIGNADO");
+      }
     }
 
     console.log("RESPUESTA IA FINAL:", respuestaIA);
