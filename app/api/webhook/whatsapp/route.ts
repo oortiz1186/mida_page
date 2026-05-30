@@ -80,12 +80,19 @@ function detectarIntencion(mensaje: string) {
     "adquirir",
   ];
 
-  if (palabrasSoporte.some((p) => texto.includes(p))) {
-    return "soporte";
+  const esVenta = palabrasVenta.some((p) => texto.includes(p));
+  const esSoporte = palabrasSoporte.some((p) => texto.includes(p));
+
+  if (esVenta && esSoporte) {
+    return "mixta";
   }
 
-  if (palabrasVenta.some((p) => texto.includes(p))) {
+  if (esVenta) {
     return "venta";
+  }
+
+  if (esSoporte) {
+    return "soporte";
   }
 
   return "general";
@@ -436,6 +443,18 @@ export async function POST(req: Request) {
       });
     }
 
+    if (intencion === "mixta") {
+      await enviarMensajeWhatsApp(
+        phone,
+        "Veo que necesitas información de una licencia y también apoyo técnico. Para ayudarte mejor, indícame qué licencia te interesa y cuál es el problema que estás presentando.",
+      );
+
+      return NextResponse.json({
+        success: true,
+        flujo: "intencion_mixta",
+      });
+    }
+
     if (intencion === "venta") {
       const { data: ventas } = await supabase
         .from("advisors")
@@ -579,18 +598,18 @@ export async function POST(req: Request) {
     const evolutionData = await evolutionResponse.json();
 
     if (contact) {
-  await supabase.from("whatsapp_messages").insert([
-    {
-      contact_id: contact.id,
-      phone,
-      name,
-      message_id: null,
-      role: "assistant",
-      content: respuestaIA,
-      intent: intencion,
-    },
-  ]);
-}
+      await supabase.from("whatsapp_messages").insert([
+        {
+          contact_id: contact.id,
+          phone,
+          name,
+          message_id: null,
+          role: "assistant",
+          content: respuestaIA,
+          intent: intencion,
+        },
+      ]);
+    }
 
     console.log("STATUS EVOLUTION:", evolutionResponse.status);
     console.log("RESPUESTA EVOLUTION:", JSON.stringify(evolutionData));
