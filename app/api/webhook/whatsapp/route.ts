@@ -166,6 +166,7 @@ export async function POST(req: Request) {
     ).trim();
 
     const intencion = detectarIntencion(userMessage);
+    const textoNormalizado = userMessage.toLowerCase().trim();
 
     console.log("INTENCION DETECTADA:", intencion);
 
@@ -213,6 +214,130 @@ export async function POST(req: Request) {
           intent: intencion,
         },
       ]);
+    }
+
+    if (contact?.support_flow_step === "preguntar_asesor") {
+      if (
+        textoNormalizado.includes("si") ||
+        textoNormalizado.includes("sí") ||
+        textoNormalizado.includes("tengo")
+      ) {
+        await supabase
+          .from("whatsapp_contacts")
+          .update({
+            support_flow_step: "pedir_nombre_asesor",
+            temp_intent: "soporte",
+          })
+          .eq("phone", phone);
+
+        await enviarMensajeWhatsApp(
+          phone,
+          "Perfecto. Por favor indícame el nombre de tu asesor asignado en MIDA.",
+        );
+
+        return NextResponse.json({
+          success: true,
+          flujo: "pedir_nombre_asesor",
+        });
+      }
+
+      if (
+        textoNormalizado.includes("no") ||
+        textoNormalizado.includes("ninguno")
+      ) {
+        if (WHATSAPP_GRUPO_ASESORES) {
+          await enviarMensajeWhatsApp(
+            WHATSAPP_GRUPO_ASESORES,
+            `🟡 NUEVO USUARIO EN COLA DE SOPORTE
+
+Cliente: ${name}
+Teléfono: ${phone}
+
+Abrir chat:
+https://wa.me/${phone}
+
+El cliente indicó que no tiene asesor asignado.
+
+Mensaje:
+${userMessage}`,
+          );
+        }
+
+        await supabase
+          .from("whatsapp_contacts")
+          .update({
+            support_flow_step: null,
+            temp_intent: null,
+          })
+          .eq("phone", phone);
+
+        await enviarMensajeWhatsApp(
+          phone,
+          "Gracias. Ya notificamos al equipo de soporte. Un asesor te contactará en breve.",
+        );
+
+        return NextResponse.json({ success: true, flujo: "enviado_a_grupo" });
+      }
+
+      await enviarMensajeWhatsApp(
+        phone,
+        "Para canalizarte correctamente, dime por favor: ¿ya tienes un asesor asignado en MIDA? Responde Sí o No.",
+      );
+
+      return NextResponse.json({ success: true, flujo: "esperando_si_no" });
+    }
+
+    if (contact?.support_flow_step === "pedir_nombre_asesor") {
+      const { data: asesor } = await supabase
+        .from("advisors")
+        .select("*")
+        .ilike("name", `%${userMessage}%`)
+        .eq("active", true)
+        .limit(1)
+        .single();
+
+      if (asesor) {
+        await enviarMensajeWhatsApp(
+          asesor.whatsapp,
+          `🛠️ SOLICITUD DE SOPORTE
+
+Cliente: ${name}
+Teléfono: ${phone}
+
+Abrir chat:
+https://wa.me/${phone}
+
+El cliente indicó que su asesor es: ${asesor.name}
+
+Mensaje:
+${userMessage}`,
+        );
+
+        await supabase
+          .from("whatsapp_contacts")
+          .update({
+            support_flow_step: null,
+            temp_intent: null,
+          })
+          .eq("phone", phone);
+
+        await enviarMensajeWhatsApp(
+          phone,
+          `Gracias. Ya notificamos a ${asesor.name}. Te contactará para apoyarte.`,
+        );
+
+        return NextResponse.json({ success: true, flujo: "asesor_notificado" });
+      }
+
+      await enviarMensajeWhatsApp(
+        phone,
+        "No pude identificar a ese asesor. ¿Podrías escribir solo su nombre? Por ejemplo: Dulce, Juan, etc.",
+      );
+
+      return NextResponse.json({
+        success: true,
+        flujo: "asesor_no_encontrado",
+      });
     }
 
     if (intencion === "venta") {
@@ -274,25 +399,25 @@ ${userMessage}`,
 
         console.log("ALERTA ENVIADA AL ASESOR");
       } else {
-        if (WHATSAPP_GRUPO_ASESORES) {
-          await enviarMensajeWhatsApp(
-            WHATSAPP_GRUPO_ASESORES,
-            `🟡 NUEVO USUARIO EN COLA DE SOPORTE
+        await supabase
+          .from("whatsapp_contacts")
+          .update({
+            support_flow_step: "preguntar_asesor",
+            temp_intent: "soporte",
+          })
+          .eq("phone", phone);
 
-Cliente: ${name}
-Teléfono: ${phone}
+        await enviarMensajeWhatsApp(
+          phone,
+          "Con gusto te apoyamos. ¿Ya cuentas con un asesor asignado en MIDA? Responde Sí o No.",
+        );
 
-Abrir chat:
-https://wa.me/${phone}
+        console.log("CLIENTE SIN ASESOR, SE PREGUNTA SI TIENE ASESOR");
 
-Mensaje:
-${userMessage}`,
-          );
-
-          console.log("ALERTA ENVIADA AL GRUPO DE ASESORES");
-        }
-
-        console.log("CLIENTE SIN ASESOR ASIGNADO");
+        return NextResponse.json({
+          success: true,
+          flujo: "preguntar_asesor",
+        });
       }
     }
 
