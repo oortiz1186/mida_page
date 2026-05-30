@@ -336,6 +336,17 @@ ${contact.support_original_message || userMessage}`,
         .single();
 
       if (asesor) {
+        await supabase.from("clients").upsert(
+          {
+            phone,
+            name,
+            advisor_id: asesor.id,
+            updated_at: new Date().toISOString(),
+          },
+          {
+            onConflict: "phone",
+          },
+        );
         await enviarMensajeWhatsApp(
           asesor.whatsapp,
           `🛠️ SOLICITUD DE SOPORTE
