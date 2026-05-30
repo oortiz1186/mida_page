@@ -253,8 +253,8 @@ export async function POST(req: Request) {
 Cliente: ${name}
 Teléfono: ${phone}
 
-Abrir chat:
-https://wa.me/${phone}
+Chat directo con cliente:
+https://api.whatsapp.com/send?phone=${phone}
 
 El cliente indicó que no tiene asesor asignado.
 
