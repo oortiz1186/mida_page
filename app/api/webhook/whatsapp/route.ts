@@ -91,6 +91,23 @@ function detectarIntencion(mensaje: string) {
   return "general";
 }
 
+function mensajeTieneDetalleSoporte(mensaje: string) {
+  const texto = mensaje.toLowerCase().trim();
+
+  const mensajesGenericos = [
+    "hola",
+    "buen dia",
+    "buen día",
+    "buenas",
+    "soporte",
+    "ayuda",
+    "necesito soporte",
+    "necesito ayuda",
+  ];
+
+  return !mensajesGenericos.includes(texto) && texto.length >= 15;
+}
+
 async function enviarMensajeWhatsApp(destino: string, mensaje: string) {
   return await fetch(
     `${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE_NAME}`,
@@ -216,6 +233,27 @@ export async function POST(req: Request) {
       ]);
     }
 
+    if (contact?.support_flow_step === "pedir_descripcion_soporte") {
+      await supabase
+        .from("whatsapp_contacts")
+        .update({
+          support_flow_step: "preguntar_asesor",
+          temp_intent: "soporte",
+          support_original_message: userMessage,
+        })
+        .eq("phone", phone);
+
+      await enviarMensajeWhatsApp(
+        phone,
+        "Gracias. ¿Ya cuentas con un asesor asignado en MIDA? Responde Sí o No.",
+      );
+
+      return NextResponse.json({
+        success: true,
+        flujo: "preguntar_asesor",
+      });
+    }
+
     if (contact?.support_flow_step === "preguntar_asesor") {
       if (
         textoNormalizado.includes("si") ||
@@ -258,8 +296,8 @@ https://api.whatsapp.com/send?phone=${phone}
 
 El cliente indicó que no tiene asesor asignado.
 
-Mensaje:
-${userMessage}`,
+Mensaje original:
+${contact.support_original_message || userMessage}`,
           );
         }
 
@@ -268,6 +306,7 @@ ${userMessage}`,
           .update({
             support_flow_step: null,
             temp_intent: null,
+            support_original_message: null,
           })
           .eq("phone", phone);
 
@@ -309,8 +348,8 @@ https://wa.me/${phone}
 
 El cliente indicó que su asesor es: ${asesor.name}
 
-Mensaje:
-${userMessage}`,
+Mensaje original:
+${contact.support_original_message || userMessage}`,
         );
 
         await supabase
@@ -318,6 +357,7 @@ ${userMessage}`,
           .update({
             support_flow_step: null,
             temp_intent: null,
+            support_original_message: null,
           })
           .eq("phone", phone);
 
@@ -399,11 +439,32 @@ ${userMessage}`,
 
         console.log("ALERTA ENVIADA AL ASESOR");
       } else {
+        if (!mensajeTieneDetalleSoporte(userMessage)) {
+          await supabase
+            .from("whatsapp_contacts")
+            .update({
+              support_flow_step: "pedir_descripcion_soporte",
+              temp_intent: "soporte",
+            })
+            .eq("phone", phone);
+
+          await enviarMensajeWhatsApp(
+            phone,
+            "Claro, con gusto te apoyamos. Cuéntame brevemente qué problema tienes o en qué sistema necesitas ayuda.",
+          );
+
+          return NextResponse.json({
+            success: true,
+            flujo: "pedir_descripcion_soporte",
+          });
+        }
+
         await supabase
           .from("whatsapp_contacts")
           .update({
             support_flow_step: "preguntar_asesor",
             temp_intent: "soporte",
+            support_original_message: userMessage,
           })
           .eq("phone", phone);
 
@@ -411,8 +472,6 @@ ${userMessage}`,
           phone,
           "Con gusto te apoyamos. ¿Ya cuentas con un asesor asignado en MIDA? Responde Sí o No.",
         );
-
-        console.log("CLIENTE SIN ASESOR, SE PREGUNTA SI TIENE ASESOR");
 
         return NextResponse.json({
           success: true,
