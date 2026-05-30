@@ -200,6 +200,7 @@ export async function POST(req: Request) {
           message_id: messageId,
           role: "user",
           content: userMessage,
+          intent: intencion,
         },
         {
           contact_id: contact.id,
@@ -208,6 +209,7 @@ export async function POST(req: Request) {
           message_id: null,
           role: "assistant",
           content: respuestaIA,
+          intent: intencion,
         },
       ]);
     }
