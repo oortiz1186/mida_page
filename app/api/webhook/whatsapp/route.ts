@@ -99,13 +99,19 @@ function mensajeTieneDetalleSoporte(mensaje: string) {
     "buen dia",
     "buen día",
     "buenas",
+    "buenas tardes",
+    "buenas noches",
+    "buenos dias",
+    "buenos días",
+    "que tal",
+    "qué tal",
     "soporte",
     "ayuda",
     "necesito soporte",
     "necesito ayuda",
   ];
 
-  return !mensajesGenericos.includes(texto) && texto.length >= 15;
+  return !mensajesGenericos.includes(texto) && texto.length >= 8;
 }
 
 async function enviarMensajeWhatsApp(destino: string, mensaje: string) {
@@ -178,9 +184,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const respuestaIA = String(
-      (await generarRespuestaIA(userMessage)) || "",
-    ).trim();
+    //const respuestaIA = String(await generarRespuestaIA(userMessage)).trim();
 
     const intencion = detectarIntencion(userMessage);
     const textoNormalizado = userMessage.toLowerCase().trim();
@@ -204,7 +208,7 @@ export async function POST(req: Request) {
         },
       )
       .select()
-      .single();
+      .maybeSingle();
 
     if (contactError) {
       console.error("ERROR GUARDANDO CONTACTO:", contactError);
@@ -221,16 +225,57 @@ export async function POST(req: Request) {
           content: userMessage,
           intent: intencion,
         },
-        {
-          contact_id: contact.id,
-          phone,
-          name,
-          message_id: null,
-          role: "assistant",
-          content: respuestaIA,
-          intent: intencion,
-        },
       ]);
+    }
+
+    if (contact?.support_flow_step === "pedir_descripcion_soporte_registrado") {
+      const { data: cliente } = await supabase
+        .from("clients")
+        .select(
+          `
+        *,
+        advisors(*)
+        `,
+        )
+        .eq("phone", phone)
+        .maybeSingle();
+
+      if (cliente?.advisors) {
+        await enviarMensajeWhatsApp(
+          cliente.advisors.whatsapp,
+          `🛠️ SOLICITUD DE SOPORTE
+
+    Cliente: ${name}
+    Teléfono: ${phone}
+
+    Abrir chat:
+    https://wa.me/${phone}
+
+    Asesor asignado: ${cliente.advisors.name}
+
+    Mensaje original:
+    ${userMessage}`,
+        );
+
+        await supabase
+          .from("whatsapp_contacts")
+          .update({
+            support_flow_step: null,
+            temp_intent: null,
+            support_original_message: null,
+          })
+          .eq("phone", phone);
+
+        await enviarMensajeWhatsApp(
+          phone,
+          `Gracias. Ya notificamos a ${cliente.advisors.name}. Te contactará para apoyarte.`,
+        );
+
+        return NextResponse.json({
+          success: true,
+          flujo: "asesor_registrado_notificado",
+        });
+      }
     }
 
     if (contact?.support_flow_step === "pedir_descripcion_soporte") {
@@ -288,16 +333,16 @@ export async function POST(req: Request) {
             WHATSAPP_GRUPO_ASESORES,
             `🟡 NUEVO USUARIO EN COLA DE SOPORTE
 
-Cliente: ${name}
-Teléfono: ${phone}
+    Cliente: ${name}
+    Teléfono: ${phone}
 
-Chat directo con cliente:
-https://api.whatsapp.com/send?phone=${phone}
+    Chat directo con cliente:
+    https://api.whatsapp.com/send?phone=${phone}
 
-El cliente indicó que no tiene asesor asignado.
+    El cliente indicó que no tiene asesor asignado.
 
-Mensaje original:
-${contact.support_original_message || userMessage}`,
+    Mensaje original:
+    ${contact.support_original_message || userMessage}`,
           );
         }
 
@@ -333,7 +378,7 @@ ${contact.support_original_message || userMessage}`,
         .ilike("name", `%${userMessage}%`)
         .eq("active", true)
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (asesor) {
         await supabase.from("clients").upsert(
@@ -351,16 +396,16 @@ ${contact.support_original_message || userMessage}`,
           asesor.whatsapp,
           `🛠️ SOLICITUD DE SOPORTE
 
-Cliente: ${name}
-Teléfono: ${phone}
+    Cliente: ${name}
+    Teléfono: ${phone}
 
-Abrir chat:
-https://wa.me/${phone}
+    Abrir chat:
+    https://wa.me/${phone}
 
-El cliente indicó que su asesor es: ${asesor.name}
+    El cliente indicó que su asesor es: ${asesor.name}
 
-Mensaje original:
-${contact.support_original_message || userMessage}`,
+    Mensaje original:
+    ${contact.support_original_message || userMessage}`,
         );
 
         await supabase
@@ -398,21 +443,21 @@ ${contact.support_original_message || userMessage}`,
         .eq("role", "ventas")
         .eq("active", true)
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (ventas) {
         await enviarMensajeWhatsApp(
           ventas.whatsapp,
           `🔔 NUEVA OPORTUNIDAD DE VENTA
 
-Cliente: ${name}
-Teléfono: ${phone}
+    Cliente: ${name}
+    Teléfono: ${phone}
 
-Abrir chat:
-https://wa.me/${phone}
+    Abrir chat:
+    https://wa.me/${phone}
 
-Mensaje:
-${userMessage}`,
+    Mensaje:
+    ${userMessage}`,
         );
 
         console.log("ALERTA DE VENTA ENVIADA");
@@ -424,28 +469,47 @@ ${userMessage}`,
         .from("clients")
         .select(
           `
-      *,
-      advisors(*)
-    `,
+        *,
+        advisors(*)
+        `,
         )
         .eq("phone", phone)
-        .single();
+        .maybeSingle();
 
       if (cliente?.advisors) {
+        if (!mensajeTieneDetalleSoporte(userMessage)) {
+          await supabase
+            .from("whatsapp_contacts")
+            .update({
+              support_flow_step: "pedir_descripcion_soporte_registrado",
+              temp_intent: "soporte",
+            })
+            .eq("phone", phone);
+
+          await enviarMensajeWhatsApp(
+            phone,
+            "Claro, con gusto te apoyamos. Cuéntame brevemente qué problema tienes o en qué sistema necesitas ayuda.",
+          );
+
+          return NextResponse.json({
+            success: true,
+            flujo: "pedir_descripcion_soporte_registrado",
+          });
+        }
         await enviarMensajeWhatsApp(
           cliente.advisors.whatsapp,
           `🛠️ SOLICITUD DE SOPORTE
 
-Cliente: ${name}
-Teléfono: ${phone}
+    Cliente: ${name}
+    Teléfono: ${phone}
 
-Abrir chat:
-https://wa.me/${phone}
+    Abrir chat:
+    https://wa.me/${phone}
 
-Asesor asignado: ${cliente.advisors.name}
+    Asesor asignado: ${cliente.advisors.name}
 
-Mensaje:
-${userMessage}`,
+    Mensaje original:
+    ${userMessage}`,
         );
 
         console.log("ALERTA ENVIADA AL ASESOR");
@@ -491,6 +555,8 @@ ${userMessage}`,
       }
     }
 
+    const respuestaIA = String(await generarRespuestaIA(userMessage)).trim();
+
     console.log("RESPUESTA IA FINAL:", respuestaIA);
     console.log("TIPO RESPUESTA IA:", typeof respuestaIA);
     console.log("NUMERO DESTINO:", remoteJid.replace("@s.whatsapp.net", ""));
@@ -511,6 +577,20 @@ ${userMessage}`,
     );
 
     const evolutionData = await evolutionResponse.json();
+
+    if (contact) {
+  await supabase.from("whatsapp_messages").insert([
+    {
+      contact_id: contact.id,
+      phone,
+      name,
+      message_id: null,
+      role: "assistant",
+      content: respuestaIA,
+      intent: intencion,
+    },
+  ]);
+}
 
     console.log("STATUS EVOLUTION:", evolutionResponse.status);
     console.log("RESPUESTA EVOLUTION:", JSON.stringify(evolutionData));
