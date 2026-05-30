@@ -235,6 +235,99 @@ export async function POST(req: Request) {
       ]);
     }
 
+    if (contact?.support_flow_step === "pedir_detalle_mixto") {
+      const mensajeCompleto = `${contact.support_original_message || ""}
+
+Detalle del cliente:
+${userMessage}`;
+
+      const { data: ventas } = await supabase
+        .from("advisors")
+        .select("*")
+        .eq("role", "ventas")
+        .eq("active", true)
+        .limit(1)
+        .maybeSingle();
+
+      if (ventas) {
+        await enviarMensajeWhatsApp(
+          ventas.whatsapp,
+          `🔔 NUEVA OPORTUNIDAD DE VENTA
+
+Cliente: ${name}
+Teléfono: ${phone}
+
+Abrir chat:
+https://wa.me/${phone}
+
+Mensaje:
+${mensajeCompleto}`,
+        );
+      }
+
+      const { data: cliente } = await supabase
+        .from("clients")
+        .select(
+          `
+      *,
+      advisors(*)
+    `,
+        )
+        .eq("phone", phone)
+        .maybeSingle();
+
+      if (cliente?.advisors) {
+        await enviarMensajeWhatsApp(
+          cliente.advisors.whatsapp,
+          `🛠️ SOLICITUD DE SOPORTE
+
+Cliente: ${name}
+Teléfono: ${phone}
+
+Abrir chat:
+https://wa.me/${phone}
+
+Asesor asignado: ${cliente.advisors.name}
+
+Mensaje:
+${mensajeCompleto}`,
+        );
+      } else if (WHATSAPP_GRUPO_ASESORES) {
+        await enviarMensajeWhatsApp(
+          WHATSAPP_GRUPO_ASESORES,
+          `🟡 NUEVO USUARIO EN COLA DE SOPORTE
+
+Cliente: ${name}
+Teléfono: ${phone}
+
+Chat directo:
+https://wa.me/${phone}
+
+Mensaje:
+${mensajeCompleto}`,
+        );
+      }
+
+      await supabase
+        .from("whatsapp_contacts")
+        .update({
+          support_flow_step: null,
+          temp_intent: null,
+          support_original_message: null,
+        })
+        .eq("phone", phone);
+
+      await enviarMensajeWhatsApp(
+        phone,
+        "Gracias. Ya canalizamos tu solicitud con el área correspondiente. Un asesor te contactará en breve.",
+      );
+
+      return NextResponse.json({
+        success: true,
+        flujo: "mixto_canalizado",
+      });
+    }
+
     if (contact?.support_flow_step === "pedir_descripcion_soporte_registrado") {
       const { data: cliente } = await supabase
         .from("clients")
@@ -444,6 +537,15 @@ export async function POST(req: Request) {
     }
 
     if (intencion === "mixta") {
+      await supabase
+        .from("whatsapp_contacts")
+        .update({
+          support_flow_step: "pedir_detalle_mixto",
+          temp_intent: "mixta",
+          support_original_message: userMessage,
+        })
+        .eq("phone", phone);
+
       await enviarMensajeWhatsApp(
         phone,
         "Veo que necesitas información de una licencia y también apoyo técnico. Para ayudarte mejor, indícame qué licencia te interesa y cuál es el problema que estás presentando.",
@@ -451,7 +553,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         success: true,
-        flujo: "intencion_mixta",
+        flujo: "pedir_detalle_mixto",
       });
     }
 
