@@ -6,6 +6,7 @@ const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;
 const EVOLUTION_INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || "mida";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const WHATSAPP_GRUPO_ASESORES = process.env.WHATSAPP_GRUPO_ASESORES;
 
 async function generarRespuestaIA(mensajeUsuario: string) {
   const response = await fetch(
@@ -273,6 +274,24 @@ ${userMessage}`,
 
         console.log("ALERTA ENVIADA AL ASESOR");
       } else {
+        if (WHATSAPP_GRUPO_ASESORES) {
+          await enviarMensajeWhatsApp(
+            WHATSAPP_GRUPO_ASESORES,
+            `🟡 NUEVO USUARIO EN COLA DE SOPORTE
+
+Cliente: ${name}
+Teléfono: ${phone}
+
+Abrir chat:
+https://wa.me/${phone}
+
+Mensaje:
+${userMessage}`,
+          );
+
+          console.log("ALERTA ENVIADA AL GRUPO DE ASESORES");
+        }
+
         console.log("CLIENTE SIN ASESOR ASIGNADO");
       }
     }
