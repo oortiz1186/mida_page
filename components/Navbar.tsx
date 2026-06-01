@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { infoEmpresa } from "../components/config/empresa";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +58,7 @@ export default function Navbar() {
           </a>
           {/* NUEVO ENLACE ESCRITORIO */}
           <a
-            href="https://soporte-mida.vercel.app/login"
+            href={infoEmpresa.portalSoporteUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-mida-light transition-colors text-mida-deep"
@@ -136,7 +137,7 @@ export default function Navbar() {
           </a>
           {/* NUEVO ENLACE MÓVIL */}
           <a
-            href="https://soporte-mida.vercel.app/login"
+            href={infoEmpresa.portalSoporteUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}

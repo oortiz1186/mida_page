@@ -4,6 +4,7 @@ export const infoEmpresa = {
   dominio: "https://mida-page-qvwj.vercel.app",
   formspreeId: "xnjrojny",
   recaptchaSiteKey: "6LcnGwAtAAAAABFZ6OsWkCOoOWPH4kDD3rFbdw-R",
+  portalSoporteUrl: "https://soporte-mida.vercel.app/login",
 
   // Teléfonos y WhatsApp (Modifica aquí tus números reales)
   telefonoTexto: "477 329 5727",         // Cómo se ve en la pantalla
