@@ -24,7 +24,10 @@ export default function Navbar() {
     <header className="fixed w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
       <nav className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center w-full">
         {/* Logotipo Oficial */}
-        <a href="/" className="flex items-center hover:opacity-90 transition-opacity shrink-0">
+        <a
+          href="/"
+          className="flex items-center hover:opacity-90 transition-opacity shrink-0"
+        >
           <Image
             src="/logo/Logotipo-mida-azul.svg"
             alt="MIDA Logo"
@@ -37,13 +40,34 @@ export default function Navbar() {
 
         {/* MENÚ PARA COMPUTADORA */}
         <div className="hidden md:flex gap-6 font-semibold items-center">
-          <a href="/" className={linkClass("/")}>Inicio</a>
-          <a href="/#servicios" className="hover:text-mida-light transition-colors text-mida-deep">Servicios</a>
-          <a href="/contpaqi" className={linkClass("/contpaqi")}>CONTPAQi</a>
-          <a href="/equipamiento" className={linkClass("/equipamiento")}>Equipamiento</a>
+          <a href="/" className={linkClass("/")}>
+            Inicio
+          </a>
+          <a
+            href="/#servicios"
+            className="hover:text-mida-light transition-colors text-mida-deep"
+          >
+            Servicios
+          </a>
+          <a href="/contpaqi" className={linkClass("/contpaqi")}>
+            CONTPAQi
+          </a>
+          <a href="/equipamiento" className={linkClass("/equipamiento")}>
+            Equipamiento
+          </a>
           {/* NUEVO ENLACE ESCRITORIO */}
-          <a href="/tickets" className={linkClass("/tickets")}>Portal de Soporte</a>
-          <a href="/contacto" className="bg-mida-primary text-white px-5 py-2.5 rounded-full hover:bg-mida-deep transition-all shadow-md">
+          <a
+            href="https://TU-URL-DEL-PORTAL-DE-SOPORTE"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-mida-light transition-colors text-mida-deep"
+          >
+            Portal de Soporte
+          </a>
+          <a
+            href="/contacto"
+            className="bg-mida-primary text-white px-5 py-2.5 rounded-full hover:bg-mida-deep transition-all shadow-md"
+          >
             Contacto
           </a>
         </div>
@@ -54,11 +78,26 @@ export default function Navbar() {
           className="md:hidden text-mida-deep focus:outline-none p-1.5 rounded-lg hover:bg-mida-gray/40 transition-colors"
           aria-label="Toggle Menu"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             {isOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             )}
           </svg>
         </button>
@@ -67,13 +106,49 @@ export default function Navbar() {
       {/* MENÚ DESPLEGABLE MÓVIL */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-6 py-5 flex flex-col font-semibold text-mida-deep shadow-inner">
-          <a href="/" onClick={() => setIsOpen(false)} className={mobileLinkClass("/")}>Inicio</a>
-          <a href="/#servicios" onClick={() => setIsOpen(false)} className={mobileLinkClass("/#servicios")}>Servicios</a>
-          <a href="/contpaqi" onClick={() => setIsOpen(false)} className={mobileLinkClass("/contpaqi")}>CONTPAQi</a>
-          <a href="/equipamiento" onClick={() => setIsOpen(false)} className={mobileLinkClass("/equipamiento")}>Equipamiento</a>
+          <a
+            href="/"
+            onClick={() => setIsOpen(false)}
+            className={mobileLinkClass("/")}
+          >
+            Inicio
+          </a>
+          <a
+            href="/#servicios"
+            onClick={() => setIsOpen(false)}
+            className={mobileLinkClass("/#servicios")}
+          >
+            Servicios
+          </a>
+          <a
+            href="/contpaqi"
+            onClick={() => setIsOpen(false)}
+            className={mobileLinkClass("/contpaqi")}
+          >
+            CONTPAQi
+          </a>
+          <a
+            href="/equipamiento"
+            onClick={() => setIsOpen(false)}
+            className={mobileLinkClass("/equipamiento")}
+          >
+            Equipamiento
+          </a>
           {/* NUEVO ENLACE MÓVIL */}
-          <a href="/tickets" onClick={() => setIsOpen(false)} className={mobileLinkClass("/tickets")}>Portal de Soporte</a>
-          <a href="/contacto" onClick={() => setIsOpen(false)} className="bg-mida-primary text-white text-center px-5 py-3 rounded-xl hover:bg-mida-deep transition-all mt-4 shadow-md">
+          <a
+            href="https://TU-URL-DEL-PORTAL-DE-SOPORTE"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsOpen(false)}
+            className="py-3 hover:text-mida-light border-b border-gray-50 transition-colors"
+          >
+            Portal de Soporte
+          </a>
+          <a
+            href="/contacto"
+            onClick={() => setIsOpen(false)}
+            className="bg-mida-primary text-white text-center px-5 py-3 rounded-xl hover:bg-mida-deep transition-all mt-4 shadow-md"
+          >
             Contacto
           </a>
         </div>
