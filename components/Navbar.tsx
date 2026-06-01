@@ -57,7 +57,7 @@ export default function Navbar() {
           </a>
           {/* NUEVO ENLACE ESCRITORIO */}
           <a
-            href="https://TU-URL-DEL-PORTAL-DE-SOPORTE"
+            href="https://soporte-mida.vercel.app/login"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-mida-light transition-colors text-mida-deep"
@@ -136,7 +136,7 @@ export default function Navbar() {
           </a>
           {/* NUEVO ENLACE MÓVIL */}
           <a
-            href="https://TU-URL-DEL-PORTAL-DE-SOPORTE"
+            href="https://soporte-mida.vercel.app/login"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}
