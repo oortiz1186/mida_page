@@ -122,20 +122,32 @@ function mensajeTieneDetalleSoporte(mensaje: string) {
 }
 
 async function enviarMensajeWhatsApp(destino: string, mensaje: string) {
-  return await fetch(
-    `${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE_NAME}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: EVOLUTION_API_KEY || "",
+  try {
+    const response = await fetch(
+      `${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE_NAME}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: EVOLUTION_API_KEY || "",
+        },
+        body: JSON.stringify({
+          number: destino,
+          text: mensaje,
+        }),
       },
-      body: JSON.stringify({
-        number: destino,
-        text: mensaje,
-      }),
-    },
-  );
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("ERROR ENVIANDO WHATSAPP:", response.status, errorText);
+    }
+
+    return response;
+  } catch (error) {
+    console.error("NO SE PUDO CONECTAR A EVOLUTION API:", error);
+    return null;
+  }
 }
 
 export async function POST(req: Request) {
