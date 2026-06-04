@@ -101,6 +101,11 @@ export default function ContpaqiPage() {
           desc: "Seguridad total para tu información empresarial.",
           img: "/images/productos/respaldos1.png",
         },
+        {
+          nombre: "CONTPAQi Factura Electonica",
+          desc: "Seguridad total para tu información empresarial.",
+          img: "/images/productos/factura_electronica.png",
+        },
       ],
     },
   ];
