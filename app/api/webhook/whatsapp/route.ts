@@ -212,6 +212,28 @@ export async function POST(req: Request) {
     const name = data?.pushName || "Sin nombre";
     const messageId = data?.key?.id || null;
 
+    if (
+      [
+        "hola",
+        "buen dia",
+        "buen día",
+        "buenas",
+        "buenas tardes",
+        "buenos dias",
+        "buenos días",
+      ].includes(textoNormalizado)
+    ) {
+      const respuestaSaludo =
+        "Hola 👋 gracias por comunicarte con MIDA. Podemos apoyarte con soporte CONTPAQi®, licencias, equipos de cómputo, servidores e infraestructura tecnológica. ¿Sobre qué servicio necesitas ayuda?";
+
+      await enviarMensajeWhatsApp(phone, respuestaSaludo);
+
+      return NextResponse.json({
+        success: true,
+        flujo: "saludo_respuesta_fija",
+      });
+    }
+
     const { data: contact, error: contactError } = await supabase
       .from("whatsapp_contacts")
       .upsert(
