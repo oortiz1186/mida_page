@@ -57,14 +57,7 @@ export default function Navbar() {
             Equipamiento
           </a>
           {/* NUEVO ENLACE ESCRITORIO */}
-          <a
-            href={infoEmpresa.portalSoporteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-mida-light transition-colors text-mida-deep"
-          >
-            Portal de Soporte
-          </a>
+          
           <a
             href="/contacto"
             className="bg-mida-primary text-white px-5 py-2.5 rounded-full hover:bg-mida-deep transition-all shadow-md"
@@ -136,15 +129,7 @@ export default function Navbar() {
             Equipamiento
           </a>
           {/* NUEVO ENLACE MÓVIL */}
-          <a
-            href={infoEmpresa.portalSoporteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setIsOpen(false)}
-            className="py-3 hover:text-mida-light border-b border-gray-50 transition-colors"
-          >
-            Portal de Soporte
-          </a>
+          
           <a
             href="/contacto"
             onClick={() => setIsOpen(false)}
