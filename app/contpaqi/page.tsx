@@ -103,7 +103,7 @@ export default function ContpaqiPage() {
         },
         {
           nombre: "CONTPAQi Factura Electonica",
-          desc: "Seguridad total para tu información empresarial.",
+          desc: "Genera CFDI, administra tus clientes y controla tu proceso de facturación electrónica de manera sencilla y segura.",
           img: "/images/productos/factura_electronica.png",
         },
       ],
