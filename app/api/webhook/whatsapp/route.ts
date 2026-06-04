@@ -193,10 +193,8 @@ export async function POST(req: Request) {
 
     //const respuestaIA = String(await generarRespuestaIA(userMessage)).trim();
 
-    const intencion = detectarIntencion(userMessage);
+    //const intencion = detectarIntencion(userMessage);
     const textoNormalizado = userMessage.toLowerCase().trim();
-
-    console.log("INTENCION DETECTADA:", intencion);
 
     const phone = remoteJid.replace("@s.whatsapp.net", "");
     const name = data?.pushName || "Sin nombre";
@@ -220,6 +218,51 @@ export async function POST(req: Request) {
     if (contactError) {
       console.error("ERROR GUARDANDO CONTACTO:", contactError);
     }
+
+    if (textoNormalizado.includes("activarmida")) {
+      await supabase
+        .from("whatsapp_contacts")
+        .update({
+          bot_disabled: false,
+          support_flow_step: null,
+          temp_intent: null,
+          support_original_message: null,
+        })
+        .eq("phone", phone);
+
+      return NextResponse.json({
+        success: true,
+        flujo: "bot_activado",
+      });
+    }
+
+    if (textoNormalizado.includes("tangamandapio")) {
+      await supabase
+        .from("whatsapp_contacts")
+        .update({
+          bot_disabled: true,
+          support_flow_step: null,
+          temp_intent: null,
+          support_original_message: null,
+        })
+        .eq("phone", phone);
+
+      return NextResponse.json({
+        success: true,
+        flujo: "bot_desactivado",
+      });
+    }
+
+    if (contact?.bot_disabled) {
+      return NextResponse.json({
+        success: true,
+        flujo: "chat_humano",
+      });
+    }
+
+    const intencion = detectarIntencion(userMessage);
+
+    console.log("INTENCION DETECTADA:", intencion);
 
     if (contact) {
       await supabase.from("whatsapp_messages").insert([
