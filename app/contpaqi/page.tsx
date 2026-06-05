@@ -51,6 +51,11 @@ export default function ContpaqiPage() {
           desc: "Administración comercial ágil y sencilla.",
           img: "/images/productos/comercial_start.png",
         },
+        {
+          nombre: "CONTPAQi Factura Electonica",
+          desc: "Genera CFDI, administra tus clientes y controla tu proceso de facturación electrónica de manera sencilla y segura.",
+          img: "/images/productos/factura_electronica.png",
+        },
       ],
     },
     {
@@ -100,11 +105,6 @@ export default function ContpaqiPage() {
           nombre: "CONTPAQi Respaldos",
           desc: "Seguridad total para tu información empresarial.",
           img: "/images/productos/respaldos1.png",
-        },
-        {
-          nombre: "CONTPAQi Factura Electonica",
-          desc: "Genera CFDI, administra tus clientes y controla tu proceso de facturación electrónica de manera sencilla y segura.",
-          img: "/images/productos/factura_electronica.png",
         },
       ],
     },
