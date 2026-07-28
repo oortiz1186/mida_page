@@ -56,10 +56,7 @@ export default function Navbar() {
           <a href="/equipamiento" className={linkClass("/equipamiento")}>
             Equipamiento
           </a>
-          <a
-            href="/#cursos"
-            className="hover:text-mida-light transition-colors text-mida-deep"
-          >
+          <a href="/cursos" className={linkClass("/cursos")}>
             Cursos
           </a>
           
@@ -134,9 +131,9 @@ export default function Navbar() {
             Equipamiento
           </a>
           <a
-            href="/#cursos"
+            href="/cursos"
             onClick={() => setIsOpen(false)}
-            className={mobileLinkClass("/#cursos")}
+            className={mobileLinkClass("/cursos")}
           >
             Cursos
           </a>
