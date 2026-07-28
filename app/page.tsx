@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Brands from "../components/Brands"; 
 import Services from "../components/Services";
+import Courses from "../components/Courses";
 import FAQ from "../components/FAQ";
 import CTA from "../components/CTA"; // <-- Importación del cierre comercial
 import Footer from "../components/Footer";
@@ -26,6 +27,9 @@ export default function Home() {
 
         {/* Módulos de servicios técnicos y comerciales */}
         <Services />
+
+        {/* Promoción de cursos presenciales y en línea */}
+        <Courses />
         
         {/* Bloque de conversión final (Llamado a la Acción antes del cierre) */}
         <CTA />
