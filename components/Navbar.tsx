@@ -56,7 +56,9 @@ export default function Navbar() {
           <a href="/equipamiento" className={linkClass("/equipamiento")}>
             Equipamiento
           </a>
-          {/* NUEVO ENLACE ESCRITORIO */}
+          <a href="/cursos" className={linkClass("/cursos")}>
+            Cursos
+          </a>
           
           <a
             href="/contacto"
@@ -128,7 +130,13 @@ export default function Navbar() {
           >
             Equipamiento
           </a>
-          {/* NUEVO ENLACE MÓVIL */}
+          <a
+            href="/cursos"
+            onClick={() => setIsOpen(false)}
+            className={mobileLinkClass("/cursos")}
+          >
+            Cursos
+          </a>
           
           <a
             href="/contacto"
