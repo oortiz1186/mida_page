@@ -6,6 +6,8 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;
 const EVOLUTION_INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || "mida";
+const WHATSAPP_VENTAS = process.env.WHATSAPP_VENTAS;
+const WHATSAPP_GRUPO_ASESORES = process.env.WHATSAPP_GRUPO_ASESORES;
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -25,6 +27,32 @@ function normalizeText(text: string) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+function isSalesConversation(text: string) {
+  const normalized = normalizeText(text);
+  const salesWords = [
+    "cotizacion",
+    "cotizar",
+    "precio",
+    "precios",
+    "comprar",
+    "compra",
+    "costo",
+    "cuanto cuesta",
+    "licencia",
+    "licencias",
+    "renovar",
+    "renovacion",
+    "contratar",
+    "adquirir",
+    "venta",
+    "ventas",
+    "quiero informacion para comprar",
+    "me interesa comprar",
+  ];
+
+  return salesWords.some((word) => normalized.includes(word));
+}
+
 function isSupportConversation(text: string) {
   const normalized = normalizeText(text);
   const supportWords = [
@@ -40,7 +68,8 @@ function isSupportConversation(text: string) {
     "no factura",
     "no timbra",
     "no puedo",
-    "contpaqi",
+    "tengo un detalle",
+    "me marca",
   ];
 
   return supportWords.some((word) => normalized.includes(word));
@@ -63,11 +92,16 @@ function phoneVariants(localPhone: string) {
 }
 
 function notificationAlreadySent(messages: ChatMessage[]) {
-  return messages.some(
-    (message) =>
-      message.role === "assistant" &&
-      normalizeText(message.content).includes("ya notifique a tu asesor"),
-  );
+  return messages.some((message) => {
+    if (message.role !== "assistant") return false;
+
+    const text = normalizeText(message.content);
+    return (
+      text.includes("ya notifique a tu asesor") ||
+      text.includes("ya notifique al equipo de soporte") ||
+      text.includes("ya canalice tu solicitud con ventas")
+    );
+  });
 }
 
 async function sendWhatsApp(destination: string, message: string) {
@@ -94,7 +128,7 @@ async function sendWhatsApp(destination: string, message: string) {
 
     if (!response.ok) {
       console.error(
-        "ERROR NOTIFICANDO ASESOR DESDE CHAT WEB:",
+        "ERROR ENVIANDO NOTIFICACION DESDE CHAT WEB:",
         response.status,
         await response.text(),
       );
@@ -168,17 +202,19 @@ async function findAssignedAdvisor(localPhone: string) {
   };
 }
 
+function lastUserMessages(messages: ChatMessage[]) {
+  return messages
+    .filter((message) => message.role === "user")
+    .slice(-5)
+    .map((message) => `• ${message.content}`)
+    .join("\n");
+}
+
 function buildSupportNotification(
   advisor: Advisor,
   phone: string,
   messages: ChatMessage[],
 ) {
-  const userMessages = messages
-    .filter((message) => message.role === "user")
-    .slice(-5)
-    .map((message) => `• ${message.content}`)
-    .join("\n");
-
   return `🛠️ SOLICITUD DE SOPORTE DESDE MIDA.MX
 
 Asesor: ${advisor.name}
@@ -187,7 +223,32 @@ Teléfono del cliente: ${phone}
 El cliente está solicitando apoyo desde el chat de la página web.
 
 Últimos mensajes:
-${userMessages}`;
+${lastUserMessages(messages)}`;
+}
+
+function buildUnassignedSupportNotification(
+  phone: string,
+  messages: ChatMessage[],
+) {
+  return `🟡 NUEVO CLIENTE / SOPORTE SIN ASESOR DESDE MIDA.MX
+
+Teléfono del cliente: ${phone}
+
+El cliente solicita soporte desde el chat web y no se encontró un asesor asignado.
+
+Últimos mensajes:
+${lastUserMessages(messages)}`;
+}
+
+function buildSalesNotification(phone: string, messages: ChatMessage[]) {
+  return `🔔 NUEVA OPORTUNIDAD DE VENTA DESDE MIDA.MX
+
+Teléfono del prospecto: ${phone}
+
+El prospecto mostró interés de compra, cotización, renovación o contratación desde el chat web.
+
+Últimos mensajes:
+${lastUserMessages(messages)}`;
 }
 
 export async function POST(req: Request) {
@@ -224,9 +285,39 @@ export async function POST(req: Request) {
       .map((message) => message.content)
       .join("\n");
 
+    const salesConversation = isSalesConversation(userConversation);
     const supportConversation = isSupportConversation(userConversation);
     const phone = extractPhone(userConversation);
     const alreadyNotified = notificationAlreadySent(messages);
+
+    // Venta tiene prioridad cuando el usuario expresa claramente intención comercial.
+    if (salesConversation && !alreadyNotified) {
+      if (!phone) {
+        return NextResponse.json({
+          reply:
+            "Con gusto te canalizo con el área de ventas. Compárteme por favor tu número de teléfono a 10 dígitos para que un asesor comercial pueda contactarte.",
+        });
+      }
+
+      if (WHATSAPP_VENTAS) {
+        const sent = await sendWhatsApp(
+          WHATSAPP_VENTAS,
+          buildSalesNotification(phone, messages),
+        );
+
+        if (sent) {
+          return NextResponse.json({
+            reply:
+              "Gracias. Ya canalicé tu solicitud con ventas y envié tus datos al área comercial. Un asesor se pondrá en contacto contigo.",
+          });
+        }
+      }
+
+      return NextResponse.json({
+        reply:
+          "Gracias. Identifiqué que necesitas atención de ventas, pero en este momento no pude enviar la notificación automática. Puedes continuar aquí y daremos seguimiento a tu solicitud.",
+      });
+    }
 
     if (supportConversation && !alreadyNotified) {
       const mentionedAdvisor = await findMentionedAdvisor(userConversation);
@@ -264,18 +355,30 @@ export async function POST(req: Request) {
               : `Gracias. Ya notifiqué a tu asesor ${advisor.name} sobre tu solicitud de soporte. Te contactará para ayudarte.`,
           });
         }
-      }
 
-      if (!advisor) {
         return NextResponse.json({
           reply:
-            "No encontré un asesor asignado con ese número. Si ya trabajas con un asesor de MIDA, dime su nombre y con gusto le envío la notificación.",
+            "Identifiqué a tu asesor, pero en este momento no pude enviarle la notificación automática. Puedes continuar aquí y nuestro equipo dará seguimiento.",
         });
+      }
+
+      if (WHATSAPP_GRUPO_ASESORES) {
+        const sent = await sendWhatsApp(
+          WHATSAPP_GRUPO_ASESORES,
+          buildUnassignedSupportNotification(phone, messages),
+        );
+
+        if (sent) {
+          return NextResponse.json({
+            reply:
+              "Gracias. No encontré un asesor asignado a tu número, así que ya notifiqué al equipo de soporte de MIDA. Un asesor disponible se pondrá en contacto contigo.",
+          });
+        }
       }
 
       return NextResponse.json({
         reply:
-          "Identifiqué a tu asesor, pero en este momento no pude enviarle la notificación automática. Puedes continuar aquí y nuestro equipo dará seguimiento.",
+          "No encontré un asesor asignado y en este momento no pude notificar automáticamente al equipo. Puedes continuar aquí y daremos seguimiento a tu solicitud.",
       });
     }
 
@@ -296,7 +399,7 @@ export async function POST(req: Request) {
           system_instruction: {
             parts: [
               {
-                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Mantén respuestas breves y útiles.`,
+                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.`,
               },
             ],
           },
