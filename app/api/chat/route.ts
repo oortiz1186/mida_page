@@ -91,6 +91,35 @@ function phoneVariants(localPhone: string) {
   );
 }
 
+function normalizeWhatsAppDestination(destination: string) {
+  const trimmed = destination.trim();
+
+  // Los IDs de grupos de WhatsApp deben conservarse tal cual.
+  if (trimmed.includes("@g.us")) {
+    return trimmed;
+  }
+
+  const digits = trimmed.replace(/\D/g, "");
+
+  // Número mexicano local de 10 dígitos.
+  if (/^\d{10}$/.test(digits)) {
+    return `52${digits}`;
+  }
+
+  // Ya incluye código de país 52.
+  if (/^52\d{10}$/.test(digits)) {
+    return digits;
+  }
+
+  // Formato histórico 521 + 10 dígitos. Evolution lo acepta en varias instalaciones
+  // y ya se utiliza en la configuración existente de MIDA, por lo que se conserva.
+  if (/^521\d{10}$/.test(digits)) {
+    return digits;
+  }
+
+  return trimmed;
+}
+
 function notificationAlreadySent(messages: ChatMessage[]) {
   return messages.some((message) => {
     if (message.role !== "assistant") return false;
@@ -110,6 +139,8 @@ async function sendWhatsApp(destination: string, message: string) {
     return false;
   }
 
+  const normalizedDestination = normalizeWhatsAppDestination(destination);
+
   try {
     const response = await fetch(
       `${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE_NAME}`,
@@ -120,7 +151,7 @@ async function sendWhatsApp(destination: string, message: string) {
           apikey: EVOLUTION_API_KEY,
         },
         body: JSON.stringify({
-          number: destination,
+          number: normalizedDestination,
           text: message,
         }),
       },
@@ -130,14 +161,25 @@ async function sendWhatsApp(destination: string, message: string) {
       console.error(
         "ERROR ENVIANDO NOTIFICACION DESDE CHAT WEB:",
         response.status,
+        "DESTINO:",
+        normalizedDestination,
         await response.text(),
       );
       return false;
     }
 
+    console.log(
+      "NOTIFICACION CHAT WEB ENVIADA CORRECTAMENTE A:",
+      normalizedDestination,
+    );
+
     return true;
   } catch (error) {
-    console.error("ERROR CONECTANDO CON EVOLUTION DESDE CHAT WEB:", error);
+    console.error(
+      "ERROR CONECTANDO CON EVOLUTION DESDE CHAT WEB. DESTINO:",
+      normalizedDestination,
+      error,
+    );
     return false;
   }
 }
@@ -290,7 +332,6 @@ export async function POST(req: Request) {
     const phone = extractPhone(userConversation);
     const alreadyNotified = notificationAlreadySent(messages);
 
-    // Venta tiene prioridad cuando el usuario expresa claramente intención comercial.
     if (salesConversation && !alreadyNotified) {
       if (!phone) {
         return NextResponse.json({
