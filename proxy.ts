@@ -85,7 +85,10 @@ export function proxy(request: NextRequest) {
       );
     }
 
-    const receivedSecret = request.headers.get("x-mida-webhook-secret");
+    // Evolution API 2.3.7 no expone headers personalizados desde su panel.
+    // Se autentica el webhook mediante un token aleatorio incluido en la URL:
+    // https://mida.mx/api/webhook/whatsapp?token=<secreto>
+    const receivedSecret = request.nextUrl.searchParams.get("token");
     if (!receivedSecret || receivedSecret !== secret) {
       return NextResponse.json(
         { error: "No autorizado." },
@@ -93,12 +96,16 @@ export function proxy(request: NextRequest) {
       );
     }
 
+    // Evolution y MIDA están detrás de infraestructura propia; este límite evita
+    // loops o abuso accidental sin interferir con el tráfico normal de mensajes.
     const webhookLimit = allowRequest(`webhook:${ip}`, 120, 60_000);
     if (!webhookLimit.allowed) {
       return tooManyRequests(webhookLimit.resetAt);
     }
 
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set("Cache-Control", "no-store");
+    return response;
   }
 
   if (pathname === "/api/chat") {
