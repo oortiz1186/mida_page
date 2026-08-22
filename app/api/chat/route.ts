@@ -9,8 +9,14 @@ const EVOLUTION_INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || "mida";
 const WHATSAPP_VENTAS = process.env.WHATSAPP_VENTAS;
 const WHATSAPP_GRUPO_ASESORES = process.env.WHATSAPP_GRUPO_ASESORES;
 
+const MAX_MESSAGES = 12;
+const MAX_MESSAGE_LENGTH = 1200;
+const NOTIFICATION_COOLDOWN_MS = 10 * 60 * 1000;
+
+type ChatRole = "user" | "assistant";
+
 interface ChatMessage {
-  role: "user" | "assistant";
+  role: ChatRole;
   content: string;
 }
 
@@ -19,6 +25,14 @@ interface Advisor {
   name: string;
   whatsapp: string | null;
 }
+
+const globalNotificationStore = globalThis as typeof globalThis & {
+  __midaNotificationCooldown?: Map<string, number>;
+};
+
+const notificationCooldown =
+  globalNotificationStore.__midaNotificationCooldown ??
+  (globalNotificationStore.__midaNotificationCooldown = new Map<string, number>());
 
 function normalizeText(text: string) {
   return text
@@ -86,51 +100,71 @@ function extractPhone(text: string) {
 }
 
 function phoneVariants(localPhone: string) {
-  return Array.from(
-    new Set([localPhone, `52${localPhone}`, `521${localPhone}`]),
-  );
+  return Array.from(new Set([localPhone, `52${localPhone}`, `521${localPhone}`]));
 }
 
 function normalizeWhatsAppDestination(destination: string) {
   const trimmed = destination.trim();
 
-  // Los IDs de grupos de WhatsApp deben conservarse tal cual.
   if (trimmed.includes("@g.us")) {
     return trimmed;
   }
 
   const digits = trimmed.replace(/\D/g, "");
 
-  // Número mexicano local de 10 dígitos.
   if (/^\d{10}$/.test(digits)) {
     return `52${digits}`;
   }
 
-  // Ya incluye código de país 52.
-  if (/^52\d{10}$/.test(digits)) {
-    return digits;
-  }
-
-  // Formato histórico 521 + 10 dígitos. Evolution lo acepta en varias instalaciones
-  // y ya se utiliza en la configuración existente de MIDA, por lo que se conserva.
-  if (/^521\d{10}$/.test(digits)) {
+  if (/^52\d{10}$/.test(digits) || /^521\d{10}$/.test(digits)) {
     return digits;
   }
 
   return trimmed;
 }
 
-function notificationAlreadySent(messages: ChatMessage[]) {
-  return messages.some((message) => {
-    if (message.role !== "assistant") return false;
+function sanitizeMessages(value: unknown): ChatMessage[] | null {
+  if (!Array.isArray(value) || value.length === 0 || value.length > MAX_MESSAGES) {
+    return null;
+  }
 
-    const text = normalizeText(message.content);
-    return (
-      text.includes("ya notifique a tu asesor") ||
-      text.includes("ya notifique al equipo de soporte") ||
-      text.includes("ya canalice tu solicitud con ventas")
-    );
-  });
+  const messages: ChatMessage[] = [];
+
+  for (const item of value) {
+    if (!item || typeof item !== "object") return null;
+
+    const role = (item as { role?: unknown }).role;
+    const content = (item as { content?: unknown }).content;
+
+    if (role !== "user" && role !== "assistant") return null;
+    if (typeof content !== "string") return null;
+
+    const trimmed = content.trim();
+    if (!trimmed || trimmed.length > MAX_MESSAGE_LENGTH) return null;
+
+    messages.push({ role, content: trimmed });
+  }
+
+  if (messages[messages.length - 1]?.role !== "user") {
+    return null;
+  }
+
+  return messages;
+}
+
+function canNotify(key: string) {
+  const now = Date.now();
+  const lastSentAt = notificationCooldown.get(key) || 0;
+
+  if (now - lastSentAt < NOTIFICATION_COOLDOWN_MS) {
+    return false;
+  }
+
+  return true;
+}
+
+function markNotified(key: string) {
+  notificationCooldown.set(key, Date.now());
 }
 
 async function sendWhatsApp(destination: string, message: string) {
@@ -154,6 +188,7 @@ async function sendWhatsApp(destination: string, message: string) {
           number: normalizedDestination,
           text: message,
         }),
+        cache: "no-store",
       },
     );
 
@@ -161,25 +196,13 @@ async function sendWhatsApp(destination: string, message: string) {
       console.error(
         "ERROR ENVIANDO NOTIFICACION DESDE CHAT WEB:",
         response.status,
-        "DESTINO:",
-        normalizedDestination,
-        await response.text(),
       );
       return false;
     }
 
-    console.log(
-      "NOTIFICACION CHAT WEB ENVIADA CORRECTAMENTE A:",
-      normalizedDestination,
-    );
-
     return true;
   } catch (error) {
-    console.error(
-      "ERROR CONECTANDO CON EVOLUTION DESDE CHAT WEB. DESTINO:",
-      normalizedDestination,
-      error,
-    );
+    console.error("ERROR CONECTANDO CON EVOLUTION DESDE CHAT WEB:", error);
     return false;
   }
 }
@@ -193,7 +216,7 @@ async function findMentionedAdvisor(
     .eq("active", true);
 
   if (error) {
-    console.error("ERROR CONSULTANDO ASESORES EN CHAT WEB:", error);
+    console.error("ERROR CONSULTANDO ASESORES EN CHAT WEB");
     return null;
   }
 
@@ -229,7 +252,7 @@ async function findAssignedAdvisor(localPhone: string) {
     .maybeSingle();
 
   if (error) {
-    console.error("ERROR BUSCANDO CLIENTE DESDE CHAT WEB:", error);
+    console.error("ERROR BUSCANDO CLIENTE DESDE CHAT WEB");
     return { client: null, advisor: null };
   }
 
@@ -257,40 +280,18 @@ function buildSupportNotification(
   phone: string,
   messages: ChatMessage[],
 ) {
-  return `🛠️ SOLICITUD DE SOPORTE DESDE MIDA.MX
-
-Asesor: ${advisor.name}
-Teléfono del cliente: ${phone}
-
-El cliente está solicitando apoyo desde el chat de la página web.
-
-Últimos mensajes:
-${lastUserMessages(messages)}`;
+  return `🛠️ SOLICITUD DE SOPORTE DESDE MIDA.MX\n\nAsesor: ${advisor.name}\nTeléfono del cliente: ${phone}\n\nEl cliente está solicitando apoyo desde el chat de la página web.\n\nÚltimos mensajes:\n${lastUserMessages(messages)}`;
 }
 
 function buildUnassignedSupportNotification(
   phone: string,
   messages: ChatMessage[],
 ) {
-  return `🟡 NUEVO CLIENTE / SOPORTE SIN ASESOR DESDE MIDA.MX
-
-Teléfono del cliente: ${phone}
-
-El cliente solicita soporte desde el chat web y no se encontró un asesor asignado.
-
-Últimos mensajes:
-${lastUserMessages(messages)}`;
+  return `🟡 NUEVO CLIENTE / SOPORTE SIN ASESOR DESDE MIDA.MX\n\nTeléfono del cliente: ${phone}\n\nEl cliente solicita soporte desde el chat web y no se encontró un asesor asignado.\n\nÚltimos mensajes:\n${lastUserMessages(messages)}`;
 }
 
 function buildSalesNotification(phone: string, messages: ChatMessage[]) {
-  return `🔔 NUEVA OPORTUNIDAD DE VENTA DESDE MIDA.MX
-
-Teléfono del prospecto: ${phone}
-
-El prospecto mostró interés de compra, cotización, renovación o contratación desde el chat web.
-
-Últimos mensajes:
-${lastUserMessages(messages)}`;
+  return `🔔 NUEVA OPORTUNIDAD DE VENTA DESDE MIDA.MX\n\nTeléfono del prospecto: ${phone}\n\nEl prospecto mostró interés de compra, cotización, renovación o contratación desde el chat web.\n\nÚltimos mensajes:\n${lastUserMessages(messages)}`;
 }
 
 export async function POST(req: Request) {
@@ -302,22 +303,20 @@ export async function POST(req: Request) {
       );
     }
 
-    const body = await req.json();
-    const messages: ChatMessage[] = Array.isArray(body?.messages)
-      ? body.messages
-          .filter(
-            (message: ChatMessage) =>
-              message &&
-              (message.role === "user" || message.role === "assistant") &&
-              typeof message.content === "string" &&
-              message.content.trim(),
-          )
-          .slice(-12)
-      : [];
-
-    if (!messages.length) {
+    const contentType = req.headers.get("content-type") || "";
+    if (!contentType.toLowerCase().includes("application/json")) {
       return NextResponse.json(
-        { error: "Escribe un mensaje para iniciar la conversación." },
+        { error: "Tipo de contenido no permitido." },
+        { status: 415 },
+      );
+    }
+
+    const body = await req.json();
+    const messages = sanitizeMessages(body?.messages);
+
+    if (!messages) {
+      return NextResponse.json(
+        { error: "Conversación inválida o demasiado grande." },
         { status: 400 },
       );
     }
@@ -330,13 +329,20 @@ export async function POST(req: Request) {
     const salesConversation = isSalesConversation(userConversation);
     const supportConversation = isSupportConversation(userConversation);
     const phone = extractPhone(userConversation);
-    const alreadyNotified = notificationAlreadySent(messages);
 
-    if (salesConversation && !alreadyNotified) {
+    if (salesConversation) {
       if (!phone) {
         return NextResponse.json({
           reply:
             "Con gusto te canalizo con el área de ventas. Compárteme por favor tu número de teléfono a 10 dígitos para que un asesor comercial pueda contactarte.",
+        });
+      }
+
+      const notificationKey = `sales:${phone}`;
+      if (!canNotify(notificationKey)) {
+        return NextResponse.json({
+          reply:
+            "Tu solicitud ya fue canalizada con ventas recientemente. Un asesor comercial se pondrá en contacto contigo.",
         });
       }
 
@@ -347,6 +353,7 @@ export async function POST(req: Request) {
         );
 
         if (sent) {
+          markNotified(notificationKey);
           return NextResponse.json({
             reply:
               "Gracias. Ya canalicé tu solicitud con ventas y envié tus datos al área comercial. Un asesor se pondrá en contacto contigo.",
@@ -360,7 +367,7 @@ export async function POST(req: Request) {
       });
     }
 
-    if (supportConversation && !alreadyNotified) {
+    if (supportConversation) {
       const mentionedAdvisor = await findMentionedAdvisor(userConversation);
 
       if (!phone) {
@@ -386,10 +393,21 @@ export async function POST(req: Request) {
       }
 
       if (advisor?.whatsapp) {
-        const notification = buildSupportNotification(advisor, phone, messages);
-        const sent = await sendWhatsApp(advisor.whatsapp, notification);
+        const notificationKey = `support:${phone}:${advisor.id}`;
+
+        if (!canNotify(notificationKey)) {
+          return NextResponse.json({
+            reply: `Tu solicitud ya fue enviada recientemente a ${advisor.name}. Te contactará para apoyarte.`,
+          });
+        }
+
+        const sent = await sendWhatsApp(
+          advisor.whatsapp,
+          buildSupportNotification(advisor, phone, messages),
+        );
 
         if (sent) {
+          markNotified(notificationKey);
           return NextResponse.json({
             reply: clientName
               ? `Gracias, ${clientName}. Ya notifiqué a tu asesor ${advisor.name} sobre tu solicitud de soporte. Te contactará para ayudarte.`
@@ -403,6 +421,14 @@ export async function POST(req: Request) {
         });
       }
 
+      const notificationKey = `support-group:${phone}`;
+      if (!canNotify(notificationKey)) {
+        return NextResponse.json({
+          reply:
+            "Tu solicitud ya fue enviada recientemente al equipo de soporte. Un asesor disponible se pondrá en contacto contigo.",
+        });
+      }
+
       if (WHATSAPP_GRUPO_ASESORES) {
         const sent = await sendWhatsApp(
           WHATSAPP_GRUPO_ASESORES,
@@ -410,6 +436,7 @@ export async function POST(req: Request) {
         );
 
         if (sent) {
+          markNotified(notificationKey);
           return NextResponse.json({
             reply:
               "Gracias. No encontré un asesor asignado a tu número, así que ya notifiqué al equipo de soporte de MIDA. Un asesor disponible se pondrá en contacto contigo.",
@@ -425,7 +452,7 @@ export async function POST(req: Request) {
 
     const contents = messages.map((message) => ({
       role: message.role === "assistant" ? "model" : "user",
-      parts: [{ text: message.content.trim() }],
+      parts: [{ text: message.content }],
     }));
 
     const response = await fetch(
@@ -446,13 +473,14 @@ export async function POST(req: Request) {
           },
           contents,
         }),
+        cache: "no-store",
       },
     );
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("ERROR CHAT GEMINI:", data);
+      console.error("ERROR CHAT GEMINI:", response.status);
       return NextResponse.json(
         {
           reply:
@@ -466,7 +494,10 @@ export async function POST(req: Request) {
       data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
       "Hola 👋 ¿En qué podemos ayudarte hoy?";
 
-    return NextResponse.json({ reply });
+    return NextResponse.json(
+      { reply },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     console.error("ERROR API CHAT:", error);
     return NextResponse.json(
