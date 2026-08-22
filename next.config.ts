@@ -1,25 +1,55 @@
 import type { NextConfig } from "next";
 
+const isProduction = process.env.NODE_ENV === "production";
+
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"} https://www.googletagmanager.com https://www.google.com https://www.gstatic.com`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://formspree.io https://www.google-analytics.com https://region1.google-analytics.com https://www.google.com",
+  "frame-src https://www.google.com https://recaptcha.google.com",
+  "form-action 'self' https://formspree.io",
+  "base-uri 'self'",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+].join("; ");
+
 const nextConfig: NextConfig = {
-  // Cabeceras de seguridad avanzadas para proteger los datos en producción
   async headers() {
     return [
       {
-        // Aplica estas reglas de seguridad a todas las rutas del sitio web
-        source: '/(.*)',
+        source: "/(.*)",
         headers: [
           {
-            key: 'X-Frame-Options',
-            value: 'DENY', // Previene ataques de Clickjacking (que clonen tu web en un marco falso)
+            key: "X-Frame-Options",
+            value: "DENY",
           },
           {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff', // Fuerza al navegador a respetar los tipos MIME oficiales de tus archivos
+            key: "X-Content-Type-Options",
+            value: "nosniff",
           },
           {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin', // Protege la privacidad de la ruta de origen del usuario
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
           },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: contentSecurityPolicy,
+          },
+          ...(isProduction
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=31536000; includeSubDomains",
+                },
+              ]
+            : []),
         ],
       },
     ];
