@@ -59,12 +59,40 @@ function tooManyRequests(resetAt: number) {
   );
 }
 
-function isSameOrigin(request: NextRequest) {
+function getFirstForwardedValue(value: string | null) {
+  return value?.split(",")[0]?.trim().toLowerCase() || null;
+}
+
+function isTrustedChatOrigin(request: NextRequest) {
   const origin = request.headers.get("origin");
   if (!origin) return true;
 
   try {
-    return new URL(origin).host === request.nextUrl.host;
+    const originHost = new URL(origin).host.toLowerCase();
+    const forwardedHost = getFirstForwardedValue(
+      request.headers.get("x-forwarded-host"),
+    );
+    const host = request.headers.get("host")?.toLowerCase() || null;
+    const nextHost = request.nextUrl.host.toLowerCase();
+
+    // Cloudflare Tunnel puede entregar la petición a Next como localhost:3001,
+    // aunque el navegador realmente venga de https://mida.mx. Por eso se toma
+    // también X-Forwarded-Host y se permiten explícitamente los hosts públicos.
+    const allowedHosts = new Set(
+      [
+        forwardedHost,
+        host,
+        nextHost,
+        "mida.mx",
+        "www.mida.mx",
+        "localhost:3000",
+        "localhost:3001",
+        "127.0.0.1:3000",
+        "127.0.0.1:3001",
+      ].filter((value): value is string => Boolean(value)),
+    );
+
+    return allowedHosts.has(originHost);
   } catch {
     return false;
   }
@@ -96,8 +124,6 @@ export function proxy(request: NextRequest) {
       );
     }
 
-    // Evolution y MIDA están detrás de infraestructura propia; este límite evita
-    // loops o abuso accidental sin interferir con el tráfico normal de mensajes.
     const webhookLimit = allowRequest(`webhook:${ip}`, 120, 60_000);
     if (!webhookLimit.allowed) {
       return tooManyRequests(webhookLimit.resetAt);
@@ -113,7 +139,7 @@ export function proxy(request: NextRequest) {
       return NextResponse.next();
     }
 
-    if (!isSameOrigin(request)) {
+    if (!isTrustedChatOrigin(request)) {
       return NextResponse.json(
         { error: "Origen no permitido." },
         { status: 403, headers: { "Cache-Control": "no-store" } },
