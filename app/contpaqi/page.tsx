@@ -238,7 +238,7 @@ export default function ContpaqiPage() {
                   <div className="w-24 h-24 mb-8 flex items-center justify-center relative">
                     <Image
                       src={prod.img}
-                      alt={prod.nombre}
+                      alt={`${prod.nombre} para empresas en León | MIDA`}
                       width={96}
                       height={96}
                       className="object-contain w-full h-full group-hover:scale-110 transition-transform duration-500"
@@ -272,7 +272,7 @@ export default function ContpaqiPage() {
                 <div className="h-40 w-full relative">
                   <Image
                     src={servicio.imagen}
-                    alt={servicio.titulo}
+                    alt={`${servicio.titulo} para sistemas CONTPAQi en León`}
                     fill
                     className="object-cover"
                   />
