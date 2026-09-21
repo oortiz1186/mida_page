@@ -12,22 +12,22 @@ export default function ContpaqiPage() {
       titulo: "Contables",
       productos: [
         {
-          nombre: "CONTPAQi Bancos",
+          nombre: "CONTPAQi® Bancos",
           desc: "Controla tus flujos de efectivo y conciliaciones bancarias al instante.",
           img: "/images/productos/bancos.png",
         },
         {
-          nombre: "CONTPAQi Contabilidad",
+          nombre: "CONTPAQi® Contabilidad",
           desc: "El estándar para tu contabilidad electrónica y reportes financieros.",
           img: "/images/productos/contabilidad.png",
         },
         {
-          nombre: "CONTPAQi Nóminas",
+          nombre: "CONTPAQi® Nóminas",
           desc: "Calcula sueldos, impuestos y prestaciones con total precisión.",
           img: "/images/productos/nominas.png",
         },
         {
-          nombre: "CONTPAQi XML en línea+",
+          nombre: "CONTPAQi® XML en línea+",
           desc: "Administra y descarga masiva de tus CFDI de forma segura.",
           img: "/images/productos/xml.png",
         },
@@ -37,22 +37,22 @@ export default function ContpaqiPage() {
       titulo: "Comerciales",
       productos: [
         {
-          nombre: "CONTPAQi Comercial Pro",
+          nombre: "CONTPAQi® Comercial Pro",
           desc: "Gestión avanzada de inventarios, compras y ventas.",
           img: "/images/productos/comercial_pro.png",
         },
         {
-          nombre: "CONTPAQi Comercial Premium",
+          nombre: "CONTPAQi® Comercial Premium",
           desc: "La solución robusta para empresas en crecimiento.",
           img: "/images/productos/comercial_premium.avif",
         },
         {
-          nombre: "CONTPAQi Comercial Start",
+          nombre: "CONTPAQi® Comercial Start",
           desc: "Administración comercial ágil y sencilla.",
           img: "/images/productos/comercial_start.png",
         },
         {
-          nombre: "CONTPAQi Factura Electonica",
+          nombre: "CONTPAQi® Factura Electonica",
           desc: "Genera CFDI, administra tus clientes y controla tu proceso de facturación electrónica de manera sencilla y segura.",
           img: "/images/productos/factura_electronica.png",
         },
@@ -62,37 +62,37 @@ export default function ContpaqiPage() {
       titulo: "Nube",
       productos: [
         {
-          nombre: "CONTPAQi CFDI en Linea",
+          nombre: "CONTPAQi® CFDI en Linea",
           desc: "Tu facturación siempre disponible. Gestiona, envía y recibe tus comprobantes fiscales desde cualquier dispositivo.",
           img: "/images/productos/cfdi_linea.png",
         },
         {
-          nombre: "CONTPAQi Evalúa",
+          nombre: "CONTPAQi® Evalúa",
           desc: "Soluciones de evaluación y desempeño en la nube.",
           img: "/images/productos/evalua.png",
         },
         {
-          nombre: "CONTPAQi Contabiliza",
+          nombre: "CONTPAQi® Contabiliza",
           desc: "Tu contabilidad disponible desde cualquier lugar.",
           img: "/images/productos/contabiliza.png",
         },
         {
-          nombre: "CONTPAQi Personia",
+          nombre: "CONTPAQi® Personia",
           desc: "Gestión de capital humano digitalizado.",
           img: "/images/productos/personia.png",
         },
         {
-          nombre: "CONTPAQi Vende",
+          nombre: "CONTPAQi® Vende",
           desc: "Plataforma de ventas en línea para tu negocio.",
           img: "/images/productos/vende.png",
         },
         {
-          nombre: "CONTPAQi Optimiza",
+          nombre: "CONTPAQi® Optimiza",
           desc: "Herramientas de eficiencia operativa.",
           img: "/images/productos/optimiza.png",
         },
         {
-          nombre: "CONTPAQi Anticipa",
+          nombre: "CONTPAQi® Anticipa",
           desc: "Gestiona pagos y anticipos con facilidad.",
           img: "/images/productos/anticipa.png",
         },
@@ -102,7 +102,7 @@ export default function ContpaqiPage() {
           img: "/images/productos/escritorio.png",
         },
         {
-          nombre: "CONTPAQi Respaldos",
+          nombre: "CONTPAQi® Respaldos",
           desc: "Seguridad total para tu información empresarial.",
           img: "/images/productos/respaldos1.png",
         },
@@ -212,7 +212,7 @@ export default function ContpaqiPage() {
           </span>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
             Especialistas Certificados en{" "}
-            <span className="text-mida-light">Sistemas CONTPAQi</span>
+            <span className="text-mida-light">Sistemas CONTPAQi®</span>
           </h1>
           <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
             Garantizamos la continuidad fiscal y administrativa de tu empresa
@@ -272,7 +272,7 @@ export default function ContpaqiPage() {
                 <div className="h-40 w-full relative">
                   <Image
                     src={servicio.imagen}
-                    alt={`${servicio.titulo} para sistemas CONTPAQi en León`}
+                    alt={`${servicio.titulo} para sistemas CONTPAQi® en León`}
                     fill
                     className="object-cover"
                   />
