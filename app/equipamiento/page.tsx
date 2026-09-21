@@ -85,7 +85,7 @@ export default function EquipamientoPage() {
               <div className="h-52 w-full overflow-hidden bg-mida-deep relative">
                 <Image 
                   src={solucion.imagen} 
-                  alt={solucion.titulo}
+                  alt={`${solucion.titulo} para empresas en León | MIDA`}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
