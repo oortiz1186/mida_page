@@ -79,7 +79,7 @@ export default function Services() {
               <div className="h-48 w-full overflow-hidden bg-mida-deep relative">
                 <Image
                   src={servicio.imagen}
-                  alt={servicio.titulo}
+                  alt={`${servicio.titulo} para empresas en León | MIDA`}
                   /* Optimizamos usando 'fill' para que la imagen se adapte al contenedor 
                     con herencia de relación de aspecto.
                   */
