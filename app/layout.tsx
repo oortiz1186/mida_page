@@ -1,82 +1,56 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, DM_Sans } from "next/font/google";
 import { infoEmpresa } from "../components/config/empresa";
 import "./globals.css";
 import WhatsAppButton from "../components/WhatsAppButton";
-// 1. IMPORTAMOS EL COMPONENTE OFICIAL DE NEXT.JS
-import { GoogleAnalytics } from "@next/third-parties/google"; 
-import { DM_Sans } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
-const inter = Inter({ 
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-dm-sans",
-});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-dm-sans" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(infoEmpresa.dominio),
-  title: "MIDA | Consultoría TI, Soporte CONTPAQi y Servidores en León Gto",
-  description: "Optimizamos la infraestructura tecnológica de tu empresa. Especialistas certificados en sistemas CONTPAQi, servidores SQL y soporte técnico empresarial en León, Guanajuato.",
+  title: { default: "MIDA | CONTPAQi, SQL y Soporte TI en León", template: "%s" },
+  description: "Soluciones CONTPAQi, servidores, SQL, soporte y consultoría TI para empresas en León y el Bajío.",
+  robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": infoEmpresa.nombre,
-    "image": `${infoEmpresa.dominio}/images/oficina.png`,
-    "telephone": `+${infoEmpresa.whatsappNumero}`, 
-    "url": infoEmpresa.dominio,
-    "email": infoEmpresa.correoContacto,
-    "address": {
+    "@type": ["Organization", "LocalBusiness"],
+    name: infoEmpresa.nombre,
+    url: infoEmpresa.dominio,
+    logo: `${infoEmpresa.dominio}/logo/Logotipo-mida-azul.svg`,
+    telephone: `+${infoEmpresa.whatsappNumero}`,
+    email: infoEmpresa.correoContacto,
+    description: "Distribuidor CONTPAQi, consultoría TI, SQL, servidores y soporte empresarial en León y el Bajío.",
+    address: {
       "@type": "PostalAddress",
-      "streetAddress": infoEmpresa.direccionLinea1,
-      "addressLocality": "León",
-      "addressRegion": "Guanajuato",
-      "postalCode": "37530", 
-      "addressCountry": "MX"
+      streetAddress: infoEmpresa.direccionLinea1,
+      addressLocality: "León",
+      addressRegion: "Guanajuato",
+      postalCode: "37530",
+      addressCountry: "MX",
     },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 21.144415, 
-      "longitude": -101.691235
-    },
-    "openingHoursSpecification": {
+    openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      "opens": "09:00",
-      "closes": "18:00"
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "09:00",
+      closes: "18:00",
     },
-    "priceRange": "$$$"
+    areaServed: ["León, Guanajuato", "Bajío, México"],
   };
 
   return (
-    <html lang="es" className={`${inter.variable}`}>
+    <html lang="es" className={inter.variable}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
-      <body className= {dmSans.className}>
+      <body className={dmSans.className}>
         {children}
-        
         <WhatsAppButton />
-
-        {/* 2. INYECCIÓN AUTOMÁTICA DEL SCRIPT DE MEDICIÓN */}
-        {infoEmpresa.googleAnalyticsId && (
-          <GoogleAnalytics gaId={infoEmpresa.googleAnalyticsId} />
-        )}
+        {infoEmpresa.googleAnalyticsId && infoEmpresa.googleAnalyticsId !== "G-XXXXXXX" && <GoogleAnalytics gaId={infoEmpresa.googleAnalyticsId} />}
       </body>
     </html>
   );
