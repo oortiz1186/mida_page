@@ -6,25 +6,25 @@ export default function Brands() {
       id: 1,
       nombre: "CONTPAQi",
       src: "/logo/logo-contpaqi.svg", 
-      alt: "Distribuidor Comercial Certificado CONTPAQi",
+      alt: "Distribuidor CONTPAQi en León | MIDA",
     },
     {
       id: 2,
       nombre: "Dell",
       src: "/logo/logo-dell.svg",
-      alt: "Infraestructura y Servidores Dell",
+      alt: "Infraestructura y servidores Dell para empresas en León",
     },
     {
       id: 3,
       nombre: "Intel",
       src: "/logo/logo-intel.svg",
-      alt: "Procesadores y Tecnología Intel",
+      alt: "Tecnología Intel para infraestructura empresarial",
     },
     {
       id: 4,
       nombre: "HP",
       src: "/logo/logo-hp.svg",
-      alt: "Equipamiento de Cómputo Corporativo HP",
+      alt: "Equipamiento de cómputo HP para empresas en León",
     },
   ];
 
