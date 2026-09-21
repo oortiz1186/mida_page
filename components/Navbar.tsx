@@ -5,23 +5,23 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const contpaqiLinks = [
-  ["Soluciones CONTPAQi", "/contpaqi"],
-  ["Distribuidor CONTPAQi en León", "/distribuidor-contpaqi-leon"],
-  ["CONTPAQi Contabilidad", "/contpaqi-contabilidad"],
-  ["CONTPAQi Nóminas", "/contpaqi-nominas"],
-  ["CONTPAQi Comercial Pro", "/contpaqi-comercial-pro"],
+  ["Soluciones CONTPAQi®", "/contpaqi"],
+  ["Distribuidor CONTPAQi® en León", "/distribuidor-contpaqi-leon"],
+  ["CONTPAQi® Contabilidad", "/contpaqi-contabilidad"],
+  ["CONTPAQi® Nóminas", "/contpaqi-nominas"],
+  ["CONTPAQi® Comercial Pro", "/contpaqi-comercial-pro"],
   ["Factura Electrónica", "/contpaqi-factura-electronica"],
-  ["CONTPAQi Personia", "/contpaqi-personia"],
+  ["CONTPAQi® Personia", "/contpaqi-personia"],
   ["Renovaciones", "/renovacion-contpaqi"],
-  ["Soporte CONTPAQi", "/soporte-contpaqi-leon"],
-  ["Cursos CONTPAQi", "/cursos-contpaqi"],
+  ["Soporte CONTPAQi®", "/soporte-contpaqi-leon"],
+  ["Cursos CONTPAQi®", "/cursos-contpaqi"],
 ];
 
 const serviceLinks = [
   ["Todos los servicios", "/#servicios"],
-  ["Instalación CONTPAQi", "/instalacion-contpaqi"],
-  ["Migración CONTPAQi", "/migracion-contpaqi"],
-  ["Servidores CONTPAQi", "/servidores-contpaqi"],
+  ["Instalación CONTPAQi®", "/instalacion-contpaqi"],
+  ["Migración CONTPAQi®", "/migracion-contpaqi"],
+  ["Servidores CONTPAQi®", "/servidores-contpaqi"],
   ["Optimización SQL", "/optimizacion-sql"],
   ["Pólizas de soporte TI", "/polizas-soporte-ti"],
 ];
@@ -82,7 +82,7 @@ export default function Navbar() {
 
           <div className="relative group">
             <button type="button" className={`flex items-center gap-1 py-3 ${desktopLink(contpaqiActive)}`} aria-haspopup="true">
-              CONTPAQi
+              CONTPAQi®
               <span className="text-xs transition-transform group-hover:rotate-180">▼</span>
             </button>
             <div className="absolute left-1/2 -translate-x-1/2 top-full w-[560px] pt-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150">
@@ -139,7 +139,7 @@ export default function Navbar() {
             onClick={() => setMobileSection(mobileSection === "contpaqi" ? null : "contpaqi")}
             className="w-full flex justify-between items-center py-3 border-b border-gray-100"
           >
-            CONTPAQi <span>{mobileSection === "contpaqi" ? "−" : "+"}</span>
+            CONTPAQi® <span>{mobileSection === "contpaqi" ? "−" : "+"}</span>
           </button>
           {mobileSection === "contpaqi" && (
             <div className="pl-4 py-2 bg-gray-50 rounded-xl my-2">
