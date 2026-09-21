@@ -4,9 +4,9 @@ export default function Brands() {
   const marcas = [
     {
       id: 1,
-      nombre: "CONTPAQi",
-      src: "/logo/logo-contpaqi.svg", 
-      alt: "Distribuidor CONTPAQi en León | MIDA",
+      nombre: "CONTPAQi®",
+      src: "/images/Logo_Institucional_CONTPAQi/Logo_Institucional_CONTPAQi/Logotipo.png", 
+      alt: "CONTPAQi® - software empresarial | Distribuidor MIDA en León",
     },
     {
       id: 2,
@@ -39,7 +39,7 @@ export default function Brands() {
         {/* Grid de 4 columnas perfectamente alineadas */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12 items-center justify-items-center w-full">
           {marcas.map((marca) => {
-            const esContpaqi = marca.nombre === "CONTPAQi";
+            const esContpaqi = marca.nombre === "CONTPAQi®";
             
             return (
               <div
@@ -49,7 +49,7 @@ export default function Brands() {
                   - Incrementamos el ancho máximo de Dell, Intel y HP de 130px a 170px (max-w-[150px] md:max-w-[170px]) para permitirles expandirse.
                 */
                
-                className={`w-full flex items-center justify-center opacity-75 hover:opacity-100 transition-all duration-300 ease-in-out transform hover:scale-105 h-16
+                className={`w-full flex items-center justify-center h-20
                   ${esContpaqi ? "max-w-[240px] md:max-w-[340px]" : "max-w-[150px] md:max-w-[170px]"}
                 `}
               >
@@ -62,7 +62,7 @@ export default function Brands() {
                   */
                   className={`object-contain ${
                     esContpaqi 
-                      ? "h-16 md:h-20 w-full scale-125 md:scale-135" 
+                      ? "h-auto w-full max-w-[250px]" 
                       : "h-14 md:h-16 w-auto"
                   }`}
                 />
