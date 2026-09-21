@@ -12,11 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const page = getSeoPage(slug);
   if (!page) return {};
-  return {
-    title: page.title,
-    description: page.description,
-    alternates: { canonical: `/${page.slug}` },
-  };
+  return { title: page.title, description: page.description, alternates: { canonical: `/${page.slug}` } };
 }
 
 export default async function SeoLanding({ params }: { params: Promise<{ slug: string }> }) {
@@ -33,22 +29,45 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
     description: page.description,
   };
 
+  const demoHref = `/contacto?interes=${encodeURIComponent(page.h1)}&accion=demostracion`;
+  const quoteHref = `/contacto?interes=${encodeURIComponent(page.h1)}&accion=cotizacion`;
+
   return (
     <main className="bg-white min-h-screen">
       <Navbar />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
+
       <section className="pt-40 pb-24 bg-mida-deep text-white px-6">
         <div className="max-w-5xl mx-auto">
           <span className="text-mida-light font-bold text-xs uppercase tracking-widest">{page.eyebrow}</span>
           <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-tight">{page.h1}</h1>
           <p className="mt-6 max-w-3xl text-gray-200 text-base md:text-lg leading-relaxed">{page.intro}</p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
-            <a href="/contacto" className="bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center">Solicitar cotización</a>
-            <a href="/contpaqi" className="border border-white/20 bg-white/5 text-white font-bold px-7 py-4 rounded-xl text-center">Ver soluciones CONTPAQi</a>
+            {page.productPage && <a href={demoHref} className="bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center">Solicitar demostración</a>}
+            <a href={quoteHref} className={page.productPage ? "border border-white/20 bg-white/5 text-white font-bold px-7 py-4 rounded-xl text-center" : "bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center"}>Solicitar cotización</a>
           </div>
         </div>
       </section>
+
       <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="max-w-3xl">
+            <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Funcionamiento y características</span>
+            <h2 className="mt-3 text-3xl font-black text-mida-deep">Una solución acompañada por especialistas MIDA</h2>
+            <p className="mt-5 text-gray-600 leading-relaxed">Analizamos las necesidades de tu empresa para definir el alcance, configuración e implementación adecuada de esta solución.</p>
+          </div>
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {page.features.map((feature) => (
+              <div key={feature} className="rounded-2xl bg-gray-50 border border-gray-100 p-6">
+                <div className="w-9 h-9 rounded-full bg-mida-primary/10 text-mida-primary flex items-center justify-center font-black">✓</div>
+                <h3 className="mt-4 font-bold text-mida-deep">{feature}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-6 bg-gray-50">
         <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
           <div>
             <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Beneficios y alcance</span>
@@ -57,16 +76,39 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           </div>
           <div className="grid gap-4">
             {page.benefits.map((benefit) => (
-              <div key={benefit} className="rounded-2xl border border-gray-100 shadow-sm p-5 font-semibold text-mida-deep">✓ {benefit}</div>
+              <div key={benefit} className="rounded-2xl bg-white border border-gray-100 shadow-sm p-5 font-semibold text-mida-deep">✓ {benefit}</div>
             ))}
           </div>
         </div>
       </section>
-      <section className="py-16 px-6 bg-mida-gray/30">
+
+      {page.productPage && (
+        <section className="py-20 px-6">
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
+            <div className="rounded-3xl border border-gray-100 p-8 shadow-sm">
+              <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Inversión</span>
+              <h2 className="mt-3 text-2xl font-black text-mida-deep">Cotización de acuerdo con tu necesidad</h2>
+              <p className="mt-4 text-gray-600 leading-relaxed">La inversión puede variar según licenciamiento, usuarios, alcance de implementación y servicios requeridos. Solicita una cotización para recibir una propuesta adecuada a tu empresa.</p>
+              <a href={quoteHref} className="inline-block mt-6 font-bold text-mida-primary">Solicitar cotización →</a>
+            </div>
+            <div className="rounded-3xl bg-mida-deep text-white p-8">
+              <span className="text-mida-light font-bold text-xs uppercase tracking-widest">Conoce la solución</span>
+              <h2 className="mt-3 text-2xl font-black">Solicita una demostración</h2>
+              <p className="mt-4 text-gray-200 leading-relaxed">Nuestro equipo puede mostrarte la solución y ayudarte a revisar si corresponde a las necesidades de tu operación.</p>
+              <a href={demoHref} className="inline-block mt-6 bg-mida-primary text-white font-bold px-6 py-3 rounded-xl">Solicitar demostración</a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="py-16 px-6 bg-mida-deep text-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-black text-mida-deep">¿Quieres revisar esta solución para tu empresa?</h2>
-          <p className="mt-4 text-gray-600">Cuéntanos qué necesitas. Podemos orientarte sobre alcance, implementación y siguientes pasos.</p>
-          <a href="/contacto" className="inline-block mt-7 bg-mida-primary text-white font-bold px-8 py-4 rounded-xl">Hablar con MIDA</a>
+          <h2 className="text-3xl font-black">{page.productPage ? "¿Quieres conocer esta solución?" : "¿Quieres revisar esta solución para tu empresa?"}</h2>
+          <p className="mt-4 text-gray-200">Cuéntanos qué necesitas. Podemos orientarte sobre alcance, implementación y siguientes pasos.</p>
+          <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
+            {page.productPage && <a href={demoHref} className="bg-mida-primary text-white font-bold px-8 py-4 rounded-xl">Solicitar demostración</a>}
+            <a href={quoteHref} className="border border-white/20 bg-white/5 text-white font-bold px-8 py-4 rounded-xl">Contactar a MIDA</a>
+          </div>
         </div>
       </section>
       <Footer />
