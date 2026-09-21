@@ -1,74 +1,37 @@
 "use client";
 
 import Image from "next/image";
-import { infoEmpresa } from "../components/config/empresa";
 
 export default function Hero() {
-  const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumeroBot}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminadoBot)}`;
-
   return (
     <section className="relative min-h-screen flex items-center bg-mida-deep text-white pt-28 overflow-hidden w-full">
-      
-      {/* 1. CONTENEDOR DE IMÁGENES RESPONSIVAS */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-        
-        {/* Imagen para Escritorio (Oculta en móvil) */}
         <div className="hidden lg:block w-full h-full relative opacity-85">
-          <Image
-            src="/images/oficina-desktop.png"
-            alt="Infraestructura TI MIDA Desktop"
-            fill
-            priority
-            className="object-cover object-right"
-          />
+          <Image src="/images/oficina-desktop.png" alt="Soluciones CONTPAQi e infraestructura TI de MIDA en León" fill priority className="object-cover object-right" />
         </div>
-
-        {/* Imagen para Móvil (Visible solo en móvil) */}
         <div className="lg:hidden w-full h-full relative opacity-50">
-          <Image
-            src="/images/oficina-mobile.png"
-            alt="Infraestructura TI MIDA Mobile"
-            fill
-            priority
-            className="object-cover object-center"
-          />
+          <Image src="/images/oficina-mobile.png" alt="Consultoría TI y soporte CONTPAQi de MIDA en León" fill priority className="object-cover object-center" />
         </div>
-        
-        {/* Degradado responsivo que funciona para ambas imágenes */}
         <div className="absolute inset-0 bg-gradient-to-t from-mida-deep via-mida-deep/90 to-mida-deep/70 lg:bg-gradient-to-r lg:from-mida-deep lg:from-40% lg:via-mida-deep/85 lg:via-60% lg:to-mida-deep/10" />
       </div>
-
-      {/* 2. CONTENIDO (Mismo de siempre) */}
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-20 relative z-10 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          <div className="lg:col-span-7 space-y-6 md:space-y-8 select-none">
+          <div className="lg:col-span-7 space-y-6 md:space-y-8">
             <span className="inline-flex items-center text-mida-light font-bold text-[10px] sm:text-xs uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full border border-white/5 backdrop-blur-sm">
-              Consultoría TI & Soporte Certificado
+              CONTPAQi · SQL · Infraestructura · Soporte
             </span>
-            
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight lg:leading-none">
-              Garantizamos la <span className="text-mida-light">continuidad</span> y potencia digital de tu empresa
+              Distribuidor <span className="text-mida-light">CONTPAQi en León</span>
             </h1>
-            
             <p className="text-mida-gray/90 text-sm sm:text-base md:text-lg max-w-2xl leading-relaxed">
-              Especialistas en instalación de sistemas CONTPAQi, optimización de servidores dedicados, bases de datos SQL de alta velocidad y pólizas de soporte técnico administrado en León, Gto.
+              Implementamos, optimizamos y damos soporte a sistemas CONTPAQi, servidores, SQL y redes empresariales en León y el Bajío.
             </p>
-
             <div className="pt-2 flex flex-col sm:flex-row gap-4">
-              <a 
-                href="/contacto" 
-                className="w-full sm:w-auto bg-mida-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-white hover:text-mida-deep transition-all shadow-lg text-xs sm:text-sm uppercase tracking-wider text-center"
-              >
-                Cotizar Solución TI
+              <a href="/contacto" className="w-full sm:w-auto bg-mida-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-white hover:text-mida-deep transition-all shadow-lg text-xs sm:text-sm uppercase tracking-wider text-center">
+                Solicitar cotización
               </a>
-              <a 
-                href={urlWhatsApp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto border border-white/20 bg-white/5 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-xl hover:bg-white/10 transition-all text-xs sm:text-sm uppercase tracking-wider text-center"
-              >
-                Atención por WhatsApp
+              <a href="/soporte-contpaqi-leon" className="w-full sm:w-auto border border-white/20 bg-white/5 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-xl hover:bg-white/10 transition-all text-xs sm:text-sm uppercase tracking-wider text-center">
+                Soporte CONTPAQi
               </a>
             </div>
           </div>
