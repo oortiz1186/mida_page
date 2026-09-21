@@ -1,37 +1,29 @@
-import { infoEmpresa } from "../components/config/empresa"; // <-- Centralización de SEO
+import { infoEmpresa } from "../components/config/empresa";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import Brands from "../components/Brands"; 
+import Authority from "../components/Authority";
 import Services from "../components/Services";
-import FAQ from "../components/FAQ";
-import CTA from "../components/CTA"; // <-- Importación del cierre comercial
+import SolutionLinks from "../components/SolutionLinks";
+import CTA from "../components/CTA";
 import Footer from "../components/Footer";
 
-// Optimizamos los metadatos dinámicamente con tu configuración global
 export const metadata = {
-  title: `${infoEmpresa.nombre || "MIDA"} | Consultoría TI, Soporte CONTPAQi y Servidores en León Gto`,
-  description: "Optimizamos la infraestructura tecnológica de tu empresa. Especialistas certificados en sistemas CONTPAQi, servidores SQL y soporte técnico empresarial en León, Guanajuato.",
+  title: "Distribuidor CONTPAQi en León | MIDA",
+  description: "Implementamos, optimizamos y damos soporte a sistemas CONTPAQi, servidores, SQL y redes empresariales en León y el Bajío.",
+  alternates: { canonical: "/" },
 };
 
 export default function Home() {
   return (
     <main className="bg-white min-h-screen flex flex-col">
-      {/* Menú de navegación fijo en la parte superior */}
       <Navbar />
-      
-      {/* Contenido principal ordenado estratégicamente */}
       <div className="flex-grow">
-        {/* Hero Section con propuesta de valor clara */}
         <Hero />
-
-        {/* Módulos de servicios técnicos y comerciales */}
+        <Authority />
         <Services />
-        
-        {/* Bloque de conversión final (Llamado a la Acción antes del cierre) */}
+        <SolutionLinks />
         <CTA />
       </div>
-      
-      {/* Cierre institucional de la página */}
       <Footer />
     </main>
   );
