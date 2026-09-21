@@ -87,8 +87,23 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
             <div className="rounded-3xl border border-gray-100 p-8 shadow-sm">
               <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Inversión</span>
-              <h2 className="mt-3 text-2xl font-black text-mida-deep">Cotización de acuerdo con tu necesidad</h2>
-              <p className="mt-4 text-gray-600 leading-relaxed">La inversión puede variar según licenciamiento, usuarios, alcance de implementación y servicios requeridos. Solicita una cotización para recibir una propuesta adecuada a tu empresa.</p>
+              {page.pricing ? (
+                <>
+                  <h2 className="mt-3 text-2xl font-black text-mida-deep">Precios de lista CONTPAQi 2026</h2>
+                  <div className="mt-5 overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead><tr className="border-b text-left text-gray-500"><th className="py-3 pr-3">Licenciamiento</th><th className="py-3 pr-3">Nueva</th><th className="py-3 pr-3">Renovación</th><th className="py-3">Usuario adicional</th></tr></thead>
+                      <tbody>{page.pricing.map((price) => <tr key={price.label} className="border-b border-gray-100"><td className="py-3 pr-3 font-semibold text-mida-deep">{price.label}</td><td className="py-3 pr-3">{price.newPrice}</td><td className="py-3 pr-3">{price.renewalPrice}</td><td className="py-3">{price.extraUser ?? "Consultar"}</td></tr>)}</tbody>
+                    </table>
+                  </div>
+                  <p className="mt-4 text-xs text-gray-500 leading-relaxed">Precios de lista al público CONTPAQi vigentes a partir del 02 de enero de 2026. Importes en pesos M.N. + IVA. Precios sujetos a cambio sin previo aviso. La implementación y otros servicios se cotizan de acuerdo con el alcance requerido.</p>
+                </>
+              ) : (
+                <>
+                  <h2 className="mt-3 text-2xl font-black text-mida-deep">Cotización de acuerdo con tu necesidad</h2>
+                  <p className="mt-4 text-gray-600 leading-relaxed">La inversión puede variar según licenciamiento, usuarios, alcance de implementación y servicios requeridos. Solicita una cotización para recibir una propuesta adecuada a tu empresa.</p>
+                </>
+              )}
               <a href={quoteHref} className="inline-block mt-6 font-bold text-mida-primary">Solicitar cotización →</a>
             </div>
             <div className="rounded-3xl bg-mida-deep text-white p-8">
