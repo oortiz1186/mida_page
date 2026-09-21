@@ -72,7 +72,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           <div>
             <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Beneficios y alcance</span>
             <h2 className="mt-3 text-3xl font-black text-mida-deep">Acompañamiento especializado para tu empresa</h2>
-            <p className="mt-5 text-gray-600 leading-relaxed">MIDA integra experiencia en CONTPAQi, SQL e infraestructura para acompañar la implementación y operación de soluciones empresariales.</p>
+            <p className="mt-5 text-gray-600 leading-relaxed">MIDA integra experiencia en CONTPAQi®, SQL e infraestructura para acompañar la implementación y operación de soluciones empresariales.</p>
           </div>
           <div className="grid gap-4">
             {page.benefits.map((benefit) => (
@@ -89,14 +89,14 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
               <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Inversión</span>
               {page.pricing ? (
                 <>
-                  <h2 className="mt-3 text-2xl font-black text-mida-deep">Precios de lista CONTPAQi 2026</h2>
+                  <h2 className="mt-3 text-2xl font-black text-mida-deep">Precios de lista CONTPAQi® 2026</h2>
                   <div className="mt-5 overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead><tr className="border-b text-left text-gray-500"><th className="py-3 pr-3">Licenciamiento</th><th className="py-3 pr-3">Nueva</th><th className="py-3 pr-3">Renovación</th><th className="py-3">Usuario adicional</th></tr></thead>
                       <tbody>{page.pricing.map((price) => <tr key={price.label} className="border-b border-gray-100"><td className="py-3 pr-3 font-semibold text-mida-deep">{price.label}</td><td className="py-3 pr-3">{price.newPrice}</td><td className="py-3 pr-3">{price.renewalPrice}</td><td className="py-3">{price.extraUser ?? "Consultar"}</td></tr>)}</tbody>
                     </table>
                   </div>
-                  <p className="mt-4 text-xs text-gray-500 leading-relaxed">Precios de lista al público CONTPAQi vigentes a partir del 02 de enero de 2026. Importes en pesos M.N. + IVA. Precios sujetos a cambio sin previo aviso. La implementación y otros servicios se cotizan de acuerdo con el alcance requerido.</p>
+                  <p className="mt-4 text-xs text-gray-500 leading-relaxed">Precios de lista al público CONTPAQi® vigentes a partir del 02 de enero de 2026. Importes en pesos M.N. + IVA. Precios sujetos a cambio sin previo aviso. La implementación y otros servicios se cotizan de acuerdo con el alcance requerido.</p>
                 </>
               ) : (
                 <>
