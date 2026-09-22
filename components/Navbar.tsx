@@ -6,15 +6,22 @@ import { usePathname } from "next/navigation";
 
 const contpaqiLinks = [
   ["Soluciones CONTPAQi®", "/contpaqi"],
-  ["Distribuidor CONTPAQi® en León", "/distribuidor-contpaqi-leon"],
-  ["CONTPAQi® Contabilidad", "/contpaqi-contabilidad"],
-  ["CONTPAQi® Nóminas", "/contpaqi-nominas"],
-  ["CONTPAQi® Comercial Pro", "/contpaqi-comercial-pro"],
-  ["Factura Electrónica", "/contpaqi-factura-electronica"],
-  ["CONTPAQi® Personia", "/contpaqi-personia"],
-  ["Renovaciones", "/renovacion-contpaqi"],
-  ["Soporte CONTPAQi®", "/soporte-contpaqi-leon"],
-  ["Cursos CONTPAQi®", "/cursos-contpaqi"],
+  ["CONTPAQi Contabilidad®", "/contpaqi-contabilidad"],
+  ["CONTPAQi Bancos®", "/contpaqi-bancos"],
+  ["CONTPAQi XML en línea+®", "/contpaqi-xml-en-linea"],
+  ["CONTPAQi Optimiza®", "/contpaqi-optimiza"],
+  ["CONTPAQi Anticipa®", "/contpaqi-anticipa"],
+  ["CONTPAQi Comercial Premium®", "/contpaqi-comercial-premium"],
+  ["CONTPAQi Comercial Pro®", "/contpaqi-comercial-pro"],
+  ["CONTPAQi Factura Electrónica®", "/contpaqi-factura-electronica"],
+  ["CONTPAQi CFDI Facturación en Línea+®", "/contpaqi-cfdi-facturacion-en-linea"],
+  ["CONTPAQi Vende®", "/contpaqi-vende"],
+  ["CONTPAQi Nóminas®", "/contpaqi-nominas"],
+  ["CONTPAQi Colabora®", "/contpaqi-colabora"],
+  ["CONTPAQi Evalúa®", "/contpaqi-evalua"],
+  ["CONTPAQi Kursa®", "/contpaqi-kursa"],
+  ["CONTPAQi Respaldos®", "/contpaqi-respaldos"],
+  ["CONTPAQi Escritorio Virtual®", "/contpaqi-escritorio-virtual"],
 ];
 
 const serviceLinks = [
@@ -85,8 +92,8 @@ export default function Navbar() {
               CONTPAQi®
               <span className="text-xs transition-transform group-hover:rotate-180">▼</span>
             </button>
-            <div className="absolute left-1/2 -translate-x-1/2 top-full w-[560px] pt-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 grid grid-cols-2 gap-1">
+            <div className="absolute left-1/2 -translate-x-1/2 top-full w-[720px] pt-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150">
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 grid grid-cols-3 gap-1">
                 {contpaqiLinks.map(([label, href]) => (
                   <a key={href} href={href} className="px-4 py-3 rounded-xl text-mida-deep hover:bg-gray-50 hover:text-mida-primary transition-colors">
                     {label}
