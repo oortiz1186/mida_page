@@ -12,22 +12,26 @@ export default function ContpaqiPage() {
       titulo: "Contables",
       productos: [
         {
-          nombre: "CONTPAQi® Bancos",
+          nombre: "CONTPAQi Bancos®",
+          href: "/contpaqi-bancos",
           desc: "Controla tus flujos de efectivo y conciliaciones bancarias al instante.",
           img: "/images/productos/bancos.png",
         },
         {
-          nombre: "CONTPAQi® Contabilidad",
+          nombre: "CONTPAQi Contabilidad®",
+          href: "/contpaqi-contabilidad",
           desc: "El estándar para tu contabilidad electrónica y reportes financieros.",
           img: "/images/productos/contabilidad.png",
         },
         {
-          nombre: "CONTPAQi® Nóminas",
+          nombre: "CONTPAQi Nóminas®",
+          href: "/contpaqi-nominas",
           desc: "Calcula sueldos, impuestos y prestaciones con total precisión.",
           img: "/images/productos/nominas.png",
         },
         {
-          nombre: "CONTPAQi® XML en línea+",
+          nombre: "CONTPAQi XML en línea+®",
+          href: "/contpaqi-xml-en-linea",
           desc: "Administra y descarga masiva de tus CFDI de forma segura.",
           img: "/images/productos/xml.png",
         },
@@ -37,14 +41,16 @@ export default function ContpaqiPage() {
       titulo: "Comerciales",
       productos: [
         {
-          nombre: "CONTPAQi® Comercial Pro",
+          nombre: "CONTPAQi Comercial Pro®",
+          href: "/contpaqi-comercial-pro",
           desc: "Gestión avanzada de inventarios, compras y ventas.",
           img: "/images/productos/comercial_pro.png",
         },
         {
-          nombre: "CONTPAQi® Comercial Premium",
+          nombre: "CONTPAQi Comercial Premium®",
+          href: "/contpaqi-comercial-premium",
           desc: "La solución robusta para empresas en crecimiento.",
-          img: "/images/productos/comercial_premium.avif",
+          img: "/images/productos/comercial_premium.png",
         },
         {
           nombre: "CONTPAQi® Comercial Start",
@@ -52,7 +58,8 @@ export default function ContpaqiPage() {
           img: "/images/productos/comercial_start.png",
         },
         {
-          nombre: "CONTPAQi® Factura Electonica",
+          nombre: "CONTPAQi Factura Electrónica®",
+          href: "/contpaqi-factura-electronica",
           desc: "Genera CFDI, administra tus clientes y controla tu proceso de facturación electrónica de manera sencilla y segura.",
           img: "/images/productos/factura_electronica.png",
         },
@@ -62,12 +69,14 @@ export default function ContpaqiPage() {
       titulo: "Nube",
       productos: [
         {
-          nombre: "CONTPAQi® CFDI en Linea",
+          nombre: "CONTPAQi CFDI Facturación en Línea+®",
+          href: "/contpaqi-cfdi-facturacion-en-linea",
           desc: "Tu facturación siempre disponible. Gestiona, envía y recibe tus comprobantes fiscales desde cualquier dispositivo.",
           img: "/images/productos/cfdi_linea.png",
         },
         {
-          nombre: "CONTPAQi® Evalúa",
+          nombre: "CONTPAQi Evalúa®",
+          href: "/contpaqi-evalua",
           desc: "Soluciones de evaluación y desempeño en la nube.",
           img: "/images/productos/evalua.png",
         },
@@ -82,27 +91,32 @@ export default function ContpaqiPage() {
           img: "/images/productos/personia.png",
         },
         {
-          nombre: "CONTPAQi® Vende",
+          nombre: "CONTPAQi Vende®",
+          href: "/contpaqi-vende",
           desc: "Plataforma de ventas en línea para tu negocio.",
           img: "/images/productos/vende.png",
         },
         {
-          nombre: "CONTPAQi® Optimiza",
+          nombre: "CONTPAQi Optimiza®",
+          href: "/contpaqi-optimiza",
           desc: "Herramientas de eficiencia operativa.",
           img: "/images/productos/optimiza.png",
         },
         {
-          nombre: "CONTPAQi® Anticipa",
+          nombre: "CONTPAQi Anticipa®",
+          href: "/contpaqi-anticipa",
           desc: "Gestiona pagos y anticipos con facilidad.",
           img: "/images/productos/anticipa.png",
         },
         {
-          nombre: "Escritorio Virtual",
+          nombre: "CONTPAQi Escritorio Virtual®",
+          href: "/contpaqi-escritorio-virtual",
           desc: "Accede a tu software desde cualquier dispositivo.",
           img: "/images/productos/escritorio.png",
         },
         {
-          nombre: "CONTPAQi® Respaldos",
+          nombre: "CONTPAQi Respaldos®",
+          href: "/contpaqi-respaldos",
           desc: "Seguridad total para tu información empresarial.",
           img: "/images/productos/respaldos1.png",
         },
@@ -231,7 +245,8 @@ export default function ContpaqiPage() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {cat.productos.map((prod) => (
-                <div
+                <a
+                  href={"href" in prod ? prod.href : "/contpaqi"}
                   key={prod.nombre}
                   className="bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group"
                 >
@@ -250,7 +265,7 @@ export default function ContpaqiPage() {
                   <p className="text-gray-500 text-sm leading-relaxed flex-grow">
                     {prod.desc}
                   </p>
-                </div>
+                </a>
               ))}
             </div>
           </div>
