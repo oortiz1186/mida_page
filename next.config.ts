@@ -9,7 +9,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://formspree.io https://www.google-analytics.com https://region1.google-analytics.com https://www.google.com",
-  "frame-src https://www.google.com https://recaptcha.google.com",
+  "frame-src https://www.google.com https://recaptcha.google.com https://www.youtube.com https://www.youtube-nocookie.com",
   "form-action 'self' https://formspree.io",
   "base-uri 'self'",
   "frame-ancestors 'none'",
