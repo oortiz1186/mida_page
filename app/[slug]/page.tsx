@@ -149,6 +149,43 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
         </section>
       )}
 
+      {page.productPage && (
+        <section className="py-20 px-6 bg-slate-50 border-t border-gray-100">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center max-w-3xl mx-auto">
+              <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Implementación MIDA</span>
+              <h2 className="mt-3 text-3xl md:text-4xl font-black text-mida-deep">Más que una licencia: te acompañamos a ponerla en operación</h2>
+              <p className="mt-5 text-gray-600 leading-relaxed">MIDA complementa la solución CONTPAQi® con servicios para que la adopción sea ordenada y acorde con la operación de tu empresa.</p>
+            </div>
+            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {[
+                ["01", "Licenciamiento", "Te orientamos sobre el esquema y número de usuarios adecuado para tu operación."],
+                ["02", "Implementación", "Configuramos la solución y apoyamos la puesta en marcha según el alcance acordado."],
+                ["03", "Capacitación", "Acompañamos a tus usuarios para que aprovechen las funciones clave del sistema."],
+                ["04", "Soporte", "Brindamos acompañamiento técnico para CONTPAQi®, SQL e infraestructura relacionada."],
+              ].map(([number, title, text]) => (
+                <div key={title} className="rounded-3xl bg-white border border-gray-100 p-6 shadow-sm">
+                  <span className="text-4xl font-black text-mida-primary/20">{number}</span>
+                  <h3 className="mt-3 text-lg font-black text-mida-deep">{title}</h3>
+                  <p className="mt-3 text-sm text-gray-600 leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-10 rounded-[2rem] bg-gradient-to-r from-mida-deep to-mida-primary p-8 md:p-10 text-white flex flex-col lg:flex-row gap-8 items-start lg:items-center justify-between">
+              <div className="max-w-2xl">
+                <span className="text-mida-light font-bold text-xs uppercase tracking-widest">Acompañamiento especializado</span>
+                <h3 className="mt-2 text-2xl md:text-3xl font-black">Implementa {page.h1} con MIDA</h3>
+                <p className="mt-3 text-gray-100">Revisamos contigo licenciamiento, instalación, configuración, capacitación y soporte para definir el alcance que realmente necesita tu empresa.</p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+                <a href={demoHref} className="bg-white text-mida-deep font-bold px-6 py-3 rounded-xl text-center">Solicitar demostración</a>
+                <a href={quoteHref} className="border border-white/30 bg-white/10 text-white font-bold px-6 py-3 rounded-xl text-center">Cotizar solución</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="py-16 px-6 bg-mida-deep text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-black">{page.productPage ? "¿Quieres conocer esta solución?" : "¿Quieres revisar esta solución para tu empresa?"}</h2>
