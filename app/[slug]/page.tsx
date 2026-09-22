@@ -38,19 +38,20 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
       <Navbar />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
 
-      <section className="pt-40 pb-24 bg-mida-deep text-white px-6">
+      <section className="pt-36 pb-20 bg-gradient-to-br from-mida-deep via-mida-deep to-mida-primary text-white px-6 relative overflow-hidden">
         <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_280px] gap-10 items-center">
           <div>
-            <span className="text-mida-light font-bold text-xs uppercase tracking-widest">{page.eyebrow}</span>
+            <span className="inline-flex rounded-full bg-white/10 border border-white/15 px-4 py-2 text-mida-light font-bold text-xs uppercase tracking-widest">{page.eyebrow}</span>
             <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-tight">{page.h1}</h1>
             <p className="mt-6 max-w-3xl text-gray-200 text-base md:text-lg leading-relaxed">{page.intro}</p>
+            {page.productPage && <div className="mt-7 flex flex-wrap gap-3">{page.features.slice(0, 3).map((item) => <span key={item} className="rounded-full bg-white/10 border border-white/10 px-4 py-2 text-sm font-semibold">✓ {item}</span>)}</div>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               {page.productPage && <a href={demoHref} className="bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center">Solicitar demostración</a>}
               <a href={quoteHref} className={page.productPage ? "border border-white/20 bg-white/5 text-white font-bold px-7 py-4 rounded-xl text-center" : "bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center"}>Solicitar cotización</a>
             </div>
           </div>
           {page.productPage && page.image && (
-            <div className="bg-white rounded-3xl p-8 flex items-center justify-center min-h-56 shadow-xl">
+            <div className="bg-white rounded-[2rem] p-8 flex items-center justify-center min-h-64 shadow-2xl ring-1 ring-white/20">
               <Image src={page.image} alt={`${page.h1} | MIDA`} width={240} height={180} className="max-h-44 w-auto object-contain" priority />
             </div>
           )}
@@ -61,12 +62,12 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
         <div className="max-w-6xl mx-auto">
           <div className="max-w-3xl">
             <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Funcionamiento y características</span>
-            <h2 className="mt-3 text-3xl font-black text-mida-deep">Una solución acompañada por especialistas MIDA</h2>
-            <p className="mt-5 text-gray-600 leading-relaxed">Analizamos las necesidades de tu empresa para definir el alcance, configuración e implementación adecuada de esta solución.</p>
+            <h2 className="mt-3 text-3xl md:text-4xl font-black text-mida-deep">¿Qué puedes hacer con {page.h1}?</h2>
+            <p className="mt-5 text-gray-600 leading-relaxed">Conoce las funciones principales de la solución y cómo MIDA puede ayudarte a implementarla, configurarla y mantenerla operando correctamente.</p>
           </div>
           <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {page.features.map((feature) => (
-              <div key={feature} className="rounded-2xl bg-gray-50 border border-gray-100 p-6">
+              <div key={feature} className="rounded-3xl bg-white border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
                 <div className="w-9 h-9 rounded-full bg-mida-primary/10 text-mida-primary flex items-center justify-center font-black">✓</div>
                 <h3 className="mt-4 font-bold text-mida-deep">{feature}</h3>
               </div>
@@ -75,12 +76,12 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
         </div>
       </section>
 
-      <section className="py-20 px-6 bg-gray-50">
+      <section className="py-20 px-6 bg-slate-50">
         <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
           <div>
             <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Beneficios y alcance</span>
-            <h2 className="mt-3 text-3xl font-black text-mida-deep">Acompañamiento especializado para tu empresa</h2>
-            <p className="mt-5 text-gray-600 leading-relaxed">MIDA integra experiencia en CONTPAQi®, SQL e infraestructura para acompañar la implementación y operación de soluciones empresariales.</p>
+            <h2 className="mt-3 text-3xl md:text-4xl font-black text-mida-deep">Beneficios para tu operación</h2>
+            <p className="mt-5 text-gray-600 leading-relaxed">Aprovecha las capacidades de {page.h1} con el respaldo de MIDA para licenciamiento, implementación, capacitación, SQL e infraestructura.</p>
           </div>
           <div className="grid gap-4">
             {page.benefits.map((benefit) => (
@@ -91,14 +92,14 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
       </section>
 
       {page.productPage && page.youtubeVideoId && (
-        <section className="py-20 px-6 bg-white">
+        <section className="py-20 px-6 bg-white border-y border-gray-100">
           <div className="max-w-5xl mx-auto">
             <div className="text-center max-w-3xl mx-auto">
               <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Video oficial</span>
-              <h2 className="mt-3 text-3xl font-black text-mida-deep">Conoce {page.h1}</h2>
+              <h2 className="mt-3 text-3xl md:text-4xl font-black text-mida-deep">Conoce {page.h1} en acción</h2>
               <p className="mt-4 text-gray-600">Conoce la solución a través del contenido oficial de CONTPAQi®.</p>
             </div>
-            <div className="mt-10 aspect-video rounded-3xl overflow-hidden shadow-xl bg-black">
+            <div className="mt-10 aspect-video rounded-[2rem] overflow-hidden shadow-2xl bg-black ring-1 ring-black/5">
               <iframe
                 className="w-full h-full"
                 src={`https://www.youtube-nocookie.com/embed/${page.youtubeVideoId}`}
