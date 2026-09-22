@@ -44,7 +44,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
             <span className="inline-flex rounded-full bg-white/10 border border-white/15 px-4 py-2 text-mida-light font-bold text-xs uppercase tracking-widest">{page.eyebrow}</span>
             <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-tight">{page.h1}</h1>
             <p className="mt-6 max-w-3xl text-gray-200 text-base md:text-lg leading-relaxed">{page.intro}</p>
-            {page.productPage && <div className="mt-7 flex flex-wrap gap-3">{page.features.slice(0, 3).map((item) => <span key={item} className="rounded-full bg-white/10 border border-white/10 px-4 py-2 text-sm font-semibold">✓ {item}</span>)}</div>
+            {page.productPage && <div className="mt-7 flex flex-wrap gap-3">{page.features.slice(0, 3).map((item) => <span key={item} className="rounded-full bg-white/10 border border-white/10 px-4 py-2 text-sm font-semibold">✓ {item}</span>)}</div>}
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               {page.productPage && <a href={demoHref} className="bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center">Solicitar demostración</a>}
               <a href={quoteHref} className={page.productPage ? "border border-white/20 bg-white/5 text-white font-bold px-7 py-4 rounded-xl text-center" : "bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center"}>Solicitar cotización</a>
