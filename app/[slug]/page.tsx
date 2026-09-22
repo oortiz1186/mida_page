@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { getSeoPage, seoPages } from "../../lib/seoPages";
@@ -38,7 +39,8 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
 
       <section className="pt-40 pb-24 bg-mida-deep text-white px-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_280px] gap-10 items-center">
+          <div>
           <span className="text-mida-light font-bold text-xs uppercase tracking-widest">{page.eyebrow}</span>
           <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-tight">{page.h1}</h1>
           <p className="mt-6 max-w-3xl text-gray-200 text-base md:text-lg leading-relaxed">{page.intro}</p>
@@ -46,6 +48,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
             {page.productPage && <a href={demoHref} className="bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center">Solicitar demostración</a>}
             <a href={quoteHref} className={page.productPage ? "border border-white/20 bg-white/5 text-white font-bold px-7 py-4 rounded-xl text-center" : "bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center"}>Solicitar cotización</a>
           </div>
+          {page.productPage && page.image && <div className="bg-white rounded-3xl p-8 flex items-center justify-center min-h-56 shadow-xl"><Image src={page.image} alt={`${page.h1} | MIDA`} width={240} height={180} className="max-h-44 w-auto object-contain" priority /></div>}
         </div>
       </section>
 
@@ -111,6 +114,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
               <h2 className="mt-3 text-2xl font-black">Solicita una demostración</h2>
               <p className="mt-4 text-gray-200 leading-relaxed">Nuestro equipo puede mostrarte la solución y ayudarte a revisar si corresponde a las necesidades de tu operación.</p>
               <a href={demoHref} className="inline-block mt-6 bg-mida-primary text-white font-bold px-6 py-3 rounded-xl">Solicitar demostración</a>
+              {page.sourceUrl && <p className="mt-5 text-xs text-gray-300">Información funcional basada en la página oficial vigente de CONTPAQi®.</p>}
             </div>
           </div>
         </section>
