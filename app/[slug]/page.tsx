@@ -90,6 +90,29 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
         </div>
       </section>
 
+      {page.productPage && page.youtubeVideoId && (
+        <section className="py-20 px-6 bg-white">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center max-w-3xl mx-auto">
+              <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Video oficial</span>
+              <h2 className="mt-3 text-3xl font-black text-mida-deep">Conoce {page.h1}</h2>
+              <p className="mt-4 text-gray-600">Conoce la solución a través del contenido oficial de CONTPAQi®.</p>
+            </div>
+            <div className="mt-10 aspect-video rounded-3xl overflow-hidden shadow-xl bg-black">
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube-nocookie.com/embed/${page.youtubeVideoId}`}
+                title={`Video oficial de ${page.h1}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
       {page.productPage && (
         <section className="py-20 px-6">
           <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
