@@ -41,14 +41,19 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
       <section className="pt-40 pb-24 bg-mida-deep text-white px-6">
         <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_280px] gap-10 items-center">
           <div>
-          <span className="text-mida-light font-bold text-xs uppercase tracking-widest">{page.eyebrow}</span>
-          <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-tight">{page.h1}</h1>
-          <p className="mt-6 max-w-3xl text-gray-200 text-base md:text-lg leading-relaxed">{page.intro}</p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-4">
-            {page.productPage && <a href={demoHref} className="bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center">Solicitar demostración</a>}
-            <a href={quoteHref} className={page.productPage ? "border border-white/20 bg-white/5 text-white font-bold px-7 py-4 rounded-xl text-center" : "bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center"}>Solicitar cotización</a>
+            <span className="text-mida-light font-bold text-xs uppercase tracking-widest">{page.eyebrow}</span>
+            <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-tight">{page.h1}</h1>
+            <p className="mt-6 max-w-3xl text-gray-200 text-base md:text-lg leading-relaxed">{page.intro}</p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              {page.productPage && <a href={demoHref} className="bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center">Solicitar demostración</a>}
+              <a href={quoteHref} className={page.productPage ? "border border-white/20 bg-white/5 text-white font-bold px-7 py-4 rounded-xl text-center" : "bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center"}>Solicitar cotización</a>
+            </div>
           </div>
-          {page.productPage && page.image && <div className="bg-white rounded-3xl p-8 flex items-center justify-center min-h-56 shadow-xl"><Image src={page.image} alt={`${page.h1} | MIDA`} width={240} height={180} className="max-h-44 w-auto object-contain" priority /></div>}
+          {page.productPage && page.image && (
+            <div className="bg-white rounded-3xl p-8 flex items-center justify-center min-h-56 shadow-xl">
+              <Image src={page.image} alt={`${page.h1} | MIDA`} width={240} height={180} className="max-h-44 w-auto object-contain" priority />
+            </div>
+          )}
         </div>
       </section>
 
