@@ -13,6 +13,16 @@ export const metadata: Metadata = {
   title: { default: "MIDA | CONTPAQi, SQL y Soporte TI en León", template: "%s" },
   description: "Soluciones CONTPAQi, servidores, SQL, soporte y consultoría TI para empresas en León y el Bajío.",
   robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "es_MX",
+    url: "/",
+    siteName: "MIDA Tech Consulting",
+    title: "MIDA | CONTPAQi, SQL y Soporte TI en León",
+    description: "Soluciones CONTPAQi, servidores, SQL, soporte y consultoría TI para empresas en León y el Bajío.",
+  },
+  twitter: { card: "summary_large_image", title: "MIDA | CONTPAQi, SQL y Soporte TI en León", description: "Soluciones CONTPAQi, servidores, SQL, soporte y consultoría TI para empresas en León y el Bajío." },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
