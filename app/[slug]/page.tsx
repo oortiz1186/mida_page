@@ -13,7 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const page = getSeoPage(slug);
   if (!page) return {};
-  return { title: page.title, description: page.description, alternates: { canonical: `/${page.slug}` } };
+  return {
+    title: page.title,
+    description: page.description,
+    alternates: { canonical: `/${page.slug}` },
+    openGraph: { title: page.title, description: page.description, url: `/${page.slug}`, type: "website", images: page.image ? [{ url: page.image, alt: page.h1 }] : undefined },
+    twitter: { card: "summary_large_image", title: page.title, description: page.description, images: page.image ? [page.image] : undefined },
+  };
 }
 
 export default async function SeoLanding({ params }: { params: Promise<{ slug: string }> }) {
@@ -28,6 +34,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
     provider: { "@type": "Organization", name: "MIDA Tech Consulting", url: "https://mida.mx" },
     areaServed: ["León, Guanajuato", "Bajío, México"],
     description: page.description,
+    url: `https://mida.mx/${page.slug}`,
   };
 
   const demoHref = `/contacto?interes=${encodeURIComponent(page.h1)}&accion=demostracion`;
