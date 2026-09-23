@@ -16,5 +16,5 @@ export const infoEmpresa = {
   direccionLinea1: "Blvr. Mariano Escobedo Pte. 4502 Int 401-A, San Isidro de Jerez, Centro de Negocios Plaza K2",
   direccionLinea2: "León, Guanajuato, México.",
   correoContacto: "dulce@mida.mx",
-  googleAnalyticsId: "G-XXXXXXX",
+  googleAnalyticsId: "G-Z6X2PK80P1",
 };
