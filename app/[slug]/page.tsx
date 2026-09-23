@@ -119,7 +119,19 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
             <div className="rounded-3xl border border-gray-100 p-8 shadow-sm">
               <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Inversión</span>
-              {page.pricing ? (
+              {page.pricingTable ? (
+                <>
+                  <h2 className="mt-3 text-2xl font-black text-mida-deep">Precios de lista CONTPAQi® 2026</h2>
+                  <div className="mt-5 overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead><tr className="border-b text-left text-gray-500">{page.pricingTable.columns.map((column) => <th key={column} className="py-3 pr-4">{column}</th>)}</tr></thead>
+                      <tbody>{page.pricingTable.rows.map((row) => <tr key={row.join("-")} className="border-b border-gray-100">{row.map((cell, index) => <td key={`${index}-${cell}`} className={`py-3 pr-4 ${index === 0 ? "font-semibold text-mida-deep" : ""}`}>{cell}</td>)}</tr>)}</tbody>
+                    </table>
+                  </div>
+                  {page.pricingTable.note && <p className="mt-4 text-xs text-gray-500 leading-relaxed">{page.pricingTable.note}</p>}
+                  <p className="mt-3 text-xs text-gray-500 leading-relaxed">Precios de lista al público CONTPAQi® vigentes a partir del 02 de enero de 2026. Importes en pesos M.N. + IVA. Precios sujetos a cambio sin previo aviso. La implementación y otros servicios se cotizan de acuerdo con el alcance requerido.</p>
+                </>
+              ) : page.pricing ? (
                 <>
                   <h2 className="mt-3 text-2xl font-black text-mida-deep">Precios de lista CONTPAQi® 2026</h2>
                   <div className="mt-5 overflow-x-auto">
