@@ -54,6 +54,7 @@ export default function ContpaqiPage() {
         },
         {
           nombre: "CONTPAQi® Comercial Start",
+          href: "/contpaqi-comercial-start",
           desc: "Administración comercial ágil y sencilla.",
           img: "/images/productos/comercial_start.png",
         },
@@ -87,6 +88,7 @@ export default function ContpaqiPage() {
         },
         {
           nombre: "CONTPAQi® Personia",
+          href: "/contpaqi-personia",
           desc: "Gestión de capital humano digitalizado.",
           img: "/images/productos/personia.png",
         },
