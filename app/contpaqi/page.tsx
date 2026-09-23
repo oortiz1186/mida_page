@@ -122,6 +122,24 @@ export default function ContpaqiPage() {
           desc: "Seguridad total para tu información empresarial.",
           img: "/images/productos/respaldos1.png",
         },
+        {
+          nombre: "CONTPAQi Colabora®",
+          href: "/contpaqi-colabora",
+          desc: "Asistencia, comunicación y autoservicio para colaboradores.",
+          img: "/images/productos/nominas.png",
+        },
+        {
+          nombre: "CONTPAQi Kursa®",
+          href: "/contpaqi-kursa",
+          desc: "Capacitación en línea sobre sistemas CONTPAQi® y temas especializados.",
+          img: "/images/productos/generica.jpg",
+        },
+        {
+          nombre: "CONTPAQi Tesorería®",
+          href: "/contpaqi-tesoreria",
+          desc: "Control y seguimiento de la tesorería empresarial.",
+          img: "/images/productos/generica.jpg",
+        },
       ],
     },
   ];
