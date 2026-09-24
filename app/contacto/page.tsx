@@ -51,13 +51,13 @@ export default function ContactoPage() {
       {/* ENCABEZADO PRINCIPAL */}
       <section className="pt-40 pb-12 bg-mida-deep text-white px-6 relative overflow-hidden">
         <div className="max-w-7xl mx-auto text-left relative z-10 space-y-3">
-          <span className="inline-block text-mida-light font-bold text-xs uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full">
+          <span className="inline-block text-white font-bold text-xs uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full">
             Atención Corporativa
           </span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight">
-            Inicia tu proyecto con <span className="text-mida-light">MIDA</span>
+            Inicia tu proyecto con <span className="text-white">MIDA</span>
           </h1>
-          <p className="text-mida-gray/70 text-sm md:text-base max-w-2xl leading-relaxed">
+          <p className="text-white/85 text-sm md:text-base max-w-2xl leading-relaxed">
             Ponte en contacto con nuestros asesores comerciales y técnicos. Evaluamos tus necesidades operativas de inmediato.
           </p>
         </div>
@@ -134,8 +134,8 @@ export default function ContactoPage() {
         <div className="bg-mida-deep text-white p-8 sm:p-10 rounded-3xl flex flex-col justify-between relative overflow-hidden shadow-lg">
           <div className="space-y-8 relative z-10">
             <div>
-              <h3 className="text-xl font-black tracking-tight text-mida-light">Información de Contacto</h3>
-              <p className="text-mida-gray/60 text-xs mt-1">Atención directa de lunes a viernes en horarios de oficina.</p>
+              <h3 className="text-xl font-black tracking-tight text-white">Información de Contacto</h3>
+              <p className="text-white/75 text-xs mt-1">Atención directa de lunes a viernes en horarios de oficina.</p>
             </div>
 
             <div className="space-y-6">
@@ -144,7 +144,7 @@ export default function ContactoPage() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                 </div>
                 <div>
-                  <p className="text-xs text-mida-gray/50 uppercase tracking-wider font-bold">Teléfono Oficina</p>
+                  <p className="text-xs text-white/70 uppercase tracking-wider font-bold">Teléfono Oficina</p>
                   <a href={`tel:${infoEmpresa.telefonoEnlace}`} className="text-sm font-semibold hover:text-mida-light transition-colors">{infoEmpresa.telefonoTexto}</a>
                 </div>
               </div>
@@ -154,7 +154,7 @@ export default function ContactoPage() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 </div>
                 <div>
-                  <p className="text-xs text-mida-gray/50 uppercase tracking-wider font-bold">Correo Electrónico</p>
+                  <p className="text-xs text-white/70 uppercase tracking-wider font-bold">Correo Electrónico</p>
                   <a href={`mailto:${infoEmpresa.correoContacto}`} className="text-sm font-semibold hover:text-mida-light transition-colors break-all">{infoEmpresa.correoContacto}</a>
                 </div>
               </div>
@@ -164,15 +164,15 @@ export default function ContactoPage() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 </div>
                 <div>
-                  <p className="text-xs text-mida-gray/50 uppercase tracking-wider font-bold">Ubicación Corporativa</p>
-                  <p className="text-sm font-semibold leading-relaxed text-mida-gray/90">{infoEmpresa.direccionCompleta}</p>
+                  <p className="text-xs text-white/70 uppercase tracking-wider font-bold">Ubicación Corporativa</p>
+                  <p className="text-sm font-semibold leading-relaxed text-white/90">{infoEmpresa.direccionCompleta}</p>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="mt-8 border-t border-white/10 pt-6 relative z-10">
-            <p className="text-xs text-mida-gray/40 leading-relaxed">
+            <p className="text-xs text-white/70 leading-relaxed">
               Al enviar este formulario aceptas el tratamiento de tus datos exclusivamente para fines de prospección comercial de MIDA.
             </p>
           </div>
