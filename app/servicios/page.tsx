@@ -3,7 +3,14 @@ import Footer from "../../components/Footer";
 
 export const metadata = {
   title: "Servicios de Consultoría Tecnológica y Soporte TI | MIDA",
-  description: "Portafolio integral de soluciones tecnológicas: Soporte especializado, base de datos SQL, redes seguras y capacitación corporativa.",
+  description: "Servicios de implementación y soporte CONTPAQi, SQL, servidores, redes, capacitación y consultoría TI para empresas en León y el Bajío.",
+  alternates: { canonical: "/servicios" },
+  openGraph: {
+    title: "Servicios de Consultoría Tecnológica y Soporte TI | MIDA",
+    description: "Servicios CONTPAQi, SQL, servidores, redes, capacitación y consultoría TI para empresas.",
+    url: "/servicios",
+    type: "website",
+  },
 };
 
 export default function ServiciosPage() {
