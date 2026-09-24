@@ -3,7 +3,7 @@ import { Inter, DM_Sans } from "next/font/google";
 import { infoEmpresa } from "../components/config/empresa";
 import "./globals.css";
 import dynamic from "next/dynamic";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-dm-sans" });
@@ -62,7 +62,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={dmSans.className}>
         {children}
         <WhatsAppButton />
-        {infoEmpresa.googleAnalyticsId && infoEmpresa.googleAnalyticsId !== "G-XXXXXXX" && <GoogleAnalytics gaId={infoEmpresa.googleAnalyticsId} />}
+        {infoEmpresa.googleAnalyticsId && infoEmpresa.googleAnalyticsId !== "G-XXXXXXX" && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${infoEmpresa.googleAnalyticsId}`}
+              strategy="lazyOnload"
+            />
+            <Script id="google-analytics" strategy="lazyOnload">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${infoEmpresa.googleAnalyticsId}', { send_page_view: true });
+              `}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );
