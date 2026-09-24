@@ -32,9 +32,6 @@ async function generarRespuestaIA(mensajeUsuario: string) {
 
   const data = await response.json();
 
-  console.log("STATUS GEMINI:", response.status);
-  console.log("RESPUESTA GEMINI:", JSON.stringify(data));
-
   if (!response.ok) {
     console.error("ERROR GEMINI:", data);
 
@@ -153,9 +150,6 @@ async function enviarMensajeWhatsApp(destino: string, mensaje: string) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-
-    console.log("WEBHOOK RECIBIDO:");
-    console.log(JSON.stringify(body, null, 2));
 
     const event = body?.event;
     const data = body?.data;
@@ -295,8 +289,6 @@ export async function POST(req: Request) {
     }
 
     const intencion = detectarIntencion(userMessage);
-
-    console.log("INTENCION DETECTADA:", intencion);
 
     if (contact) {
       await supabase.from("whatsapp_messages").insert([
@@ -658,7 +650,6 @@ ${mensajeCompleto}`,
     ${userMessage}`,
         );
 
-        console.log("ALERTA DE VENTA ENVIADA");
       }
     }
 
@@ -710,7 +701,6 @@ ${mensajeCompleto}`,
     ${userMessage}`,
         );
 
-        console.log("ALERTA ENVIADA AL ASESOR");
       } else {
         if (!mensajeTieneDetalleSoporte(userMessage)) {
           await supabase
@@ -755,10 +745,6 @@ ${mensajeCompleto}`,
 
     const respuestaIA = String(await generarRespuestaIA(userMessage)).trim();
 
-    console.log("RESPUESTA IA FINAL:", respuestaIA);
-    console.log("TIPO RESPUESTA IA:", typeof respuestaIA);
-    console.log("NUMERO DESTINO:", remoteJid.replace("@s.whatsapp.net", ""));
-
     const evolutionResponse = await fetch(
       `${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE_NAME}`,
       {
@@ -789,9 +775,6 @@ ${mensajeCompleto}`,
         },
       ]);
     }
-
-    console.log("STATUS EVOLUTION:", evolutionResponse.status);
-    console.log("RESPUESTA EVOLUTION:", JSON.stringify(evolutionData));
 
     return NextResponse.json({
       success: true,
