@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { Inter, DM_Sans } from "next/font/google";
 import { infoEmpresa } from "../components/config/empresa";
 import "./globals.css";
-import WhatsAppButton from "../components/WhatsAppButton";
+import dynamic from "next/dynamic";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-dm-sans" });
+
+const WhatsAppButton = dynamic(() => import("../components/WhatsAppButton"));
 
 export const metadata: Metadata = {
   metadataBase: new URL(infoEmpresa.dominio),
