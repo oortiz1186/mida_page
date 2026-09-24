@@ -32,7 +32,7 @@ export default function SolutionLinks() {
     <section className="py-20 bg-mida-deep text-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="max-w-3xl mb-12">
-          <span className="text-mida-light font-bold text-xs uppercase tracking-widest">Soluciones MIDA</span>
+          <span className="text-white font-bold text-xs uppercase tracking-widest">Soluciones MIDA</span>
           <h2 className="mt-3 text-3xl md:text-4xl font-black">Tecnología, soporte e implementación para tu empresa</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
@@ -41,7 +41,7 @@ export default function SolutionLinks() {
               <h3 className="text-xl font-bold mb-5">{group.title}</h3>
               <div className="space-y-3">
                 {group.items.map(([label, href]) => (
-                  <a key={label} href={href} className="flex items-center justify-between text-sm text-gray-200 hover:text-mida-light transition-colors">
+                  <a key={label} href={href} className="flex items-center justify-between text-sm text-white/90 hover:text-white transition-colors">
                     <span>{label}</span><span aria-hidden>→</span>
                   </a>
                 ))}
