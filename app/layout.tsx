@@ -3,7 +3,6 @@ import { Inter, DM_Sans } from "next/font/google";
 import { infoEmpresa } from "../components/config/empresa";
 import "./globals.css";
 import dynamic from "next/dynamic";
-import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-dm-sans" });
@@ -63,22 +62,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <WhatsAppButton />
         {infoEmpresa.googleAnalyticsId && infoEmpresa.googleAnalyticsId !== "G-XXXXXXX" && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${infoEmpresa.googleAnalyticsId}`}
-              strategy="lazyOnload"
-            />
-            <Script id="google-analytics" strategy="lazyOnload">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${infoEmpresa.googleAnalyticsId}', { send_page_view: true });
-              `}
-            </Script>
-          </>
-        )}
-      </body>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function () {
+                  var loaded = false;
+                  function loadAnalytics() {
+                    if (loaded) return;
+                    loaded = true;
+                    window.dataLayer = window.dataLayer || [];
+                    window.gtag = function(){ window.dataLayer.push(arguments); };
+                    window.gtag('js', new Date());
+                    window.gtag('config', '${infoEmpresa.googleAnalyticsId}', { send_page_view: true });
+                    var ga = document.createElement('script');
+                    ga.async = true;
+                    ga.src = 'https://www.googletagmanager.com/gtag/js?id=${infoEmpresa.googleAnalyticsId}';
+                    document.head.appendChild(ga);
+                  }
+                  function scheduleAnalytics() {
+                    if ('requestIdleCallback' in window) {
+                      window.requestIdleCallback(loadAnalytics, { timeout: 8000 });
+                    } else {
+                      window.setTimeout(loadAnalytics, 5000);
+                    }
+                  }
+                  if (document.readyState === 'complete') scheduleAnalytics();
+                  else window.addEventListener('load', scheduleAnalytics, { once: true });
+                })();
+              `,
+            }}
+          />
+        )}      </body>
     </html>
   );
 }
