@@ -1,0 +1,24 @@
+# MIDA Tech Consulting
+
+MIDA ofrece soluciones CONTPAQi, consultoría TI, soporte, SQL, servidores, infraestructura, capacitación e integraciones para empresas en León y el Bajío.
+
+## Sitio principal
+
+- [MIDA Tech Consulting](https://mida.mx/)
+- [Sistemas CONTPAQi](https://mida.mx/contpaqi)
+- [Servicios TI](https://mida.mx/servicios)
+- [Soporte CONTPAQi en León](https://mida.mx/soporte-contpaqi-leon)
+- [Equipamiento tecnológico](https://mida.mx/equipamiento)
+- [Cursos](https://mida.mx/cursos)
+- [Contacto](https://mida.mx/contacto)
+
+## Servicios especializados
+
+- [Distribuidor CONTPAQi en León](https://mida.mx/distribuidor-contpaqi-leon)
+- [Renovación CONTPAQi](https://mida.mx/renovacion-contpaqi)
+- [Instalación CONTPAQi](https://mida.mx/instalacion-contpaqi)
+- [Migración CONTPAQi](https://mida.mx/migracion-contpaqi)
+- [Servidores para CONTPAQi](https://mida.mx/servidores-contpaqi)
+- [Optimización SQL](https://mida.mx/optimizacion-sql)
+- [Pólizas de soporte TI](https://mida.mx/polizas-soporte-ti)
+- [Cursos CONTPAQi](https://mida.mx/cursos-contpaqi)
