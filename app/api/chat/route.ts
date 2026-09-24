@@ -12,6 +12,8 @@ const WHATSAPP_GRUPO_ASESORES = process.env.WHATSAPP_GRUPO_ASESORES;
 const MAX_MESSAGES = 12;
 const MAX_MESSAGE_LENGTH = 1200;
 const NOTIFICATION_COOLDOWN_MS = 10 * 60 * 1000;
+const NOTIFICATION_STORE_TTL_MS = 60 * 60 * 1000;
+const NOTIFICATION_STORE_MAX_ENTRIES = 1000;
 
 type ChatRole = "user" | "assistant";
 
@@ -152,8 +154,27 @@ function sanitizeMessages(value: unknown): ChatMessage[] | null {
   return messages;
 }
 
+function cleanupNotificationCooldown(now: number) {
+  for (const [key, sentAt] of notificationCooldown) {
+    if (now - sentAt > NOTIFICATION_STORE_TTL_MS) {
+      notificationCooldown.delete(key);
+    }
+  }
+
+  if (notificationCooldown.size > NOTIFICATION_STORE_MAX_ENTRIES) {
+    const oldestEntries = [...notificationCooldown.entries()]
+      .sort((a, b) => a[1] - b[1])
+      .slice(0, notificationCooldown.size - NOTIFICATION_STORE_MAX_ENTRIES);
+
+    for (const [key] of oldestEntries) {
+      notificationCooldown.delete(key);
+    }
+  }
+}
+
 function canNotify(key: string) {
   const now = Date.now();
+  cleanupNotificationCooldown(now);
   const lastSentAt = notificationCooldown.get(key) || 0;
 
   if (now - lastSentAt < NOTIFICATION_COOLDOWN_MS) {
