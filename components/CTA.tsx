@@ -1,5 +1,3 @@
-"use client";
-
 import { infoEmpresa } from "./config/empresa";
 
 export default function CTA() {
