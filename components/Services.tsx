@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 
 export default function Services() {
@@ -16,7 +14,7 @@ export default function Services() {
     <section id="servicios" className="py-24 bg-mida-gray/30 w-full">
       <div className="max-w-7xl mx-auto px-6 space-y-12">
         <div className="text-center space-y-3">
-          <span className="text-mida-primary font-bold text-xs uppercase tracking-widest bg-mida-primary/10 px-4 py-1.5 rounded-full">Soluciones Especializadas</span>
+          <span className="text-white font-bold text-xs uppercase tracking-widest bg-mida-primary px-4 py-1.5 rounded-full">Soluciones Especializadas</span>
           <h2 className="text-3xl md:text-4xl font-black text-mida-deep">Servicios diseñados para la continuidad de tu negocio</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
