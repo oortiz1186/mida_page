@@ -20,7 +20,6 @@ export default function HubSpotQuoteForm({ product }: { product: string }) {
         <div className="text-center mb-10">
           <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Atención personalizada</span>
           <h2 className="mt-3 text-3xl md:text-4xl font-black text-mida-deep">Solicita tu cotización</h2>
-          <p className="mt-4 text-gray-600 leading-relaxed">Déjanos tus datos y un asesor de MIDA se pondrá en contacto contigo para ayudarte con {product}.</p>
         </div>
         <div className="hs-form-frame min-h-[560px]" data-region="na1" data-form-id={formId} data-portal-id={portal} />
       </div>
