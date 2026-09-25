@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import HubSpotQuoteForm from "../../components/HubSpotQuoteForm";
 import { getSeoPage, seoPages } from "../../lib/seoPages";
 
 export function generateStaticParams() {
@@ -37,8 +38,8 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
     url: `https://mida.mx/${page.slug}`,
   };
 
-  const demoHref = `/contacto?interes=${encodeURIComponent(page.h1)}&accion=demostracion`;
-  const quoteHref = `/contacto?interes=${encodeURIComponent(page.h1)}&accion=cotizacion`;
+  const demoHref = page.productPage ? "#cotizacion" : `/contacto?interes=${encodeURIComponent(page.h1)}&accion=demostracion`;
+  const quoteHref = "#cotizacion";
 
   return (
     <main className="bg-white min-h-screen">
@@ -215,6 +216,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           </div>
         </div>
       </section>
+      <HubSpotQuoteForm product={page.h1} />
       <Footer />
     </main>
   );
