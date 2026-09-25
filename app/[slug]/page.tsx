@@ -4,6 +4,7 @@ import Image from "next/image";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import HubSpotQuoteForm from "../../components/HubSpotQuoteForm";
+import QuoteLink from "../../components/QuoteLink";
 import { getSeoPage, seoPages } from "../../lib/seoPages";
 
 export function generateStaticParams() {
@@ -54,8 +55,8 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
             <p className="mt-6 max-w-3xl text-gray-200 text-base md:text-lg leading-relaxed">{page.intro}</p>
             {page.productPage && <div className="mt-7 flex flex-wrap gap-3">{page.features.slice(0, 3).map((item) => <span key={item} className="rounded-full bg-white/10 border border-white/10 px-4 py-2 text-sm font-semibold">✓ {item}</span>)}</div>}
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              {page.productPage && <a href={demoHref} className="bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center">Solicitar demostración</a>}
-              <a href={quoteHref} className={page.productPage ? "border border-white/20 bg-white/5 text-white font-bold px-7 py-4 rounded-xl text-center" : "bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center"}>Solicitar cotización</a>
+              {page.productPage && <QuoteLink href={demoHref} className="bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center">Solicitar demostración</QuoteLink>}
+              <QuoteLink href={quoteHref} className={page.productPage ? "border border-white/20 bg-white/5 text-white font-bold px-7 py-4 rounded-xl text-center" : "bg-mida-primary text-white font-bold px-7 py-4 rounded-xl text-center"}>Solicitar cotización</QuoteLink>
             </div>
           </div>
           {page.productPage && page.image && (
@@ -156,13 +157,13 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
                   <p className="mt-4 text-gray-600 leading-relaxed">La inversión puede variar según licenciamiento, usuarios, alcance de implementación y servicios requeridos. Solicita una cotización para recibir una propuesta adecuada a tu empresa.</p>
                 </>
               )}
-              <a href={quoteHref} className="inline-block mt-6 font-bold text-mida-primary">Solicitar cotización →</a>
+              <QuoteLink href={quoteHref} className="inline-block mt-6 font-bold text-mida-primary">Solicitar cotización →</QuoteLink>
             </div>
             <div className="rounded-3xl bg-mida-deep text-white p-8">
               <span className="text-mida-light font-bold text-xs uppercase tracking-widest">Conoce la solución</span>
               <h2 className="mt-3 text-2xl font-black">Solicita una demostración</h2>
               <p className="mt-4 text-gray-200 leading-relaxed">Nuestro equipo puede mostrarte la solución y ayudarte a revisar si corresponde a las necesidades de tu operación.</p>
-              <a href={demoHref} className="inline-block mt-6 bg-mida-primary text-white font-bold px-6 py-3 rounded-xl">Solicitar demostración</a>
+              <QuoteLink href={demoHref} className="inline-block mt-6 bg-mida-primary text-white font-bold px-6 py-3 rounded-xl">Solicitar demostración</QuoteLink>
               {page.sourceUrl && <p className="mt-5 text-xs text-gray-300">Información funcional basada en la página oficial vigente de CONTPAQi®.</p>}
             </div>
           </div>
@@ -198,8 +199,8 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
                 <p className="mt-3 text-gray-100">Revisamos contigo licenciamiento, instalación, configuración, capacitación y soporte para definir el alcance que realmente necesita tu empresa.</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-                <a href={demoHref} className="bg-white text-mida-deep font-bold px-6 py-3 rounded-xl text-center">Solicitar demostración</a>
-                <a href={quoteHref} className="border border-white/30 bg-white/10 text-white font-bold px-6 py-3 rounded-xl text-center">Cotizar solución</a>
+                <QuoteLink href={demoHref} className="bg-white text-mida-deep font-bold px-6 py-3 rounded-xl text-center">Solicitar demostración</QuoteLink>
+                <QuoteLink href={quoteHref} className="border border-white/30 bg-white/10 text-white font-bold px-6 py-3 rounded-xl text-center">Cotizar solución</QuoteLink>
               </div>
             </div>
           </div>
@@ -211,8 +212,8 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           <h2 className="text-3xl font-black">{page.productPage ? "¿Quieres conocer esta solución?" : "¿Quieres revisar esta solución para tu empresa?"}</h2>
           <p className="mt-4 text-gray-200">Cuéntanos qué necesitas. Podemos orientarte sobre alcance, implementación y siguientes pasos.</p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-            {page.productPage && <a href={demoHref} className="bg-mida-primary text-white font-bold px-8 py-4 rounded-xl">Solicitar demostración</a>}
-            <a href={quoteHref} className="border border-white/20 bg-white/5 text-white font-bold px-8 py-4 rounded-xl">Contactar a MIDA</a>
+            {page.productPage && <QuoteLink href={demoHref} className="bg-mida-primary text-white font-bold px-8 py-4 rounded-xl">Solicitar demostración</QuoteLink>}
+            <QuoteLink href={quoteHref} className="border border-white/20 bg-white/5 text-white font-bold px-8 py-4 rounded-xl">Contactar a MIDA</QuoteLink>
           </div>
         </div>
       </section>
