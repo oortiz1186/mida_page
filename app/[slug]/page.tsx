@@ -37,6 +37,11 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
     areaServed: ["León, Guanajuato", "Bajío, México"],
     description: page.description,
     url: `https://mida.mx/${page.slug}`,
+    serviceType: page.productPage ? "Implementación, capacitación y soporte de software CONTPAQi" : page.eyebrow,
+    availableChannel: {
+      "@type": "ServiceChannel",
+      serviceUrl: `https://mida.mx/contacto?interes=${encodeURIComponent(page.h1)}`,
+    },
   };
 
   const demoHref = page.productPage ? "#cotizacion" : `/contacto?interes=${encodeURIComponent(page.h1)}&accion=demostracion`;

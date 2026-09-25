@@ -8,7 +8,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return routes.map((route) => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: route === "" ? 1 : route.includes("contpaqi") ? 0.9 : 0.8,
   }));
