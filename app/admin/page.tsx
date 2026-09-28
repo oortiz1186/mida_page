@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "./actions";
@@ -55,7 +56,7 @@ export default async function AdminPage() {
           </div>
           <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-100">
             <p className="text-sm text-slate-500">Siguiente etapa</p>
-            <p className="mt-2 font-semibold text-mida-deep">Editor de artículos</p>
+            <Link href="/admin/blog" className="mt-2 inline-block font-semibold text-mida-primary hover:underline">Abrir editor de artículos →</Link>
           </div>
         </div>
       </section>
