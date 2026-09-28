@@ -5,6 +5,8 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 import { infoEmpresa } from "@/components/config/empresa";
 
+
+export const dynamic = "force-dynamic";
 async function getPost(slug: string) {
   const { data } = await supabase
     .from("blog_posts")
