@@ -123,7 +123,7 @@ export default function ContpaqiPage() {
           nombre: "CONTPAQi Kursa®",
           href: "/contpaqi-kursa",
           desc: "Capacitación en línea sobre sistemas CONTPAQi® y temas especializados.",
-          img: "/images/productos/kursa.png",
+          img: "/images/productos/kursa-2026.png",
           logoScale: 1.12,
         },
         {
