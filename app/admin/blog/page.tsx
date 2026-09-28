@@ -18,8 +18,14 @@ export default async function BlogAdminPage() {
 
   const { data: posts } = await supabase
     .from("blog_posts")
-    .select("id,title,slug,status,updated_at,blog_categories(name)")
+    .select("id,title,slug,status,updated_at,category_id")
     .order("updated_at", { ascending: false });
+
+  const categoryIds = [...new Set((posts ?? []).map((post) => post.category_id).filter(Boolean))];
+  const { data: categories } = categoryIds.length
+    ? await supabase.from("blog_categories").select("id,name").in("id", categoryIds)
+    : { data: [] as { id: string; name: string }[] };
+  const categoryById = new Map((categories ?? []).map((category) => [category.id, category.name]));
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -39,7 +45,7 @@ export default async function BlogAdminPage() {
           ) : (
             <div className="divide-y divide-slate-100">
               {posts.map((post) => {
-                const category = Array.isArray(post.blog_categories) ? post.blog_categories[0]?.name : post.blog_categories?.name;
+                const category = post.category_id ? categoryById.get(post.category_id) : undefined;
                 return (
                   <Link key={post.id} href={`/admin/blog/${post.id}`} className="grid gap-2 p-5 transition hover:bg-slate-50 md:grid-cols-[1fr_180px_150px] md:items-center">
                     <div>
