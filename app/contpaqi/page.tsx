@@ -30,6 +30,25 @@ export default function ContpaqiPage() {
           desc: "Administra y descarga masiva de tus CFDI de forma segura.",
           img: "/images/productos/xml.png",
         },
+        {
+          nombre: "CONTPAQi Tesorería®",
+          href: "/contpaqi-tesoreria",
+          desc: "Control y seguimiento de la tesorería empresarial.",
+          img: "/images/productos/generica.jpg",
+          sinLogoOficial: true,
+        },
+        {
+          nombre: "CONTPAQi Optimiza®",
+          href: "/contpaqi-optimiza",
+          desc: "Centraliza clientes, tareas y obligaciones de tu despacho contable.",
+          img: "/images/productos/optimiza.png",
+        },
+        {
+          nombre: "CONTPAQi Anticipa®",
+          href: "/contpaqi-anticipa",
+          desc: "Analiza información fiscal, concilia datos y previene riesgos.",
+          img: "/images/productos/anticipa.png",
+        },
       ],
     },
     {
@@ -60,6 +79,18 @@ export default function ContpaqiPage() {
           desc: "Genera CFDI, administra tus clientes y controla tu proceso de facturación electrónica de manera sencilla y segura.",
           img: "/images/productos/factura_electronica.png",
         },
+        {
+          nombre: "CONTPAQi CFDI Facturación en Línea+®",
+          href: "/contpaqi-cfdi-facturacion-en-linea",
+          desc: "Emite y administra tus comprobantes fiscales desde internet.",
+          img: "/images/productos/cfdi_linea.png",
+        },
+        {
+          nombre: "CONTPAQi Vende®",
+          href: "/contpaqi-vende",
+          desc: "Gestiona ventas, compras, inventarios, facturación y cobranza en la nube.",
+          img: "/images/productos/vende.png",
+        },
       ],
     },
     {
@@ -89,6 +120,7 @@ export default function ContpaqiPage() {
           href: "/contpaqi-kursa",
           desc: "Capacitación en línea sobre sistemas CONTPAQi® y temas especializados.",
           img: "/images/productos/generica.jpg",
+          sinLogoOficial: true,
         },
         {
           nombre: "CONTPAQi Nóminas®",
@@ -244,7 +276,7 @@ export default function ContpaqiPage() {
               <h2 className="text-2xl font-bold text-mida-deep">{cat.titulo}</h2>
               <span className="ml-auto hidden sm:block h-1 w-24 rounded-full" style={{ backgroundColor: cat.color }} />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {cat.productos.map((prod) => (
                 <a
                   href={"href" in prod ? prod.href : "/contpaqi"}
@@ -252,14 +284,20 @@ export default function ContpaqiPage() {
                   className="bg-white p-8 rounded-3xl border border-gray-100 border-t-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group"
                   style={{ borderTopColor: cat.color }}
                 >
-                  <div className="w-24 h-24 mb-8 flex items-center justify-center relative">
-                    <Image
-                      src={prod.img}
-                      alt={`${prod.nombre} para empresas en León | MIDA`}
-                      width={96}
-                      height={96}
-                      className="object-contain w-full h-full group-hover:scale-110 transition-transform duration-500"
-                    />
+                  <div className="w-full h-28 mb-6 flex items-center justify-center relative">
+                    {"sinLogoOficial" in prod && prod.sinLogoOficial ? (
+                      <div className="h-20 w-20 rounded-2xl border border-gray-200 bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-400">
+                        CONTPAQi®
+                      </div>
+                    ) : (
+                      <Image
+                        src={prod.img}
+                        alt={`${prod.nombre} para empresas en León | MIDA`}
+                        width={180}
+                        height={112}
+                        className="object-contain max-w-[180px] max-h-28 group-hover:scale-105 transition-transform duration-500"
+                      />
+                    )}
                   </div>
                   <h4 className="font-bold text-mida-deep text-lg mb-3 leading-tight">
                     {prod.nombre}
