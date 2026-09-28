@@ -4,8 +4,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 
-
 export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Blog MIDA | CONTPAQi, SQL, servidores y soporte TI",
   description: "Guías, recomendaciones y novedades sobre CONTPAQi, facturación, nóminas, SQL Server, servidores y soporte TI.",
@@ -13,18 +13,45 @@ export const metadata: Metadata = {
   openGraph: { title: "Blog MIDA", description: "Contenido práctico sobre CONTPAQi y tecnología para empresas.", url: "/blog", type: "website" },
 };
 
-export default async function BlogPage() {
-  const { data: posts, error: postsError } = await supabase
+type BlogSearchParams = Promise<{ q?: string; categoria?: string }>;
+
+export default async function BlogPage({ searchParams }: { searchParams: BlogSearchParams }) {
+  const params = await searchParams;
+  const query = (params.q ?? "").trim();
+  const selectedCategory = (params.categoria ?? "").trim();
+
+  const { data: categories, error: categoriesError } = await supabase
+    .from("blog_categories")
+    .select("id,name,slug")
+    .order("name", { ascending: true });
+
+  if (categoriesError) console.error("[blog] Error loading categories:", categoriesError);
+
+  const category = (categories ?? []).find((item) => item.slug === selectedCategory);
+
+  let postsQuery = supabase
     .from("blog_posts")
     .select("id,title,slug,excerpt,featured_image_url,featured_image_alt,published_at,category_id")
     .eq("status", "published")
     .order("published_at", { ascending: false });
 
-  const categoryIds = [...new Set((posts ?? []).map((post) => post.category_id).filter(Boolean))];
-  const { data: categories } = categoryIds.length
-    ? await supabase.from("blog_categories").select("id,name").in("id", categoryIds)
-    : { data: [] as { id: string; name: string }[] };
-  const categoryById = new Map((categories ?? []).map((category) => [category.id, category.name]));
+  if (category) postsQuery = postsQuery.eq("category_id", category.id);
+  if (query) {
+    const safeQuery = query.replace(/[%_,()]/g, " ").replace(/\s+/g, " ").trim();
+    if (safeQuery) postsQuery = postsQuery.or(`title.ilike.%${safeQuery}%,excerpt.ilike.%${safeQuery}%`);
+  }
+
+  const { data: posts, error: postsError } = await postsQuery;
+  if (postsError) console.error("[blog] Error loading posts:", postsError);
+
+  const categoryById = new Map((categories ?? []).map((item) => [item.id, item.name]));
+  const buildHref = (categoria?: string) => {
+    const next = new URLSearchParams();
+    if (query) next.set("q", query);
+    if (categoria) next.set("categoria", categoria);
+    const qs = next.toString();
+    return qs ? `/blog?${qs}` : "/blog";
+  };
 
   return (
     <>
@@ -37,8 +64,32 @@ export default async function BlogPage() {
             <p className="mt-5 text-lg leading-8 text-slate-600">Guías y recomendaciones sobre CONTPAQi, facturación, nóminas, SQL Server, infraestructura y soporte TI.</p>
           </div>
 
-          {!posts?.length ? (
-            <div className="mt-12 rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-600">Próximamente encontrarás nuevos artículos.</div>
+          <div className="mt-9 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <form action="/blog" method="get" className="flex flex-col gap-3 md:flex-row">
+              {selectedCategory && <input type="hidden" name="categoria" value={selectedCategory} />}
+              <label htmlFor="blog-search" className="sr-only">Buscar artículos</label>
+              <input id="blog-search" name="q" defaultValue={query} placeholder="Buscar artículos..." className="min-w-0 flex-1 rounded-xl border border-slate-300 px-4 py-3 text-slate-800 outline-none transition focus:border-mida-primary focus:ring-2 focus:ring-mida-primary/20" />
+              <button type="submit" className="rounded-xl bg-mida-primary px-6 py-3 font-bold text-white transition hover:opacity-90">Buscar</button>
+              {(query || selectedCategory) && <Link href="/blog" className="rounded-xl border border-slate-300 px-5 py-3 text-center font-semibold text-slate-600 transition hover:bg-slate-50">Limpiar</Link>}
+            </form>
+
+            <div className="mt-5 flex flex-wrap gap-2" aria-label="Filtrar por categoría">
+              <Link href={buildHref()} className={`rounded-full px-4 py-2 text-sm font-semibold transition ${!selectedCategory ? "bg-mida-deep text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>Todos</Link>
+              {(categories ?? []).map((item) => (
+                <Link key={item.id} href={buildHref(item.slug)} className={`rounded-full px-4 py-2 text-sm font-semibold transition ${selectedCategory === item.slug ? "bg-mida-deep text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {postsError ? (
+            <div className="mt-12 rounded-2xl border border-red-200 bg-white p-10 text-center text-slate-600">No pudimos cargar los artículos en este momento.</div>
+          ) : !posts?.length ? (
+            <div className="mt-12 rounded-2xl border border-slate-200 bg-white p-10 text-center">
+              <p className="font-semibold text-slate-700">{query || selectedCategory ? "No encontramos artículos con esos filtros." : "Próximamente encontrarás nuevos artículos."}</p>
+              {(query || selectedCategory) && <Link href="/blog" className="mt-4 inline-block font-bold text-mida-primary">Ver todos los artículos →</Link>}
+            </div>
           ) : (
             <div className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
               {posts.map((post) => (
