@@ -2,6 +2,7 @@ import Link from "next/link";
 import { deletePost, savePost } from "./actions";
 import RichTextEditor from "./RichTextEditor";
 import FeaturedImageUpload from "./FeaturedImageUpload";
+import { seoPages } from "@/lib/seoPages";
 
 type Category = { id: string; name: string };
 type Post = {
@@ -83,13 +84,19 @@ export default function PostForm({
               </select>
             </label>
             <label className="text-sm font-semibold text-slate-700">Servicio relacionado
-              <input name="related_service_slug" defaultValue={post?.related_service_slug ?? ""} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal" placeholder="Ej. contpaqi-nominas" />
+              <select name="related_service_slug" defaultValue={post?.related_service_slug ?? ""} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-normal">
+                <option value="">Sin servicio relacionado</option>
+                {seoPages.map((page) => <option key={page.slug} value={page.slug}>{page.h1}</option>)}
+              </select>
+              <span className="mt-1.5 block text-xs font-normal text-slate-500">Opcional. Relaciona el artículo con una página de producto o servicio de MIDA.</span>
             </label>
             <label className="text-sm font-semibold text-slate-700">Título SEO
-              <input name="seo_title" maxLength={70} defaultValue={post?.seo_title ?? ""} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal" />
+              <input name="seo_title" maxLength={70} defaultValue={post?.seo_title ?? ""} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal" placeholder="Opcional: título pensado para Google" />
+              <span className="mt-1.5 block text-xs font-normal text-slate-500">Máximo 70 caracteres. Si lo dejas vacío, usaremos el título del artículo.</span>
             </label>
             <label className="text-sm font-semibold text-slate-700">Descripción SEO
-              <textarea name="seo_description" maxLength={170} rows={3} defaultValue={post?.seo_description ?? ""} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal" />
+              <textarea name="seo_description" maxLength={170} rows={3} defaultValue={post?.seo_description ?? ""} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal" placeholder="Opcional: resumen para resultados de búsqueda" />
+              <span className="mt-1.5 block text-xs font-normal text-slate-500">Máximo 170 caracteres. Si la dejas vacía, usaremos el resumen del artículo.</span>
             </label>
           </div>
         </section>
