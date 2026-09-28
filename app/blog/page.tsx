@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 
+
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Blog MIDA | CONTPAQi, SQL, servidores y soporte TI",
   description: "Guías, recomendaciones y novedades sobre CONTPAQi, facturación, nóminas, SQL Server, servidores y soporte TI.",
