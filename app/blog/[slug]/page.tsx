@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 async function getPost(slug: string) {
   const { data, error } = await supabase
     .from("blog_posts")
-    .select("id,title,slug,excerpt,content,featured_image_url,featured_image_alt,seo_title,seo_description,published_at,updated_at,category_id,author_id")
+    .select("id,title,slug,excerpt,content,featured_image_url,featured_image_alt,seo_title,seo_description,related_service_slug,published_at,updated_at,category_id,author_id")
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
@@ -53,6 +53,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     supabase.from("blog_profiles").select("display_name").eq("user_id", post.author_id).maybeSingle(),
   ]);
 
+  const relatedServiceHref = post.related_service_slug ? `/${post.related_service_slug}` : "/contacto";
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -81,9 +83,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           {post.featured_image_url && <img src={post.featured_image_url} alt={post.featured_image_alt || post.title} className="mt-9 max-h-[560px] w-full rounded-2xl object-cover shadow-sm" />}
           <div className="blog-content mt-10 text-[17px] leading-8 text-slate-700" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
           <div className="mt-12 rounded-2xl bg-slate-50 p-7">
-            <h2 className="text-2xl font-bold text-mida-deep">¿Necesitas ayuda con tu sistema o infraestructura?</h2>
-            <p className="mt-2 text-slate-600">En MIDA podemos ayudarte con CONTPAQi, SQL Server, servidores y soporte TI.</p>
-            <a href="/contacto" className="mt-5 inline-block rounded-full bg-mida-primary px-6 py-3 font-bold text-white">Contactar a MIDA</a>
+            <h2 className="text-2xl font-bold text-mida-deep">
+              {post.related_service_slug ? "¿Quieres conocer esta solución?" : "¿Necesitas ayuda con tu sistema o infraestructura?"}
+            </h2>
+            <p className="mt-2 text-slate-600">
+              {post.related_service_slug
+                ? "Conoce cómo MIDA puede ayudarte con el producto o servicio relacionado con este artículo."
+                : "En MIDA podemos ayudarte con CONTPAQi, SQL Server, servidores y soporte TI."}
+            </p>
+            <a href={relatedServiceHref} className="mt-5 inline-block rounded-full bg-mida-primary px-6 py-3 font-bold text-white">
+              {post.related_service_slug ? "Ver producto o servicio" : "Contactar a MIDA"}
+            </a>
           </div>
         </article>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
