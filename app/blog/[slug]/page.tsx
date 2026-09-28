@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import sanitizeHtml from "sanitize-html";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -78,7 +79,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <span>{post.published_at ? new Date(post.published_at).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }) : ""}</span>
           </div>
           {post.featured_image_url && <img src={post.featured_image_url} alt={post.featured_image_alt || post.title} className="mt-9 max-h-[560px] w-full rounded-2xl object-cover shadow-sm" />}
-          <div className="blog-content mt-10 text-[17px] leading-8 text-slate-700" dangerouslySetInnerHTML={{ __html: post.content }} />
+          <div className="blog-content mt-10 text-[17px] leading-8 text-slate-700" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
           <div className="mt-12 rounded-2xl bg-slate-50 p-7">
             <h2 className="text-2xl font-bold text-mida-deep">¿Necesitas ayuda con tu sistema o infraestructura?</h2>
             <p className="mt-2 text-slate-600">En MIDA podemos ayudarte con CONTPAQi, SQL Server, servidores y soporte TI.</p>
