@@ -39,6 +39,7 @@ export default function PostForm({
           <Link href="/admin/blog" className="text-sm font-semibold text-mida-primary">← Volver a artículos</Link>
           <h1 className="mt-2 text-3xl font-bold text-mida-deep">{post ? "Editar artículo" : "Nuevo artículo"}</h1>
         </div>
+        {post && <Link href={`/admin/blog/${post.id}/preview`} target="_blank" className="rounded-xl border border-mida-primary px-4 py-2.5 text-sm font-bold text-mida-primary hover:bg-blue-50">Vista previa ↗</Link>}
       </div>
 
       {saved && <p className="mb-5 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-800">Artículo guardado correctamente.</p>}
