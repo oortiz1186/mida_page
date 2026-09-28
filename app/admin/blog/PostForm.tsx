@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { deletePost, savePost } from "./actions";
+import RichTextEditor from "./RichTextEditor";
 
 type Category = { id: string; name: string };
 type Post = {
@@ -59,9 +60,10 @@ export default function PostForm({
             <label className="md:col-span-2 text-sm font-semibold text-slate-700">Resumen
               <textarea name="excerpt" rows={3} defaultValue={post?.excerpt ?? ""} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal" placeholder="Resumen corto para el listado del blog." />
             </label>
-            <label className="md:col-span-2 text-sm font-semibold text-slate-700">Contenido
-              <textarea name="content" rows={16} defaultValue={post?.content ?? ""} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal leading-7" placeholder="Escribe aquí el contenido del artículo. En la siguiente etapa lo convertiremos en editor visual." />
-            </label>
+            <div className="md:col-span-2">
+              <p className="text-sm font-semibold text-slate-700">Contenido</p>
+              <RichTextEditor initialContent={post?.content ?? ""} />
+            </div>
           </div>
         </section>
 
