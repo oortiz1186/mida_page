@@ -88,6 +88,10 @@ export default function HubSpotQuoteForm({ product }: { product: string }) {
         )}
 
         <div id={targetId} className={status === "loading" ? "min-h-[1px]" : "min-h-[560px]"} />
+        <p className="mt-5 text-center text-xs leading-5 text-gray-500">
+          Al enviar este formulario, tus datos serán tratados para atender tu solicitud de cotización y dar seguimiento comercial. Consulta nuestro{" "}
+          <a href="/aviso-de-privacidad" className="font-semibold text-mida-primary underline underline-offset-2">Aviso de Privacidad</a>.
+        </p>
 
         {status === "error" && (
           <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 text-center">
