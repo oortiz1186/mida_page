@@ -20,7 +20,11 @@ export default async function BlogPage() {
     .eq("status", "published")
     .order("published_at", { ascending: false });
 
-  if (postsError) console.error("[blog] Error loading posts:", postsError);
+  console.log("[blog-debug]", {
+    supabaseUrl: process.env.SUPABASE_URL,
+    postsCount: posts?.length ?? 0,
+    postsError: postsError ? { code: postsError.code, message: postsError.message } : null,
+  });
 
   const categoryIds = [...new Set((posts ?? []).map((post) => post.category_id).filter(Boolean))];
   const { data: categories } = categoryIds.length
