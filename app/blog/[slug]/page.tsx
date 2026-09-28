@@ -48,10 +48,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = await getPost(slug);
   if (!post) notFound();
 
-  const [{ data: category }, { data: author }] = await Promise.all([
-    post.category_id ? supabase.from("blog_categories").select("name").eq("id", post.category_id).maybeSingle() : Promise.resolve({ data: null }),
-    supabase.from("blog_profiles").select("display_name").eq("user_id", post.author_id).maybeSingle(),
-  ]);
+  const { data: category } = post.category_id
+    ? await supabase.from("blog_categories").select("name").eq("id", post.category_id).maybeSingle()
+    : { data: null };
 
   const relatedServiceHref = post.related_service_slug ? `/${post.related_service_slug}` : "/contacto";
 
@@ -63,7 +62,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     image: post.featured_image_url || undefined,
     datePublished: post.published_at || undefined,
     dateModified: post.updated_at || undefined,
-    author: { "@type": "Person", name: author?.display_name || "MIDA" },
+    author: { "@type": "Organization", name: "MIDA", url: infoEmpresa.dominio },
     publisher: { "@type": "Organization", name: infoEmpresa.nombre, url: infoEmpresa.dominio },
     mainEntityOfPage: `${infoEmpresa.dominio}/blog/${post.slug}`,
   };
@@ -77,7 +76,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <h1 className="mt-3 text-4xl font-bold leading-tight text-mida-deep md:text-5xl">{post.title}</h1>
           {post.excerpt && <p className="mt-5 text-xl leading-8 text-slate-600">{post.excerpt}</p>}
           <div className="mt-5 flex flex-wrap gap-x-3 text-sm text-slate-500">
-            <span>Por {author?.display_name || "MIDA"}</span><span>·</span>
+            <span>Por MIDA</span><span>·</span>
             <span>{post.published_at ? new Date(post.published_at).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }) : ""}</span>
           </div>
           {post.featured_image_url && <img src={post.featured_image_url} alt={post.featured_image_alt || post.title} className="mt-9 max-h-[560px] w-full rounded-2xl object-cover shadow-sm" />}
