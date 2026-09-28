@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { deletePost, savePost } from "./actions";
 import RichTextEditor from "./RichTextEditor";
+import FeaturedImageUpload from "./FeaturedImageUpload";
 
 type Category = { id: string; name: string };
 type Post = {
@@ -14,6 +15,8 @@ type Post = {
   seo_title: string | null;
   seo_description: string | null;
   related_service_slug: string | null;
+  featured_image_url: string | null;
+  featured_image_alt: string | null;
 };
 
 export default function PostForm({
@@ -60,6 +63,7 @@ export default function PostForm({
             <label className="md:col-span-2 text-sm font-semibold text-slate-700">Resumen
               <textarea name="excerpt" rows={3} defaultValue={post?.excerpt ?? ""} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal" placeholder="Resumen corto para el listado del blog." />
             </label>
+            <FeaturedImageUpload initialUrl={post?.featured_image_url} initialAlt={post?.featured_image_alt} />
             <div className="md:col-span-2">
               <p className="text-sm font-semibold text-slate-700">Contenido</p>
               <RichTextEditor initialContent={post?.content ?? ""} />
