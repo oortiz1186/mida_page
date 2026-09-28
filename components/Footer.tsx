@@ -20,6 +20,7 @@ export default function Footer() {
             <li><a href="/soporte-contpaqi-leon" className="hover:text-white transition-colors">Soporte CONTPAQi</a></li>
             <li><a href="/equipamiento" className="hover:text-white transition-colors">Equipamiento</a></li>
             <li><a href="/cursos" className="hover:text-white transition-colors">Cursos</a></li>
+            <li><a href="/blog" className="hover:text-white transition-colors">Blog</a></li>
             <li><a href="/contacto" className="hover:text-white transition-colors">Contacto</a></li>
           </ul>
         </div>
