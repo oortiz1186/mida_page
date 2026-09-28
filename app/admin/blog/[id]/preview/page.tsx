@@ -1,4 +1,5 @@
 import Link from "next/link";
+import sanitizeHtml from "sanitize-html";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -45,7 +46,7 @@ export default async function BlogPreviewPage({ params }: { params: Promise<{ id
           <img src={post.featured_image_url} alt={post.featured_image_alt || post.title} className="mt-9 max-h-[560px] w-full rounded-2xl object-cover shadow-sm" />
         )}
 
-        <div className="blog-content mt-10 text-[17px] leading-8 text-slate-700" dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div className="blog-content mt-10 text-[17px] leading-8 text-slate-700" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
       </article>
     </main>
   );
