@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: '/private/', // Bloquea el rastreo de páginas privadas o de pruebas
+      disallow: ['/private/', '/admin/'], // Bloquea páginas privadas y administración
     },
     // Jala automáticamente el dominio que tengas editado en tu archivo de empresa
     sitemap: `${infoEmpresa.dominio}/sitemap.xml`, 
