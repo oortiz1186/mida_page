@@ -8,12 +8,13 @@ import { infoEmpresa } from "@/components/config/empresa";
 
 export const dynamic = "force-dynamic";
 async function getPost(slug: string) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("blog_posts")
     .select("id,title,slug,excerpt,content,featured_image_url,featured_image_alt,seo_title,seo_description,published_at,updated_at,category_id,author_id")
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
+  if (error) console.error(`[blog/${slug}] Error loading post:`, error);
   return data;
 }
 
