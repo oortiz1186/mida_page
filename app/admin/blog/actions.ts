@@ -60,15 +60,24 @@ export async function savePost(formData: FormData) {
     redirect(id ? `/admin/blog/${id}?error=invalid` : "/admin/blog/nuevo?error=invalid");
   }
 
-  let previousImageUrl: string | null = null;
+  let currentPost: {
+    featured_image_url: string | null;
+    author_id: string;
+    published_at: string | null;
+    status: string;
+    slug: string;
+  } | null = null;
+
   if (id) {
-    const { data: currentPost } = await supabase
+    const { data } = await supabase
       .from("blog_posts")
-      .select("featured_image_url")
+      .select("featured_image_url,author_id,published_at,status,slug")
       .eq("id", id)
       .maybeSingle();
-    previousImageUrl = currentPost?.featured_image_url ?? null;
+    currentPost = data;
   }
+
+  const previousImageUrl = currentPost?.featured_image_url ?? null;
 
   const newImageUrl = value(formData, "featured_image_url") || null;
 
@@ -84,8 +93,11 @@ export async function savePost(formData: FormData) {
     seo_description: value(formData, "seo_description") || null,
     related_service_slug: value(formData, "related_service_slug") || null,
     status,
-    author_id: user.id,
-    published_at: status === "published" ? new Date().toISOString() : null,
+    author_id: currentPost?.author_id ?? user.id,
+    published_at:
+      status === "published"
+        ? currentPost?.published_at ?? new Date().toISOString()
+        : currentPost?.published_at ?? null,
     updated_at: new Date().toISOString(),
   };
 
@@ -105,6 +117,11 @@ export async function savePost(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/admin/blog");
+  revalidatePath("/blog");
+  if (currentPost?.slug && currentPost.slug !== slug) {
+    revalidatePath(`/blog/${currentPost.slug}`);
+  }
+  revalidatePath(`/blog/${slug}`);
   redirect(`/admin/blog/${data.id}?saved=1`);
 }
 
@@ -117,7 +134,7 @@ export async function deletePost(formData: FormData) {
 
   const { data: currentPost } = await supabase
     .from("blog_posts")
-    .select("featured_image_url")
+    .select("featured_image_url,slug")
     .eq("id", id)
     .maybeSingle();
 
@@ -131,5 +148,7 @@ export async function deletePost(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/admin/blog");
+  revalidatePath("/blog");
+  if (currentPost?.slug) revalidatePath(`/blog/${currentPost.slug}`);
   redirect("/admin/blog?deleted=1");
 }
