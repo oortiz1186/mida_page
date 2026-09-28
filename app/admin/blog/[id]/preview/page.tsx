@@ -37,7 +37,7 @@ export default async function BlogPreviewPage({ params }: { params: Promise<{ id
         <h1 className="mt-3 text-4xl font-bold leading-tight text-mida-deep md:text-5xl">{post.title}</h1>
         {post.excerpt && <p className="mt-5 text-xl leading-8 text-slate-600">{post.excerpt}</p>}
         <div className="mt-5 flex flex-wrap gap-x-3 text-sm text-slate-500">
-          <span>Por {profile.display_name}</span>
+          <span>Por MIDA</span>
           <span>·</span>
           <span>Actualizado {new Date(post.updated_at).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" })}</span>
         </div>
