@@ -17,12 +17,14 @@ export default function ContpaqiPage() {
           href: "/contpaqi-bancos",
           desc: "Controla tus flujos de efectivo y conciliaciones bancarias al instante.",
           img: "/images/productos/bancos.png",
+          logoScale: 1.35,
         },
         {
           nombre: "CONTPAQi Contabilidad®",
           href: "/contpaqi-contabilidad",
           desc: "El estándar para tu contabilidad electrónica y reportes financieros.",
           img: "/images/productos/contabilidad.png",
+          logoScale: 1.12,
         },
         {
           nombre: "CONTPAQi XML en línea+®",
@@ -78,12 +80,14 @@ export default function ContpaqiPage() {
           href: "/contpaqi-factura-electronica",
           desc: "Genera CFDI, administra tus clientes y controla tu proceso de facturación electrónica de manera sencilla y segura.",
           img: "/images/productos/factura_electronica.png",
+          logoScale: 1.12,
         },
         {
           nombre: "CONTPAQi CFDI Facturación en Línea+®",
           href: "/contpaqi-cfdi-facturacion-en-linea",
           desc: "Emite y administra tus comprobantes fiscales desde internet.",
           img: "/images/productos/cfdi_linea.png",
+          logoScale: 1.4,
         },
         {
           nombre: "CONTPAQi Vende®",
@@ -295,7 +299,8 @@ export default function ContpaqiPage() {
                         alt={`${prod.nombre} para empresas en León | MIDA`}
                         width={180}
                         height={112}
-                        className="object-contain max-w-[180px] max-h-28 group-hover:scale-105 transition-transform duration-500"
+                        className="object-contain max-w-[180px] max-h-28 transition-transform duration-500"
+                        style={{ transform: `scale(${("logoScale" in prod ? prod.logoScale : 1) ?? 1})` }}
                       />
                     )}
                   </div>
