@@ -16,8 +16,8 @@ export default function ContpaqiPage() {
           nombre: "CONTPAQi Bancos®",
           href: "/contpaqi-bancos",
           desc: "Controla tus flujos de efectivo y conciliaciones bancarias al instante.",
-          img: "/images/productos/bancos.png",
-          logoScale: 1.35,
+          img: "/images/productos/bancos-2026.png",
+          logoScale: 1,
         },
         {
           nombre: "CONTPAQi Contabilidad®",
