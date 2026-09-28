@@ -50,6 +50,8 @@ export async function savePost(formData: FormData) {
     excerpt: value(formData, "excerpt") || null,
     content: value(formData, "content"),
     category_id: value(formData, "category_id") || null,
+    featured_image_url: value(formData, "featured_image_url") || null,
+    featured_image_alt: value(formData, "featured_image_alt") || null,
     seo_title: value(formData, "seo_title") || null,
     seo_description: value(formData, "seo_description") || null,
     related_service_slug: value(formData, "related_service_slug") || null,
