@@ -14,11 +14,13 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const { data: posts } = await supabase
+  const { data: posts, error: postsError } = await supabase
     .from("blog_posts")
     .select("id,title,slug,excerpt,featured_image_url,featured_image_alt,published_at,category_id")
     .eq("status", "published")
     .order("published_at", { ascending: false });
+
+  if (postsError) console.error("[blog] Error loading posts:", postsError);
 
   const categoryIds = [...new Set((posts ?? []).map((post) => post.category_id).filter(Boolean))];
   const { data: categories } = categoryIds.length
