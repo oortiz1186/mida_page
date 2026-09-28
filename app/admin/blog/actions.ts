@@ -8,6 +8,22 @@ function value(formData: FormData, name: string) {
   return String(formData.get(name) ?? "").trim();
 }
 
+function storagePathFromPublicUrl(url: string) {
+  const marker = "/storage/v1/object/public/blog-images/";
+  const index = url.indexOf(marker);
+  if (index === -1) return null;
+  const path = url.slice(index + marker.length);
+  return path ? decodeURIComponent(path) : null;
+}
+
+async function removeBlogImage(supabase: Awaited<ReturnType<typeof createClient>>, url: string | null | undefined) {
+  if (!url) return;
+  const path = storagePathFromPublicUrl(url);
+  if (!path) return;
+  const { error } = await supabase.storage.from("blog-images").remove([path]);
+  if (error) console.error("No se pudo eliminar la imagen anterior del blog:", error);
+}
+
 function normalizeSlug(input: string) {
   return input
     .normalize("NFD")
@@ -44,13 +60,25 @@ export async function savePost(formData: FormData) {
     redirect(id ? `/admin/blog/${id}?error=invalid` : "/admin/blog/nuevo?error=invalid");
   }
 
+  let previousImageUrl: string | null = null;
+  if (id) {
+    const { data: currentPost } = await supabase
+      .from("blog_posts")
+      .select("featured_image_url")
+      .eq("id", id)
+      .maybeSingle();
+    previousImageUrl = currentPost?.featured_image_url ?? null;
+  }
+
+  const newImageUrl = value(formData, "featured_image_url") || null;
+
   const payload = {
     title,
     slug,
     excerpt: value(formData, "excerpt") || null,
     content: value(formData, "content"),
     category_id: value(formData, "category_id") || null,
-    featured_image_url: value(formData, "featured_image_url") || null,
+    featured_image_url: newImageUrl,
     featured_image_alt: value(formData, "featured_image_alt") || null,
     seo_title: value(formData, "seo_title") || null,
     seo_description: value(formData, "seo_description") || null,
@@ -71,6 +99,10 @@ export async function savePost(formData: FormData) {
     redirect(id ? `/admin/blog/${id}?error=save` : "/admin/blog/nuevo?error=save");
   }
 
+  if (previousImageUrl && previousImageUrl !== newImageUrl) {
+    await removeBlogImage(supabase, previousImageUrl);
+  }
+
   revalidatePath("/admin");
   revalidatePath("/admin/blog");
   redirect(`/admin/blog/${data.id}?saved=1`);
@@ -83,11 +115,19 @@ export async function deletePost(formData: FormData) {
   const id = value(formData, "id");
   if (!id) redirect("/admin/blog");
 
+  const { data: currentPost } = await supabase
+    .from("blog_posts")
+    .select("featured_image_url")
+    .eq("id", id)
+    .maybeSingle();
+
   const { error } = await supabase.from("blog_posts").delete().eq("id", id);
   if (error) {
     console.error("No se pudo eliminar el artículo:", error);
     redirect(`/admin/blog/${id}?error=delete`);
   }
+
+  await removeBlogImage(supabase, currentPost?.featured_image_url);
 
   revalidatePath("/admin");
   revalidatePath("/admin/blog");
