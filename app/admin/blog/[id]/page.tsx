@@ -18,7 +18,7 @@ export default async function EditPostPage({
 
   const { id } = await params;
   const [{ data: post }, { data: categories }] = await Promise.all([
-    supabase.from("blog_posts").select("id,title,slug,excerpt,content,category_id,status,seo_title,seo_description,related_service_slug").eq("id", id).maybeSingle(),
+    supabase.from("blog_posts").select("id,title,slug,excerpt,content,category_id,status,seo_title,seo_description,related_service_slug,featured_image_url,featured_image_alt").eq("id", id).maybeSingle(),
     supabase.from("blog_categories").select("id,name").eq("is_active", true).order("name"),
   ]);
 
