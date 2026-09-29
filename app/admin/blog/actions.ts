@@ -105,12 +105,29 @@ export async function savePost(formData: FormData) {
   // INSERT ... RETURNING. Con RLS, el INSERT puede completarse correctamente
   // y la lectura de retorno fallar, provocando un falso error y duplicados
   // si el usuario vuelve a pulsar Guardar.
-  const savedId = id || crypto.randomUUID();
+  let savedId = id || crypto.randomUUID();
   const { error } = id
     ? await supabase.from("blog_posts").update(payload).eq("id", id)
     : await supabase.from("blog_posts").insert({ id: savedId, ...payload });
 
   if (error) {
+    // Si el primer envío sí alcanzó a insertar pero el navegador no recibió
+    // la navegación y el usuario vuelve a pulsar Guardar, el slug único puede
+    // responder como duplicado. Recuperamos ese artículo y continuamos a edición
+    // en vez de mostrar un falso error o crear otra copia.
+    if (!id && error.code === "23505") {
+      const { data: existingPost } = await supabase
+        .from("blog_posts")
+        .select("id")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (existingPost?.id) {
+        savedId = existingPost.id;
+        redirect(`/admin/blog/${savedId}?saved=1`);
+      }
+    }
+
     console.error("No se pudo guardar el artículo:", error);
     redirect(id ? `/admin/blog/${id}?error=save` : "/admin/blog/nuevo?error=save");
   }
