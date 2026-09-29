@@ -101,12 +101,16 @@ export async function savePost(formData: FormData) {
     updated_at: new Date().toISOString(),
   };
 
-  const query = id
-    ? supabase.from("blog_posts").update(payload).eq("id", id).select("id").single()
-    : supabase.from("blog_posts").insert(payload).select("id").single();
+  // En una alta, usar un ID generado antes del INSERT evita depender de
+  // INSERT ... RETURNING. Con RLS, el INSERT puede completarse correctamente
+  // y la lectura de retorno fallar, provocando un falso error y duplicados
+  // si el usuario vuelve a pulsar Guardar.
+  const savedId = id || crypto.randomUUID();
+  const { error } = id
+    ? await supabase.from("blog_posts").update(payload).eq("id", id)
+    : await supabase.from("blog_posts").insert({ id: savedId, ...payload });
 
-  const { data, error } = await query;
-  if (error || !data) {
+  if (error) {
     console.error("No se pudo guardar el artículo:", error);
     redirect(id ? `/admin/blog/${id}?error=save` : "/admin/blog/nuevo?error=save");
   }
@@ -122,7 +126,7 @@ export async function savePost(formData: FormData) {
     revalidatePath(`/blog/${currentPost.slug}`);
   }
   revalidatePath(`/blog/${slug}`);
-  redirect(`/admin/blog/${data.id}?saved=1`);
+  redirect(`/admin/blog/${savedId}?saved=1`);
 }
 
 export async function deletePost(formData: FormData) {
