@@ -20,6 +20,7 @@ export default function Footer() {
             <li><a href="/soporte-contpaqi-leon" className="hover:text-white transition-colors">Soporte CONTPAQi</a></li>
             <li><a href="/equipamiento" className="hover:text-white transition-colors">Equipamiento</a></li>
             <li><a href="/cursos" className="hover:text-white transition-colors">Cursos</a></li>
+            <li><a href="/blog" className="hover:text-white transition-colors">Blog</a></li>
             <li><a href="/contacto" className="hover:text-white transition-colors">Contacto</a></li>
           </ul>
         </div>
@@ -34,6 +35,7 @@ export default function Footer() {
       </div>
       <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-white/10 text-center text-xs text-white/70">
         <p>© {new Date().getFullYear()} {infoEmpresa.nombre}. Todos los derechos reservados.</p>
+        <a href="/aviso-de-privacidad" className="mt-2 inline-block underline decoration-white/40 underline-offset-4 hover:text-white">Aviso de Privacidad</a>
       </div>
     </footer>
   );

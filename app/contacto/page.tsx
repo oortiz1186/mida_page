@@ -173,7 +173,8 @@ export default function ContactoPage() {
 
           <div className="mt-8 border-t border-white/10 pt-6 relative z-10">
             <p className="text-xs text-white/70 leading-relaxed">
-              Al enviar este formulario aceptas el tratamiento de tus datos exclusivamente para fines de prospección comercial de MIDA.
+              Al enviar este formulario, tus datos serán tratados para atender tu solicitud, dar seguimiento comercial y prestar los servicios solicitados. Consulta nuestro{" "}
+              <a href="/aviso-de-privacidad" className="font-semibold text-white underline underline-offset-2">Aviso de Privacidad</a>.
             </p>
           </div>
           

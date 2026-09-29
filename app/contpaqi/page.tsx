@@ -9,25 +9,22 @@ export default function ContpaqiPage() {
   const categorias = [
     // ... (Tu array de categorias se mantiene igual)
     {
-      titulo: "Contables",
+      titulo: "Procesos contables",
+      color: "#007CFF",
       productos: [
         {
           nombre: "CONTPAQi Bancos®",
           href: "/contpaqi-bancos",
           desc: "Controla tus flujos de efectivo y conciliaciones bancarias al instante.",
-          img: "/images/productos/bancos.png",
+          img: "/images/productos/bancos-2026.png",
+          logoScale: 1,
         },
         {
           nombre: "CONTPAQi Contabilidad®",
           href: "/contpaqi-contabilidad",
           desc: "El estándar para tu contabilidad electrónica y reportes financieros.",
           img: "/images/productos/contabilidad.png",
-        },
-        {
-          nombre: "CONTPAQi Nóminas®",
-          href: "/contpaqi-nominas",
-          desc: "Calcula sueldos, impuestos y prestaciones con total precisión.",
-          img: "/images/productos/nominas.png",
+          logoScale: 1.12,
         },
         {
           nombre: "CONTPAQi XML en línea+®",
@@ -35,10 +32,29 @@ export default function ContpaqiPage() {
           desc: "Administra y descarga masiva de tus CFDI de forma segura.",
           img: "/images/productos/xml.png",
         },
+        {
+          nombre: "CONTPAQi Tesorería®",
+          href: "/contpaqi-tesoreria",
+          desc: "Control y seguimiento de la tesorería empresarial.",
+          img: "/images/productos/tesoreria-2026.png",
+        },
+        {
+          nombre: "CONTPAQi Optimiza®",
+          href: "/contpaqi-optimiza",
+          desc: "Centraliza clientes, tareas y obligaciones de tu despacho contable.",
+          img: "/images/productos/optimiza.png",
+        },
+        {
+          nombre: "CONTPAQi Anticipa®",
+          href: "/contpaqi-anticipa",
+          desc: "Analiza información fiscal, concilia datos y previene riesgos.",
+          img: "/images/productos/anticipa.png",
+        },
       ],
     },
     {
-      titulo: "Comerciales",
+      titulo: "Procesos administrativos",
+      color: "#0EC799",
       productos: [
         {
           nombre: "CONTPAQi Comercial Pro®",
@@ -63,28 +79,32 @@ export default function ContpaqiPage() {
           href: "/contpaqi-factura-electronica",
           desc: "Genera CFDI, administra tus clientes y controla tu proceso de facturación electrónica de manera sencilla y segura.",
           img: "/images/productos/factura_electronica.png",
+          logoScale: 1.12,
+        },
+        {
+          nombre: "CONTPAQi CFDI Facturación en Línea+®",
+          href: "/contpaqi-cfdi-facturacion-en-linea",
+          desc: "Emite y administra tus comprobantes fiscales desde internet.",
+          img: "/images/productos/cfdi_linea.png",
+          logoScale: 1.4,
+        },
+        {
+          nombre: "CONTPAQi Vende®",
+          href: "/contpaqi-vende",
+          desc: "Gestiona ventas, compras, inventarios, facturación y cobranza en la nube.",
+          img: "/images/productos/vende.png",
         },
       ],
     },
     {
-      titulo: "Nube",
+      titulo: "Personas",
+      color: "#BC1DE2",
       productos: [
-        {
-          nombre: "CONTPAQi CFDI Facturación en Línea+®",
-          href: "/contpaqi-cfdi-facturacion-en-linea",
-          desc: "Tu facturación siempre disponible. Gestiona, envía y recibe tus comprobantes fiscales desde cualquier dispositivo.",
-          img: "/images/productos/cfdi_linea.png",
-        },
         {
           nombre: "CONTPAQi Evalúa®",
           href: "/contpaqi-evalua",
           desc: "Soluciones de evaluación y desempeño en la nube.",
           img: "/images/productos/evalua.png",
-        },
-        {
-          nombre: "CONTPAQi® Contabiliza",
-          desc: "Tu contabilidad disponible desde cualquier lugar.",
-          img: "/images/productos/contabiliza.png",
         },
         {
           nombre: "CONTPAQi® Personia",
@@ -93,52 +113,41 @@ export default function ContpaqiPage() {
           img: "/images/productos/personia.png",
         },
         {
-          nombre: "CONTPAQi Vende®",
-          href: "/contpaqi-vende",
-          desc: "Plataforma de ventas en línea para tu negocio.",
-          img: "/images/productos/vende.png",
-        },
-        {
-          nombre: "CONTPAQi Optimiza®",
-          href: "/contpaqi-optimiza",
-          desc: "Herramientas de eficiencia operativa.",
-          img: "/images/productos/optimiza.png",
-        },
-        {
-          nombre: "CONTPAQi Anticipa®",
-          href: "/contpaqi-anticipa",
-          desc: "Gestiona pagos y anticipos con facilidad.",
-          img: "/images/productos/anticipa.png",
-        },
-        {
-          nombre: "CONTPAQi Escritorio Virtual®",
-          href: "/contpaqi-escritorio-virtual",
-          desc: "Accede a tu software desde cualquier dispositivo.",
-          img: "/images/productos/escritorio.png",
-        },
-        {
-          nombre: "CONTPAQi Respaldos®",
-          href: "/contpaqi-respaldos",
-          desc: "Seguridad total para tu información empresarial.",
-          img: "/images/productos/respaldos1.png",
-        },
-        {
           nombre: "CONTPAQi Colabora®",
           href: "/contpaqi-colabora",
           desc: "Asistencia, comunicación y autoservicio para colaboradores.",
-          img: "/images/productos/nominas.png",
+          img: "/images/productos/colabora.png",
         },
         {
           nombre: "CONTPAQi Kursa®",
           href: "/contpaqi-kursa",
           desc: "Capacitación en línea sobre sistemas CONTPAQi® y temas especializados.",
-          img: "/images/productos/generica.jpg",
+          img: "/images/productos/kursa-2026.png",
+          logoScale: 1.12,
         },
         {
-          nombre: "CONTPAQi Tesorería®",
-          href: "/contpaqi-tesoreria",
-          desc: "Control y seguimiento de la tesorería empresarial.",
-          img: "/images/productos/generica.jpg",
+          nombre: "CONTPAQi Nóminas®",
+          href: "/contpaqi-nominas",
+          desc: "Calcula sueldos, impuestos y prestaciones con total precisión.",
+          img: "/images/productos/nominas.png",
+        },
+      ],
+    },
+    {
+      titulo: "Servicios",
+      color: "#F4A25E",
+      productos: [
+        {
+          nombre: "CONTPAQi Escritorio Virtual®",
+          href: "/contpaqi-escritorio-virtual",
+          desc: "Accede de forma remota a tus sistemas CONTPAQi®.",
+          img: "/images/productos/escritorio.png",
+        },
+        {
+          nombre: "CONTPAQi Respaldos®",
+          href: "/contpaqi-respaldos",
+          desc: "Protege la información de tus sistemas con respaldo en la nube.",
+          img: "/images/productos/respaldos1.png",
         },
       ],
     },
@@ -252,6 +261,11 @@ export default function ContpaqiPage() {
             Garantizamos la continuidad fiscal y administrativa de tu empresa
             con soluciones estables y soporte experto en León, Gto.
           </p>
+          <div className="pt-5 flex justify-center">
+            <div className="bg-white rounded-2xl px-6 py-3 shadow-lg">
+              <Image src="/logo/logo-contpaqi-2026.png" alt="CONTPAQi®" width={250} height={90} className="h-12 md:h-14 w-auto object-contain" priority />
+            </div>
+          </div>
         </div>
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
       </section>
@@ -260,24 +274,34 @@ export default function ContpaqiPage() {
       <section className="py-24 max-w-7xl mx-auto px-6 space-y-20">
         {categorias.map((cat) => (
           <div key={cat.titulo}>
-            <h2 className="text-2xl font-bold text-mida-primary mb-10 border-b-2 border-mida-primary/10 pb-2">
-              {cat.titulo}
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="mb-10 flex items-center gap-4 border-b border-gray-200 pb-4">
+              <span className="h-3 w-3 rounded-full" style={{ backgroundColor: cat.color }} />
+              <h2 className="text-2xl font-bold text-mida-deep">{cat.titulo}</h2>
+              <span className="ml-auto hidden sm:block h-1 w-24 rounded-full" style={{ backgroundColor: cat.color }} />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {cat.productos.map((prod) => (
                 <a
                   href={"href" in prod ? prod.href : "/contpaqi"}
                   key={prod.nombre}
-                  className="bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group"
+                  className="bg-white p-8 rounded-3xl border border-gray-100 border-t-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group"
+                  style={{ borderTopColor: cat.color }}
                 >
-                  <div className="w-24 h-24 mb-8 flex items-center justify-center relative">
-                    <Image
-                      src={prod.img}
-                      alt={`${prod.nombre} para empresas en León | MIDA`}
-                      width={96}
-                      height={96}
-                      className="object-contain w-full h-full group-hover:scale-110 transition-transform duration-500"
-                    />
+                  <div className="w-full h-28 mb-6 flex items-center justify-center relative">
+                    {"sinLogoOficial" in prod && prod.sinLogoOficial ? (
+                      <div className="h-20 w-20 rounded-2xl border border-gray-200 bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-400">
+                        CONTPAQi®
+                      </div>
+                    ) : (
+                      <Image
+                        src={prod.img}
+                        alt={`${prod.nombre} para empresas en León | MIDA`}
+                        width={180}
+                        height={112}
+                        className="object-contain max-w-[180px] max-h-28 transition-transform duration-500"
+                        style={{ transform: `scale(${("logoScale" in prod ? prod.logoScale : 1) ?? 1})` }}
+                      />
+                    )}
                   </div>
                   <h4 className="font-bold text-mida-deep text-lg mb-3 leading-tight">
                     {prod.nombre}

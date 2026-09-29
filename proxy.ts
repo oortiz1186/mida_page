@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { updateSupabaseSession } from "./lib/supabase/proxy";
 
 type RateEntry = {
   count: number;
@@ -98,7 +99,7 @@ function isTrustedChatOrigin(request: NextRequest) {
   }
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const ip = getClientIp(request);
 
@@ -166,9 +167,13 @@ export function proxy(request: NextRequest) {
     return response;
   }
 
+  if (pathname.startsWith("/admin")) {
+    return updateSupabaseSession(request);
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/api/chat", "/api/webhook/whatsapp"],
+  matcher: ["/api/chat", "/api/webhook/whatsapp", "/admin/:path*"],
 };

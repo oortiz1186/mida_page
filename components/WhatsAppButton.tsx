@@ -194,46 +194,61 @@ export default function WhatsAppButton() {
         </section>
       )}
 
-      <div className="flex items-center justify-end group">
-        {!isOpen && (
+      {!isOpen && (
+        <>
+          <div className="hidden md:flex items-center justify-end">
+            <div className="mr-3 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-xl">
+              <p className="text-xs font-black text-mida-deep">¿Necesitas ayuda?</p>
+              <p className="mt-0.5 text-[11px] text-gray-500">Estamos para atenderte.</p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsOpen(true)}
+              className="group flex w-[74px] flex-col items-center overflow-hidden rounded-2xl bg-mida-primary text-white shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-mida-deep"
+              aria-label="Habla con MIDA"
+            >
+              <span className="flex h-16 w-full items-center justify-center bg-mida-deep/25">
+                <svg className="h-7 w-7 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+                  <path d="M8 9h8M8 13h5" />
+                </svg>
+              </span>
+              <span className="flex min-h-[170px] items-center justify-center px-2 py-4">
+                <span className="[writing-mode:vertical-rl] rotate-180 text-[12px] font-black tracking-[0.16em]">
+                  HABLA CON MIDA
+                </span>
+              </span>
+            </button>
+          </div>
+
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="bg-white text-mida-deep text-xs font-bold px-4 py-2.5 rounded-l-full shadow-lg border border-gray-100 -mr-4 pr-6 transition-all duration-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible hover:text-mida-primary"
+            className="md:hidden flex items-center gap-2 rounded-full bg-mida-primary px-4 py-3.5 text-white shadow-2xl transition-transform active:scale-95"
+            aria-label="Abrir chat MIDA"
           >
-            ¿Necesitas ayuda? Chatea aquí
+            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+              <path d="M8 9h8M8 13h5" />
+            </svg>
+            <span className="text-sm font-black">Habla con MIDA</span>
           </button>
-        )}
+        </>
+      )}
 
+      {isOpen && (
         <button
           type="button"
-          onClick={() => setIsOpen((open) => !open)}
-          className="bg-mida-primary text-white p-4 rounded-full shadow-xl hover:scale-110 transition-transform duration-300 flex items-center justify-center relative z-10"
-          aria-label={isOpen ? "Cerrar chat MIDA" : "Abrir chat MIDA"}
+          onClick={() => setIsOpen(false)}
+          className="ml-auto flex h-12 w-12 items-center justify-center rounded-full bg-mida-primary text-white shadow-xl transition-transform hover:scale-105"
+          aria-label="Cerrar chat MIDA"
         >
-          {isOpen ? (
-            <svg
-              className="w-6 h-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg
-              className="w-6 h-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
-            </svg>
-          )}
+          <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
         </button>
-      </div>
+      )}
     </div>
   );
 }
