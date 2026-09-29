@@ -36,8 +36,7 @@ export default function ContpaqiPage() {
           nombre: "CONTPAQi Tesorería®",
           href: "/contpaqi-tesoreria",
           desc: "Control y seguimiento de la tesorería empresarial.",
-          img: "/images/productos/generica.jpg",
-          sinLogoOficial: true,
+          img: "/images/productos/tesoreria-2026.png",
         },
         {
           nombre: "CONTPAQi Optimiza®",
