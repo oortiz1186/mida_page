@@ -77,7 +77,7 @@ export default function WhatsAppButton() {
   }
 
   return (
-    <div className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50">
+    <div className="fixed bottom-5 right-1 sm:bottom-6 sm:right-2 z-50">
       {isOpen && (
         <section className="mb-4 w-[calc(100vw-2rem)] max-w-[380px] h-[560px] max-h-[72vh] bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col">
           <header className="bg-mida-deep text-white px-4 py-3 flex items-center justify-between gap-3">
