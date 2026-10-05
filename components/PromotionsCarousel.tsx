@@ -13,20 +13,38 @@ type Item = {
 
 export default function PromotionsCarousel({ items }: { items: Item[] }) {
   const [index, setIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(3);
 
   useEffect(() => {
-    if (items.length < 2) return;
+    const updateVisibleCount = () => {
+      if (window.innerWidth < 640) setVisibleCount(1);
+      else if (window.innerWidth < 1024) setVisibleCount(2);
+      else setVisibleCount(3);
+    };
+    updateVisibleCount();
+    window.addEventListener("resize", updateVisibleCount);
+    return () => window.removeEventListener("resize", updateVisibleCount);
+  }, []);
+
+  const maxIndex = Math.max(0, items.length - visibleCount);
+
+  useEffect(() => {
+    setIndex((current) => Math.min(current, maxIndex));
+  }, [maxIndex]);
+
+  useEffect(() => {
+    if (maxIndex === 0) return;
     const timer = window.setInterval(
-      () => setIndex((current) => (current + 1) % items.length),
+      () => setIndex((current) => (current >= maxIndex ? 0 : current + 1)),
       5500,
     );
     return () => window.clearInterval(timer);
-  }, [items.length]);
+  }, [maxIndex]);
 
   if (!items.length) return null;
 
-  const previous = () => setIndex((index - 1 + items.length) % items.length);
-  const next = () => setIndex((index + 1) % items.length);
+  const previous = () => setIndex((current) => (current <= 0 ? maxIndex : current - 1));
+  const next = () => setIndex((current) => (current >= maxIndex ? 0 : current + 1));
 
   return (
     <section className="bg-mida-deep py-12 text-white md:py-14">
@@ -41,7 +59,7 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
           <div className="overflow-hidden">
             <div
               className="flex transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(calc(-${index} * (100% + 20px)))` }}
+              style={{ transform: `translateX(-${index * (100 / visibleCount)}%)` }}
             >
               {items.map((item) => (
                 <div
@@ -72,7 +90,7 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
             </div>
           </div>
 
-          {items.length > 1 && (
+          {maxIndex > 0 && (
             <>
               <button type="button" aria-label="Promoción anterior" onClick={previous}
                 className="absolute -left-3 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white px-3.5 py-2 text-2xl font-bold text-mida-deep shadow-lg transition hover:scale-105 md:-left-5">‹</button>
@@ -82,10 +100,10 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
           )}
         </div>
 
-        {items.length > 1 && (
+        {maxIndex > 0 && (
           <div className="mt-6 flex justify-center gap-2">
-            {items.map((item, itemIndex) => (
-              <button key={item.id} type="button" aria-label={`Mostrar ${item.title}`} onClick={() => setIndex(itemIndex)}
+            {Array.from({ length: maxIndex + 1 }).map((_, itemIndex) => (
+              <button key={itemIndex} type="button" aria-label={`Mostrar grupo ${itemIndex + 1}`} onClick={() => setIndex(itemIndex)}
                 className={`h-2.5 rounded-full transition-all ${itemIndex === index ? "w-8 bg-white" : "w-2.5 bg-white/35 hover:bg-white/60"}`} />
             ))}
           </div>
