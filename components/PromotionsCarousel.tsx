@@ -1,4 +1,97 @@
-"use client";import Link from "next/link";import {useEffect,useState} from "react";
-type Item={id:string;title:string;slug:string;image_url:string|null;image_alt:string|null};
-export default function PromotionsCarousel({items}:{items:Item[]}){const [i,setI]=useState(0);useEffect(()=>{if(items.length<2)return;const t=setInterval(()=>setI(x=>(x+1)%items.length),6000);return()=>clearInterval(t)},[items.length]);if(!items.length)return null;const x=items[i];
-return <section className="bg-slate-50 py-14"><div className="mx-auto max-w-6xl px-6"><div className="mb-6 flex items-end justify-between"><div><p className="text-sm font-bold uppercase tracking-wider text-mida-primary">CONTPAQi</p><h2 className="text-3xl font-bold text-mida-deep">Promociones y novedades</h2></div><Link href="/promociones" className="font-semibold text-mida-primary">Ver todas →</Link></div><div className="relative overflow-hidden rounded-3xl bg-white shadow-sm"><Link href={`/promociones/${x.slug}`} aria-label={x.title} className="block">{x.image_url?<img src={x.image_url} alt={x.image_alt||x.title} className="h-[260px] w-full object-contain md:h-[430px]"/>:<div className="flex h-[260px] items-center justify-center bg-gradient-to-br from-slate-100 to-white px-10 text-center md:h-[430px]"><span className="text-3xl font-bold text-mida-deep md:text-5xl">{x.title}</span></div>}</Link>{items.length>1&&<><button aria-label="Anterior" onClick={()=>setI((i-1+items.length)%items.length)} className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-xl shadow">‹</button><button aria-label="Siguiente" onClick={()=>setI((i+1)%items.length)} className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-xl shadow">›</button></>}</div><div className="mt-4 flex justify-center gap-2">{items.map((_,n)=><button key={n} aria-label={`Ir a promoción ${n+1}`} onClick={()=>setI(n)} className={`h-2.5 rounded-full transition-all ${n===i?"w-8 bg-mida-primary":"w-2.5 bg-slate-300"}`}/>)}</div></div></section>}
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+type Item = {
+  id: string;
+  title: string;
+  slug: string;
+  image_url: string | null;
+  image_alt: string | null;
+};
+
+export default function PromotionsCarousel({ items }: { items: Item[] }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (items.length < 2) return;
+    const timer = window.setInterval(
+      () => setIndex((current) => (current + 1) % items.length),
+      6000,
+    );
+    return () => window.clearInterval(timer);
+  }, [items.length]);
+
+  if (!items.length) return null;
+
+  const item = items[index];
+
+  return (
+    <section className="bg-slate-50 py-14 md:py-16">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="mb-7 text-center">
+          <p className="text-sm font-bold uppercase tracking-wider text-mida-primary">CONTPAQi</p>
+          <h2 className="mt-2 text-3xl font-bold text-mida-deep md:text-4xl">Promociones y novedades</h2>
+        </div>
+
+        <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-white shadow-md">
+          <Link
+            href={`/promociones/${item.slug}`}
+            aria-label={`Ver información de ${item.title}`}
+            className="block"
+          >
+            {item.image_url ? (
+              <img
+                src={item.image_url}
+                alt={item.image_alt || item.title}
+                className="h-auto max-h-[560px] w-full object-contain"
+              />
+            ) : (
+              <div className="flex aspect-[16/7] items-center justify-center bg-gradient-to-br from-slate-100 to-white px-10 text-center">
+                <span className="text-3xl font-bold text-mida-deep md:text-5xl">{item.title}</span>
+              </div>
+            )}
+          </Link>
+
+          {items.length > 1 && (
+            <>
+              <button
+                type="button"
+                aria-label="Promoción anterior"
+                onClick={() => setIndex((index - 1 + items.length) % items.length)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-2xl shadow-md transition hover:bg-white md:left-5"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                aria-label="Siguiente promoción"
+                onClick={() => setIndex((index + 1) % items.length)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-2xl shadow-md transition hover:bg-white md:right-5"
+              >
+                ›
+              </button>
+            </>
+          )}
+        </div>
+
+        {items.length > 1 && (
+          <div className="mt-5 flex justify-center gap-2">
+            {items.map((item, itemIndex) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-label={`Mostrar ${item.title}`}
+                onClick={() => setIndex(itemIndex)}
+                className={`h-2.5 rounded-full transition-all ${
+                  itemIndex === index ? "w-8 bg-mida-primary" : "w-2.5 bg-slate-300 hover:bg-slate-400"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
