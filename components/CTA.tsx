@@ -5,7 +5,7 @@ export default function CTA() {
   const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumero}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminado)}`;
 
   return (
-    <section className="bg-mida-gray/40 py-24 px-6 text-center border-t border-b border-gray-100 relative overflow-hidden">
+    <section className="bg-white py-24 px-6 text-center border-t border-b border-gray-100 relative overflow-hidden">
       {/* Círculos decorativos */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-mida-primary/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-mida-light/10 rounded-full blur-3xl pointer-events-none" />
