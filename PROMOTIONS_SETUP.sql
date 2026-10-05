@@ -25,3 +25,15 @@ insert into public.commercial_notices(title,slug,summary,content,type,status,sta
 ('CFDI en línea+ migra a CONTPAQi Vende','cfdi-en-linea-plus-migra-a-vende','CFDI en línea+ dejará de comercializarse y posteriormente de operar. Los clientes vigentes serán migrados a CONTPAQi Vende Inicial.','<h2>Cambio importante para usuarios de CFDI en línea+</h2><p>A partir del <strong>12 de octubre de 2026</strong> ya no se podrá adquirir CFDI en línea+ y el <strong>15 de enero de 2027</strong> dejará de operar.</p><p>Los clientes que todavía tengan vigencia serán migrados hacia <strong>CONTPAQi Vende Inicial</strong>. También se contempla una herramienta para apoyar el traslado de información.</p><p>Este cambio corresponde a CFDI en línea+. CFDI en línea tradicional continúa vigente.</p>','notice','published','2026-10-01','2027-01-15',70,'CFDI en línea+ migra a CONTPAQi Vende | MIDA','Conoce las fechas de descontinuación de CFDI en línea+ y la migración prevista hacia CONTPAQi Vende Inicial.'),
 ('Nuevo Escritorio Virtual a la Medida','escritorio-virtual-a-la-medida-contpaqi','Desde octubre las nuevas contrataciones de Escritorio Virtual permiten configurar recursos de acuerdo con las necesidades del cliente.','<h2>Una infraestructura más flexible</h2><p>Desde el <strong>5 de octubre</strong>, las nuevas contrataciones de Escritorio Virtual se realizan mediante Marketplace sobre SkyOne.</p><p>Ahora es posible configurar CPU, memoria RAM, almacenamiento y usuarios de acuerdo con las necesidades de cada empresa. Se mantienen modalidades de 320 y 720 horas mensuales y opciones de almacenamiento adicional desde 25 GB hasta 1 TB.</p><p>El material comercial señala un precio de $199 MXN mensuales por usuario adicional. Los clientes existentes sobre AWS pueden continuar renovando bajo su esquema actual.</p>','news','published','2026-10-05',null,80,'Escritorio Virtual a la Medida CONTPAQi | MIDA','Conoce el nuevo Escritorio Virtual a la Medida de CONTPAQi con recursos configurables para cada empresa.')
 on conflict (slug) do update set title=excluded.title,summary=excluded.summary,content=excluded.content,type=excluded.type,status=excluded.status,start_at=excluded.start_at,end_at=excluded.end_at,sort_order=excluded.sort_order,seo_title=excluded.seo_title,seo_description=excluded.seo_description,updated_at=now();
+
+
+-- Ejecutar una sola vez en Supabase SQL Editor.
+-- Relaciona promociones/avisos con las páginas de producto de MIDA.
+alter table public.commercial_notices
+  add column if not exists related_products text[] not null default '{}';
+
+create index if not exists commercial_notices_related_products_gin
+  on public.commercial_notices using gin (related_products);
+
+comment on column public.commercial_notices.related_products is
+  'Slugs de páginas de producto MIDA donde debe mostrarse la promoción o aviso.';
