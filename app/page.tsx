@@ -21,9 +21,9 @@ export default function Home() {
       <div className="flex-grow">
         <Hero />
         <Authority />
+        <HomePromotions />
         <Services />
         <SolutionLinks />
-        <HomePromotions />
         <CTA />
       </div>
       <Footer />
