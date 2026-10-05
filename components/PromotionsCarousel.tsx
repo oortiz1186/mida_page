@@ -58,7 +58,7 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
                         <img
                           src={item.image_url}
                           alt={item.image_alt || item.title}
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.035]"
+                          className="h-full w-full object-contain transition duration-500 group-hover:scale-[1.02]"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-100 to-white p-7 text-center">
