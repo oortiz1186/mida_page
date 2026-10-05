@@ -58,7 +58,7 @@ export default function SolutionFinder() {
   const recommendation = useMemo(() => recommendations[selected], [selected]);
 
   return (
-    <section className="bg-slate-50 py-24 px-6 border-y border-gray-100">
+    <section className="bg-white py-24 px-6 border-y border-gray-100">
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto">
           <span className="text-mida-primary font-bold text-xs uppercase tracking-widest">Te ayudamos a elegir</span>
