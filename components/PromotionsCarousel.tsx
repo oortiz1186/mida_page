@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { trackEvent } from "../lib/analytics";
 
 type Item = {
   id: string;
@@ -69,6 +70,7 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
                   <Link
                     href={`/promociones/${item.slug}`}
                     aria-label={`Ver información de ${item.title}`}
+                    onClick={() => trackEvent("promotion_click", { promotion_id: item.id, promotion_name: item.title, promotion_slug: item.slug, page_path: window.location.pathname })}
                     className="group block overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-white/10"
                   >
                     <div className="flex aspect-[16/9] items-center justify-center overflow-hidden bg-white">
