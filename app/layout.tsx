@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import { Inter, DM_Sans } from "next/font/google";
 import { infoEmpresa } from "../components/config/empresa";
 import "./globals.css";
-import dynamic from "next/dynamic";
+import PublicChatButton from "../components/PublicChatButton";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-dm-sans" });
 
-const WhatsAppButton = dynamic(() => import("../components/WhatsAppButton"));
 
 export const metadata: Metadata = {
   metadataBase: new URL(infoEmpresa.dominio),
@@ -59,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={dmSans.className}>
         {children}
-        <WhatsAppButton />
+        <PublicChatButton />
         {infoEmpresa.googleAnalyticsId && infoEmpresa.googleAnalyticsId !== "G-XXXXXXX" && (
           <script
             dangerouslySetInnerHTML={{

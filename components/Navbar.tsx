@@ -107,6 +107,7 @@ export default function Navbar() {
 
           <a href="/equipamiento" className={desktopLink(pathname === "/equipamiento")}>Equipamiento</a>
           <a href="/cursos" className={desktopLink(pathname === "/cursos")}>Cursos</a>
+          <a href="/blog" className={desktopLink(pathname === "/blog" || pathname.startsWith("/blog/"))}>Blog</a>
           <a href="/contacto" className="bg-mida-primary text-white px-5 py-2.5 rounded-full hover:bg-mida-deep transition-all shadow-md">Contacto</a>
         </div>
 
@@ -160,6 +161,7 @@ export default function Navbar() {
 
           <a href="/equipamiento" onClick={closeMobile} className="block py-3 border-b border-gray-100">Equipamiento</a>
           <a href="/cursos" onClick={closeMobile} className="block py-3 border-b border-gray-100">Cursos</a>
+          <a href="/blog" onClick={closeMobile} className="block py-3 border-b border-gray-100">Blog</a>
           <a href="/contacto" onClick={closeMobile} className="block bg-mida-primary text-white text-center px-5 py-3 rounded-xl hover:bg-mida-deep transition-all mt-4 shadow-md">Contacto</a>
         </div>
       )}
