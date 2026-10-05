@@ -1,0 +1,3 @@
+import {supabase} from "@/lib/supabase";import PromotionsCarousel from "./PromotionsCarousel";
+export const dynamic="force-dynamic";
+export default async function HomePromotions(){const today=new Date().toISOString().slice(0,10);const {data}=await supabase.from("commercial_notices").select("id,title,slug,image_url,image_alt").eq("status","published").or(`start_at.is.null,start_at.lte.${today}`).or(`end_at.is.null,end_at.gte.${today}`).order("sort_order").limit(10);return <PromotionsCarousel items={data??[]}/>}
