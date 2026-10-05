@@ -23,7 +23,7 @@ type HubSpotWindow = Window & {
   };
 };
 
-export default function HubSpotQuoteForm({ product }: { product: string }) {
+export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: { product: string; source?: string }) {
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const renderedRef = useRef(false);
 
@@ -31,7 +31,7 @@ export default function HubSpotQuoteForm({ product }: { product: string }) {
     const url = new URL(window.location.href);
     url.searchParams.set("producto_de_interes", product);
     window.history.replaceState({}, "", url.toString());
-  }, [product]);
+  }, [product, source]);
 
   useEffect(() => {
     if (status !== "loading") return;
@@ -64,10 +64,10 @@ export default function HubSpotQuoteForm({ product }: { product: string }) {
       target: `#${targetId}`,
       onFormReady: () => {
         setStatus("ready");
-        trackEvent("quote_form_view", { product, page_path: window.location.pathname });
+        trackEvent("quote_form_view", { product, source, page_path: window.location.pathname, page_location: window.location.href });
       },
       onFormSubmitted: () => {
-        trackEvent("generate_lead", { form_name: "hubspot_quote", product, page_path: window.location.pathname });
+        trackEvent("generate_lead", { form_name: "hubspot_quote", product, source, page_path: window.location.pathname, page_location: window.location.href });
       },
     });
   }, [product]);
