@@ -6,6 +6,7 @@ import Services from "../components/Services";
 import SolutionLinks from "../components/SolutionLinks";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
+import HomePromotions from "../components/HomePromotions";
 
 export const metadata = {
   title: "Distribuidor CONTPAQi en León | MIDA",
@@ -22,6 +23,7 @@ export default function Home() {
         <Authority />
         <Services />
         <SolutionLinks />
+        <HomePromotions />
         <CTA />
       </div>
       <Footer />
