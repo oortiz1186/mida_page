@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import HubSpotQuoteForm from "../../components/HubSpotQuoteForm";
 import QuoteLink from "../../components/QuoteLink";
 import RelatedPromotions from "../../components/RelatedPromotions";
+import ProductExtras from "../../components/ProductExtras";
 import { getSeoPage, seoPages } from "../../lib/seoPages";
 
 export function generateStaticParams() {
@@ -214,6 +215,8 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           </div>
         </section>
       )}
+
+      {page.productPage && <ProductExtras page={page} />}
 
       <section className="py-16 px-6 bg-mida-deep text-white">
         <div className="max-w-4xl mx-auto text-center">
