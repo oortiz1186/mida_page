@@ -18,76 +18,75 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
     if (items.length < 2) return;
     const timer = window.setInterval(
       () => setIndex((current) => (current + 1) % items.length),
-      6000,
+      5500,
     );
     return () => window.clearInterval(timer);
   }, [items.length]);
 
   if (!items.length) return null;
 
-  const item = items[index];
+  const previous = () => setIndex((index - 1 + items.length) % items.length);
+  const next = () => setIndex((index + 1) % items.length);
 
   return (
-    <section className="bg-mida-deep py-14 text-white md:py-16">
-      <div className="mx-auto max-w-6xl px-6">
+    <section className="bg-mida-deep py-12 text-white md:py-14">
+      <div className="mx-auto max-w-7xl px-5 md:px-6">
         <div className="mb-7 text-center">
-          <p className="text-sm font-bold uppercase tracking-wider text-white/75">CONTPAQi</p>
+          <p className="text-sm font-bold uppercase tracking-wider text-white/70">CONTPAQi</p>
           <h2 className="mt-2 text-3xl font-bold text-white md:text-4xl">Promociones y novedades</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm text-white/70">Conoce nuestras promociones vigentes y descubre la opción ideal para tu empresa.</p>
         </div>
 
-        <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-white shadow-md">
-          <Link
-            href={`/promociones/${item.slug}`}
-            aria-label={`Ver información de ${item.title}`}
-            className="block"
-          >
-            {item.image_url ? (
-              <img
-                src={item.image_url}
-                alt={item.image_alt || item.title}
-                className="h-auto max-h-[560px] w-full object-contain"
-              />
-            ) : (
-              <div className="flex aspect-[16/7] items-center justify-center bg-gradient-to-br from-slate-100 to-white px-10 text-center">
-                <span className="text-3xl font-bold text-mida-deep md:text-5xl">{item.title}</span>
-              </div>
-            )}
-          </Link>
+        <div className="relative">
+          <div className="overflow-hidden">
+            <div
+              className="flex transition-transform duration-700 ease-in-out"
+              style={{ transform: `translateX(calc(-${index} * (100% + 20px)))` }}
+            >
+              {items.map((item) => (
+                <div
+                  key={item.id}
+                  className="w-full shrink-0 pr-0 sm:w-1/2 sm:pr-5 lg:w-1/3"
+                >
+                  <Link
+                    href={`/promociones/${item.slug}`}
+                    aria-label={`Ver información de ${item.title}`}
+                    className="group block overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-white/10"
+                  >
+                    <div className="aspect-[16/9] overflow-hidden bg-white">
+                      {item.image_url ? (
+                        <img
+                          src={item.image_url}
+                          alt={item.image_alt || item.title}
+                          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.035]"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-100 to-white p-7 text-center">
+                          <span className="text-xl font-black text-mida-deep">{item.title}</span>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {items.length > 1 && (
             <>
-              <button
-                type="button"
-                aria-label="Promoción anterior"
-                onClick={() => setIndex((index - 1 + items.length) % items.length)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-2xl shadow-md transition hover:bg-white md:left-5"
-              >
-                ‹
-              </button>
-              <button
-                type="button"
-                aria-label="Siguiente promoción"
-                onClick={() => setIndex((index + 1) % items.length)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-2xl shadow-md transition hover:bg-white md:right-5"
-              >
-                ›
-              </button>
+              <button type="button" aria-label="Promoción anterior" onClick={previous}
+                className="absolute -left-3 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white px-3.5 py-2 text-2xl font-bold text-mida-deep shadow-lg transition hover:scale-105 md:-left-5">‹</button>
+              <button type="button" aria-label="Siguiente promoción" onClick={next}
+                className="absolute -right-3 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white px-3.5 py-2 text-2xl font-bold text-mida-deep shadow-lg transition hover:scale-105 md:-right-5">›</button>
             </>
           )}
         </div>
 
         {items.length > 1 && (
-          <div className="mt-5 flex justify-center gap-2">
+          <div className="mt-6 flex justify-center gap-2">
             {items.map((item, itemIndex) => (
-              <button
-                key={item.id}
-                type="button"
-                aria-label={`Mostrar ${item.title}`}
-                onClick={() => setIndex(itemIndex)}
-                className={`h-2.5 rounded-full transition-all ${
-                  itemIndex === index ? "w-8 bg-mida-primary" : "w-2.5 bg-slate-300 hover:bg-slate-400"
-                }`}
-              />
+              <button key={item.id} type="button" aria-label={`Mostrar ${item.title}`} onClick={() => setIndex(itemIndex)}
+                className={`h-2.5 rounded-full transition-all ${itemIndex === index ? "w-8 bg-white" : "w-2.5 bg-white/35 hover:bg-white/60"}`} />
             ))}
           </div>
         )}
