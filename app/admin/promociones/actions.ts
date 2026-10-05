@@ -12,10 +12,11 @@ async function auth(){
 export async function savePromotion(f:FormData){
  const {supabase,user}=await auth(); const id=v(f,"id"), title=v(f,"title"), slug=slugify(v(f,"slug")||title), status=v(f,"status")||"draft";
  if(!title||!slug||!["draft","published","archived"].includes(status)) redirect(id?`/admin/promociones/${id}?error=invalid`:"/admin/promociones/nueva?error=invalid");
- const payload={title,slug,summary:v(f,"summary")||null,content:v(f,"content"),image_url:v(f,"featured_image_url")||null,image_alt:v(f,"featured_image_alt")||null,type:v(f,"type")||"promotion",status,start_at:v(f,"start_at")||null,end_at:v(f,"end_at")||null,sort_order:Number(v(f,"sort_order")||"0"),cta_label:v(f,"cta_label")||"Solicitar información",seo_title:v(f,"seo_title")||null,seo_description:v(f,"seo_description")||null,updated_at:new Date().toISOString(),created_by:user.id,published_at:status==="published"?new Date().toISOString():null};
+ const related_products=f.getAll("related_products").map(String).filter(Boolean);
+ const payload={title,slug,related_products,summary:v(f,"summary")||null,content:v(f,"content"),image_url:v(f,"featured_image_url")||null,image_alt:v(f,"featured_image_alt")||null,type:v(f,"type")||"promotion",status,start_at:v(f,"start_at")||null,end_at:v(f,"end_at")||null,sort_order:Number(v(f,"sort_order")||"0"),cta_label:v(f,"cta_label")||"Solicitar información",seo_title:v(f,"seo_title")||null,seo_description:v(f,"seo_description")||null,updated_at:new Date().toISOString(),created_by:user.id,published_at:status==="published"?new Date().toISOString():null};
  const saved=id||crypto.randomUUID(); const {error}=id?await supabase.from("commercial_notices").update(payload).eq("id",id):await supabase.from("commercial_notices").insert({id:saved,...payload});
  if(error){console.error(error);redirect(id?`/admin/promociones/${id}?error=save`:"/admin/promociones/nueva?error=save");}
- revalidatePath("/");revalidatePath("/promociones");revalidatePath("/admin");revalidatePath("/admin/promociones");revalidatePath(`/promociones/${slug}`);
+ revalidatePath("/");related_products.forEach((p)=>revalidatePath(`/${p}`));revalidatePath("/promociones");revalidatePath("/admin");revalidatePath("/admin/promociones");revalidatePath(`/promociones/${slug}`);
  redirect(`/admin/promociones/${saved}?saved=1`);
 }
 export async function deletePromotion(f:FormData){
