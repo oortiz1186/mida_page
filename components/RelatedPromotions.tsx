@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 import { supabase } from "@/lib/supabase";
 
 type Promotion={id:string;title:string;slug:string;summary:string|null;image_url:string|null;image_alt:string|null;end_at:string|null;cta_label:string|null};
 
 export default async function RelatedPromotions({productSlug}:{productSlug:string}){
+ noStore();
  const today=new Date().toISOString().slice(0,10);
  const {data}=await supabase.from("commercial_notices")
   .select("id,title,slug,summary,image_url,image_alt,end_at,cta_label")
