@@ -26,6 +26,8 @@ export default async function AdminPage() {
     redirect("/admin/login?error=unauthorized");
   }
 
+  const { count: promotionsCount } = await supabase.from("commercial_notices").select("id", { count: "exact", head: true });
+
   const { count: postsCount } = await supabase
     .from("blog_posts")
     .select("id", { count: "exact", head: true });
@@ -45,10 +47,15 @@ export default async function AdminPage() {
       </header>
       <section className="mx-auto max-w-6xl px-6 py-10">
         <p className="text-slate-600">Bienvenido, <strong>{profile.display_name}</strong>.</p>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
+        <div className="mt-8 grid gap-5 md:grid-cols-4">
           <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-100">
             <p className="text-sm text-slate-500">Artículos</p>
             <p className="mt-2 text-4xl font-bold text-mida-deep">{postsCount ?? 0}</p>
+          </div>
+          <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-100">
+            <p className="text-sm text-slate-500">Promociones</p>
+            <p className="mt-2 text-4xl font-bold text-mida-deep">{promotionsCount ?? 0}</p>
+            <Link href="/admin/promociones" className="mt-2 inline-block text-sm font-semibold text-mida-primary hover:underline">Administrar →</Link>
           </div>
           <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-100">
             <p className="text-sm text-slate-500">Rol</p>
