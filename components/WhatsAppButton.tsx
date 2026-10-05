@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { trackEvent } from "../lib/analytics";
 
 interface Message {
   role: "user" | "assistant";
@@ -31,6 +32,8 @@ export default function WhatsAppButton() {
 
     const text = input.trim();
     if (!text || loading) return;
+
+    trackEvent("chat_message", { page_path: window.location.pathname });
 
     const userMessage: Message = { role: "user", content: text };
     const nextMessages = [...messages, userMessage];
@@ -204,7 +207,7 @@ export default function WhatsAppButton() {
 
             <button
               type="button"
-              onClick={() => setIsOpen(true)}
+              onClick={() => { trackEvent("chat_open", { page_path: window.location.pathname }); setIsOpen(true); }}
               className="group flex w-[74px] flex-col items-center overflow-hidden rounded-2xl bg-mida-primary text-white shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-mida-deep"
               aria-label="Habla con MIDA"
             >
@@ -224,7 +227,7 @@ export default function WhatsAppButton() {
 
           <button
             type="button"
-            onClick={() => setIsOpen(true)}
+            onClick={() => { trackEvent("chat_open", { page_path: window.location.pathname }); setIsOpen(true); }}
             className="md:hidden flex items-center gap-2 rounded-full bg-mida-primary px-4 py-3.5 text-white shadow-2xl transition-transform active:scale-95"
             aria-label="Abrir chat MIDA"
           >
