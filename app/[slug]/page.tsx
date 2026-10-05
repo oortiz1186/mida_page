@@ -73,8 +73,6 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
         </div>
       </section>
 
-      {page.productPage && <RelatedPromotions productSlug={page.slug} />}
-
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="max-w-3xl">
@@ -107,6 +105,8 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           </div>
         </div>
       </section>
+
+      {page.productPage && <RelatedPromotions productSlug={page.slug} />}
 
       {page.productPage && page.youtubeVideoId && (
         <section className="py-20 px-6 bg-white border-y border-gray-100">
