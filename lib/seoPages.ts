@@ -13,6 +13,8 @@ export type SeoPage = {
   youtubeVideoId?: string;
   pricing?: { label: string; newPrice: string; renewalPrice: string; extraUser?: string }[];
   pricingTable?: { columns: string[]; rows: string[][]; note?: string };
+  relatedProducts?: string[];
+  faqs?: { question: string; answer: string }[];
 };
 
 export const seoPages: SeoPage[] = [
@@ -45,6 +47,57 @@ export const seoPages: SeoPage[] = [
   { slug:"polizas-soporte-ti", title:"Pólizas de soporte TI en León | MIDA", h1:"Pólizas de soporte TI en León", description:"Pólizas de soporte tecnológico para empresas en León con atención especializada.", eyebrow:"Soporte empresarial", intro:"Centraliza la atención tecnológica de tu empresa con una póliza de soporte orientada a continuidad operativa.", benefits:["Atención técnica","Mantenimiento","Seguimiento","Continuidad"], features:["Atención de incidencias","Seguimiento de solicitudes","Mantenimiento","Acompañamiento tecnológico"] },
   { slug:"cursos-contpaqi", title:"Cursos CONTPAQi® en León | MIDA", h1:"Cursos CONTPAQi® en León", description:"Capacitación y cursos de sistemas CONTPAQi® para empresas y usuarios en León.", eyebrow:"Capacitación", intro:"Capacitamos a usuarios y equipos de trabajo para aprovechar mejor las herramientas CONTPAQi®.", benefits:["Capacitación práctica","Temarios orientados al sistema","Atención a dudas","Enfoque empresarial"], features:["Capacitación por sistema","Sesiones prácticas","Resolución de dudas","Orientación a la operación"] },
 ];
+
+
+const productExtras: Record<string, Pick<SeoPage,"relatedProducts"|"faqs">> = {
+ "contpaqi-contabilidad":{relatedProducts:["contpaqi-bancos","contpaqi-xml-en-linea","contpaqi-respaldos","contpaqi-escritorio-virtual"],faqs:[
+  {question:"¿CONTPAQi Contabilidad permite trabajar con varias empresas?",answer:"Sí. El alcance depende del esquema de licenciamiento contratado. MIDA puede ayudarte a revisar si necesitas una edición Mono-RFC o Multi-RFC según tu operación."},
+  {question:"¿Se puede utilizar CONTPAQi Contabilidad en red?",answer:"Sí. Puede implementarse en ambientes de red considerando servidor, estaciones de trabajo, SQL y los requerimientos técnicos de la versión instalada."},
+  {question:"¿MIDA realiza la instalación y configuración?",answer:"Sí. MIDA puede apoyar con instalación, configuración, puesta en marcha, actualización, capacitación y soporte de la solución."},
+  {question:"¿Puedo trabajar de forma remota?",answer:"Es posible habilitar esquemas de trabajo remoto mediante infraestructura adecuada, como CONTPAQi Escritorio Virtual u otras configuraciones compatibles con la operación requerida."}]},
+ "contpaqi-nominas":{relatedProducts:["contpaqi-contabilidad","contpaqi-colabora","contpaqi-personia","contpaqi-escritorio-virtual"],faqs:[
+  {question:"¿CONTPAQi Nóminas permite timbrar recibos de nómina?",answer:"Sí. La solución está orientada al cálculo y operación de nómina e incluye procesos relacionados con la emisión y timbrado de recibos conforme a la configuración y versión vigente."},
+  {question:"¿Puedo manejar más de un RFC?",answer:"Existen esquemas de licenciamiento Mono-RFC y Multi-RFC. MIDA puede ayudarte a identificar cuál corresponde a tu operación."},
+  {question:"¿Se integra con CONTPAQi Contabilidad?",answer:"CONTPAQi Nóminas forma parte del ecosistema CONTPAQi y puede complementar los procesos contables de la empresa. El alcance de la integración depende de la configuración utilizada."},
+  {question:"¿MIDA puede ayudarme a actualizar o implementar Nóminas?",answer:"Sí. Podemos apoyar en instalación, actualización, configuración, capacitación y soporte técnico."}]},
+ "contpaqi-comercial-premium":{relatedProducts:["contpaqi-contabilidad","contpaqi-bancos","contpaqi-respaldos","contpaqi-escritorio-virtual"],faqs:[
+  {question:"¿CONTPAQi Comercial Premium controla inventarios?",answer:"Sí. Incluye funciones para inventarios, costos, compras, ventas y otros procesos de administración comercial."},
+  {question:"¿Permite emitir CFDI?",answer:"Sí. La solución contempla procesos de facturación y CFDI de acuerdo con las características y versión vigente del sistema."},
+  {question:"¿Puede trabajar con varios usuarios?",answer:"Sí. Es una solución multiusuario y el número de usuarios disponibles depende del licenciamiento contratado."},
+  {question:"¿MIDA puede instalarlo en un servidor?",answer:"Sí. Podemos revisar requerimientos, SQL, red, servidor y estaciones de trabajo para definir una implementación adecuada."}]},
+ "contpaqi-comercial-pro":{relatedProducts:["contpaqi-contabilidad","contpaqi-bancos","contpaqi-respaldos"],faqs:[
+  {question:"¿Qué procesos puedo administrar con Comercial Pro?",answer:"Está orientado a la gestión comercial, incluyendo inventarios, compras y ventas, además de la configuración necesaria para la operación de la empresa."},
+  {question:"¿Puede trabajar con varios usuarios?",answer:"Sí. El número de usuarios depende del esquema de licenciamiento contratado."},
+  {question:"¿MIDA realiza implementación y soporte?",answer:"Sí. Podemos apoyar en instalación, configuración, puesta en marcha y soporte especializado."}]},
+ "contpaqi-comercial-start":{relatedProducts:["contpaqi-contabilidad","contpaqi-bancos","contpaqi-respaldos"],faqs:[
+  {question:"¿Para qué tipo de empresa es Comercial Start?",answer:"Está orientado a negocios que buscan organizar ventas, compras, inventarios y facturación mediante una solución comercial de entrada."},
+  {question:"¿Incluye facturación electrónica?",answer:"Sí. Entre sus funciones se encuentra la facturación electrónica, sujeta a las características y versión vigente del producto."},
+  {question:"¿MIDA puede ayudarme a elegir entre Start, Pro o Premium?",answer:"Sí. Podemos revisar usuarios, procesos, inventarios y necesidades de operación para recomendar la alternativa adecuada."}]},
+ "contpaqi-bancos":{relatedProducts:["contpaqi-contabilidad","contpaqi-xml-en-linea","contpaqi-anticipa"],faqs:[
+  {question:"¿Para qué sirve CONTPAQi Bancos?",answer:"Ayuda a controlar ingresos, egresos, liquidez, movimientos bancarios y procesos de conciliación dentro del ecosistema CONTPAQi."},
+  {question:"¿Se complementa con CONTPAQi Contabilidad?",answer:"Sí. Bancos y Contabilidad pueden formar parte de una operación financiera y contable integrada, dependiendo de la configuración utilizada."},
+  {question:"¿MIDA realiza instalación y capacitación?",answer:"Sí. Podemos apoyar con implementación, configuración, capacitación y soporte."}]},
+ "contpaqi-vende":{relatedProducts:["contpaqi-contabilidad","contpaqi-bancos","contpaqi-respaldos"],faqs:[
+  {question:"¿CONTPAQi Vende funciona en la nube?",answer:"Sí. Es una solución orientada a operar en línea y permite administrar procesos comerciales desde internet según la edición contratada."},
+  {question:"¿Maneja ventas, compras e inventarios?",answer:"Sí. Las funciones disponibles incluyen procesos comerciales como ventas, compras, inventario, facturación y cobranza, con alcance según la edición."},
+  {question:"¿Qué edición de Vende necesito?",answer:"Depende del número de usuarios, RFC, volumen de información y funciones requeridas. MIDA puede ayudarte a seleccionar el plan adecuado."}]},
+ "contpaqi-xml-en-linea":{relatedProducts:["contpaqi-contabilidad","contpaqi-anticipa","contpaqi-optimiza"],faqs:[
+  {question:"¿Qué hace CONTPAQi XML en línea+?",answer:"Permite recuperar, organizar y validar CFDI, facilitando la consulta y administración de información fiscal disponible ante el SAT."},
+  {question:"¿Permite trabajar con varios RFC?",answer:"El producto contempla operación Multi-RFC de acuerdo con su licenciamiento vigente."},
+  {question:"¿Se complementa con Contabilidad?",answer:"Sí. La gestión de XML puede complementar los procesos contables y de revisión fiscal dentro del ecosistema CONTPAQi."}]},
+ "contpaqi-escritorio-virtual":{relatedProducts:["contpaqi-contabilidad","contpaqi-nominas","contpaqi-comercial-premium","contpaqi-respaldos"],faqs:[
+  {question:"¿Para qué sirve CONTPAQi Escritorio Virtual?",answer:"Permite acceder de forma remota a sistemas compatibles de CONTPAQi mediante infraestructura en la nube, reduciendo la dependencia de un servidor local."},
+  {question:"¿Cuántos usuarios puedo contratar?",answer:"La configuración depende de los recursos y usuarios requeridos. MIDA puede ayudarte a dimensionar la infraestructura adecuada."},
+  {question:"¿Puedo utilizar Contabilidad, Nóminas o Comercial Premium?",answer:"Es posible trabajar con sistemas compatibles de CONTPAQi. La configuración final debe validarse según productos, usuarios y recursos requeridos."}]},
+ "contpaqi-respaldos":{relatedProducts:["contpaqi-contabilidad","contpaqi-nominas","contpaqi-comercial-premium"],faqs:[
+  {question:"¿Qué protege CONTPAQi Respaldos?",answer:"Permite almacenar y administrar respaldos de información empresarial en la nube de acuerdo con el plan contratado."},
+  {question:"¿Qué capacidad necesito?",answer:"Depende del volumen de información y crecimiento esperado. Existen distintos planes de almacenamiento y MIDA puede ayudarte a elegir el adecuado."}]}
+};
+
+for (const page of seoPages) {
+ const extra=productExtras[page.slug];
+ if(extra) Object.assign(page,extra);
+}
 
 export function getSeoPage(slug: string) {
   return seoPages.find((page) => page.slug === slug);
