@@ -28,11 +28,11 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
   const item = items[index];
 
   return (
-    <section className="bg-slate-50 py-14 md:py-16">
+    <section className="bg-mida-deep py-14 text-white md:py-16">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-7 text-center">
-          <p className="text-sm font-bold uppercase tracking-wider text-mida-primary">CONTPAQi</p>
-          <h2 className="mt-2 text-3xl font-bold text-mida-deep md:text-4xl">Promociones y novedades</h2>
+          <p className="text-sm font-bold uppercase tracking-wider text-white/75">CONTPAQi</p>
+          <h2 className="mt-2 text-3xl font-bold text-white md:text-4xl">Promociones y novedades</h2>
         </div>
 
         <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-white shadow-md">
