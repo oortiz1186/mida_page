@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { trackEvent } from "../lib/analytics";
 
 const portal = "51341002";
 const formId = "6cd98886-d87e-4dbe-bd9f-b32b03324164";
@@ -16,6 +17,7 @@ type HubSpotWindow = Window & {
         formId: string;
         target: string;
         onFormReady?: () => void;
+        onFormSubmitted?: () => void;
       }) => void;
     };
   };
@@ -60,9 +62,15 @@ export default function HubSpotQuoteForm({ product }: { product: string }) {
       portalId: portal,
       formId,
       target: `#${targetId}`,
-      onFormReady: () => setStatus("ready"),
+      onFormReady: () => {
+        setStatus("ready");
+        trackEvent("quote_form_view", { product, page_path: window.location.pathname });
+      },
+      onFormSubmitted: () => {
+        trackEvent("generate_lead", { form_name: "hubspot_quote", product, page_path: window.location.pathname });
+      },
     });
-  }, []);
+  }, [product]);
 
   return (
     <section id="cotizacion" className="py-20 px-6 bg-white border-t border-gray-100 scroll-mt-28">
