@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { trackEvent } from "../lib/analytics";
 
 type Need = "contabilidad" | "nomina" | "ventas" | "facturacion" | "bancos" | "nube";
 
@@ -74,7 +75,7 @@ export default function SolutionFinder() {
                 <button
                   key={need.id}
                   type="button"
-                  onClick={() => setSelected(need.id)}
+                  onClick={() => { setSelected(need.id); trackEvent("solution_interest", { need: need.id, product: recommendations[need.id].title, source: "solution_finder", page_path: window.location.pathname }); }}
                   aria-pressed={active}
                   className={`text-left rounded-2xl border p-5 transition-all ${active ? "bg-mida-deep text-white border-mida-deep shadow-lg -translate-y-0.5" : "bg-white text-mida-deep border-gray-200 hover:border-mida-primary hover:shadow-md"}`}
                 >
@@ -101,8 +102,8 @@ export default function SolutionFinder() {
               </div>
             </div>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Link href={recommendation.href} className="rounded-xl bg-white px-6 py-3 text-center text-sm font-bold text-mida-deep hover:bg-gray-100 transition-colors">Ver solución</Link>
-              <Link href={`/contacto?interes=${encodeURIComponent(recommendation.title)}&accion=cotizacion`} className="rounded-xl bg-mida-primary px-6 py-3 text-center text-sm font-bold text-white hover:bg-white hover:text-mida-deep transition-colors">Solicitar cotización</Link>
+              <Link href={recommendation.href} onClick={() => trackEvent("view_product_click", { product: recommendation.title, source: "solution_finder", page_path: window.location.pathname })} className="rounded-xl bg-white px-6 py-3 text-center text-sm font-bold text-mida-deep hover:bg-gray-100 transition-colors">Ver solución</Link>
+              <Link href={`/contacto?interes=${encodeURIComponent(recommendation.title)}&accion=cotizacion`} onClick={() => trackEvent("quote_click", { product: recommendation.title, source: "solution_finder", page_path: window.location.pathname })} className="rounded-xl bg-mida-primary px-6 py-3 text-center text-sm font-bold text-white hover:bg-white hover:text-mida-deep transition-colors">Solicitar cotización</Link>
             </div>
             <p className="mt-5 text-xs text-white/60">La recomendación es orientativa. Un asesor MIDA puede validar usuarios, procesos y alcance antes de cotizar.</p>
           </div>
