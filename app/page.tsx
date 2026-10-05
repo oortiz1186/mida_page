@@ -7,6 +7,7 @@ import SolutionLinks from "../components/SolutionLinks";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
 import HomePromotions from "../components/HomePromotions";
+import SolutionFinder from "../components/SolutionFinder";
 
 export const metadata = {
   title: "Distribuidor CONTPAQi en León | MIDA",
@@ -22,6 +23,7 @@ export default function Home() {
         <Hero />
         <Authority />
         <HomePromotions />
+        <SolutionFinder />
         <Services />
         <SolutionLinks />
         <CTA />
