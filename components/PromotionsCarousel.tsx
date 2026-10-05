@@ -71,12 +71,12 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
                     aria-label={`Ver información de ${item.title}`}
                     className="group block overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-white/10"
                   >
-                    <div className="aspect-[16/9] overflow-hidden bg-white">
+                    <div className="flex aspect-[16/9] items-center justify-center overflow-hidden bg-white">
                       {item.image_url ? (
                         <img
                           src={item.image_url}
                           alt={item.image_alt || item.title}
-                          className="h-full w-full object-contain transition duration-500 group-hover:scale-[1.02]"
+                          className="block h-auto max-h-full w-auto max-w-full object-contain transition duration-500 group-hover:scale-[1.02]"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-100 to-white p-7 text-center">
