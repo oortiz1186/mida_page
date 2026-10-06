@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { trackEvent } from "../lib/analytics";
 
@@ -75,9 +76,12 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
                   >
                     <div className="flex aspect-[16/9] items-center justify-center overflow-hidden bg-white">
                       {item.image_url ? (
-                        <img
+                        <Image
                           src={item.image_url}
                           alt={item.image_alt || item.title}
+                          width={1600}
+                          height={900}
+                          sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
                           className="block h-auto max-h-full w-auto max-w-full object-contain transition duration-500 group-hover:scale-[1.02]"
                         />
                       ) : (
