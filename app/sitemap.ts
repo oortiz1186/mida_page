@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = infoEmpresa.dominio.replace(/\/$/, "");
-  const routes = ["", "/servicios", "/contpaqi", "/equipamiento", "/contacto", "/cursos", ...seoPages.map((page) => `/${page.slug}`)];
+  const routes = ["", "/servicios", "/contpaqi", "/equipamiento", "/contacto", "/cursos", "/promociones", ...seoPages.map((page) => `/${page.slug}`)];
 
   const staticEntries: MetadataRoute.Sitemap = routes.map((route) => ({
     url: `${baseUrl}${route}`,
@@ -39,5 +39,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  return [...staticEntries, ...blogEntries];
+  const { data: promotions, error: promotionsError } = await supabase
+    .from("commercial_notices")
+    .select("slug,updated_at")
+    .eq("status", "published")
+    .order("sort_order", { ascending: true });
+
+  if (promotionsError) console.error("[sitemap] Error loading published promotions:", promotionsError);
+
+  const promotionEntries: MetadataRoute.Sitemap = (promotions ?? []).map((promotion) => ({
+    url: `${baseUrl}/promociones/${promotion.slug}`,
+    lastModified: promotion.updated_at ? new Date(promotion.updated_at) : undefined,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticEntries, ...blogEntries, ...promotionEntries];
 }
