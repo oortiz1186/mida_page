@@ -117,7 +117,7 @@ export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: 
           <h2 className="mt-3 text-3xl md:text-4xl font-black text-mida-deep">Solicita tu cotización</h2>
         </div>
 
-        {(status === "idle" || status === "loading") && (
+        {(status === "idle" || (status === "loading" && !renderedRef.current)) && (
           <div className="min-h-[180px] flex items-center justify-center text-center text-sm text-gray-500" role="status">
             {status === "idle" ? "El formulario se cargará al acercarte a esta sección..." : "Cargando formulario de cotización..."}
           </div>
