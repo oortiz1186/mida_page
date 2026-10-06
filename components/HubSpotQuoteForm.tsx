@@ -24,7 +24,9 @@ type HubSpotWindow = Window & {
 };
 
 export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: { product: string; source?: string }) {
-  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const renderedRef = useRef(false);
 
   useEffect(() => {
@@ -32,6 +34,30 @@ export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: 
     url.searchParams.set("producto_de_interes", product);
     window.history.replaceState({}, "", url.toString());
   }, [product, source]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || shouldLoad) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setShouldLoad(true);
+      setStatus("loading");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setShouldLoad(true);
+        setStatus("loading");
+        observer.disconnect();
+      },
+      { rootMargin: "800px 0px" },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
 
   useEffect(() => {
     if (status !== "loading") return;
@@ -73,15 +99,17 @@ export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: 
   }, [product]);
 
   return (
-    <section id="cotizacion" className="py-20 px-6 bg-white border-t border-gray-100 scroll-mt-28">
-      <Script
-        id="hubspot-forms-script"
-        src="https://js.hsforms.net/forms/embed/v2.js"
-        strategy="afterInteractive"
-        onLoad={renderForm}
-        onReady={renderForm}
-        onError={() => setStatus("error")}
-      />
+    <section ref={sectionRef} id="cotizacion" className="py-20 px-6 bg-white border-t border-gray-100 scroll-mt-28">
+      {shouldLoad && (
+        <Script
+          id="hubspot-forms-script"
+          src="https://js.hsforms.net/forms/embed/v2.js"
+          strategy="afterInteractive"
+          onLoad={renderForm}
+          onReady={renderForm}
+          onError={() => setStatus("error")}
+        />
+      )}
 
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
@@ -89,13 +117,13 @@ export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: 
           <h2 className="mt-3 text-3xl md:text-4xl font-black text-mida-deep">Solicita tu cotización</h2>
         </div>
 
-        {status === "loading" && (
+        {(status === "idle" || status === "loading") && (
           <div className="min-h-[180px] flex items-center justify-center text-center text-sm text-gray-500" role="status">
-            Cargando formulario de cotización...
+            {status === "idle" ? "El formulario se cargará al acercarte a esta sección..." : "Cargando formulario de cotización..."}
           </div>
         )}
 
-        <div id={targetId} className={status === "loading" ? "min-h-[1px]" : "min-h-[560px]"} />
+        <div id={targetId} className={status === "ready" ? "min-h-[560px]" : "min-h-[1px]"} />
         <p className="mt-5 text-center text-xs leading-5 text-gray-500">
           Al enviar este formulario, tus datos serán tratados para atender tu solicitud de cotización y dar seguimiento comercial. Consulta nuestro{" "}
           <a href="/aviso-de-privacidad" className="font-semibold text-mida-primary underline underline-offset-2">Aviso de Privacidad</a>.
