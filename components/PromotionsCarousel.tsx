@@ -110,7 +110,7 @@ export default function PromotionsCarousel({ items }: { items: Item[] }) {
           <div className="mt-6 flex justify-center gap-2">
             {Array.from({ length: maxIndex + 1 }).map((_, itemIndex) => (
               <button key={itemIndex} type="button" aria-label={`Mostrar grupo ${itemIndex + 1}`} onClick={() => setIndex(itemIndex)}
-                className={`h-2.5 rounded-full transition-all ${itemIndex === index ? "w-8 bg-white" : "w-2.5 bg-white/35 hover:bg-white/60"}`} />
+                className="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-white/10"><span aria-hidden="true" className={`h-2.5 rounded-full transition-all ${itemIndex === index ? "w-8 bg-white" : "w-2.5 bg-white/50"}`} /></button>
             ))}
           </div>
         )}
