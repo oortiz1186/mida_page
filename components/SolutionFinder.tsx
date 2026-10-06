@@ -89,13 +89,13 @@ export default function SolutionFinder() {
 
           <div className="rounded-[2rem] bg-mida-deep text-white p-8 md:p-10 shadow-xl flex flex-col justify-between">
             <div>
-              <span className="text-mida-light font-bold text-xs uppercase tracking-widest">Solución recomendada</span>
+              <span className="text-white font-bold text-xs uppercase tracking-widest">Solución recomendada</span>
               <h3 className="mt-3 text-2xl md:text-3xl font-black">{recommendation.title}</h3>
               <p className="mt-4 text-white/80 leading-relaxed">{recommendation.text}</p>
               <div className="mt-6 grid gap-3">
                 {recommendation.bullets.map((bullet) => (
                   <div key={bullet} className="flex gap-3 items-center text-sm font-semibold">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-mida-light">✓</span>
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-white">✓</span>
                     {bullet}
                   </div>
                 ))}
