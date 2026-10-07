@@ -10,12 +10,19 @@ export default function GraciasPage() {
   const [, startTransition] = useTransition();
 
   useEffect(() => {
+    const guid = new URLSearchParams(window.location.search).get("submissionGuid");
+    // Require a HubSpot-looking submission ID AND a recent submission
+    // initiated in this browser. A query parameter alone is not proof.
+    if (!guid || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(guid)) return;
     const raw = sessionStorage.getItem("mida_pending_hubspot_lead");
     if (!raw) return;
     sessionStorage.removeItem("mida_pending_hubspot_lead");
+    const key = "mida_hubspot_lead_" + guid;
+    if (localStorage.getItem(key)) return;
     try {
       const pending = JSON.parse(raw) as { product?: string; source?: string; at?: number };
       if (typeof pending.at !== "number" || Date.now() - pending.at > 120000 || Date.now() < pending.at) return;
+      localStorage.setItem(key, String(Date.now()));
       trackEvent("generate_lead", {
         form_name: "hubspot_quote",
         product: pending.product || "Cotización",
