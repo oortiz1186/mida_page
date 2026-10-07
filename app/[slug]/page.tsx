@@ -7,6 +7,7 @@ import HubSpotQuoteForm from "../../components/HubSpotQuoteForm";
 import QuoteLink from "../../components/QuoteLink";
 import RelatedPromotions from "../../components/RelatedPromotions";
 import ProductExtras from "../../components/ProductExtras";
+import ViewTracker from "../../components/ViewTracker";
 import { getSeoPage, seoPages } from "../../lib/seoPages";
 
 export function generateStaticParams() {
@@ -52,6 +53,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
   return (
     <main className="bg-white min-h-screen">
       <Navbar />
+      {page.productPage && <ViewTracker eventName="view_product" params={{ product: page.h1 }} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
 
       <section className="pt-36 pb-20 bg-gradient-to-br from-mida-deep via-mida-deep to-mida-primary text-white px-6 relative overflow-hidden">
