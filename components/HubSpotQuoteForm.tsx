@@ -84,6 +84,14 @@ export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: 
     target.innerHTML = "";
     renderedRef.current = true;
 
+    // Capture native submissions as a fallback when HubSpot redirects before
+    // its JavaScript callback fires. This does not count a conversion.
+    target.addEventListener("submit", () => {
+      sessionStorage.setItem("mida_pending_hubspot_lead", JSON.stringify({
+        product, source, at: Date.now(),
+      }));
+    }, true);
+
     hubspot.forms.create({
       region: "na1",
       portalId: portal,
@@ -102,6 +110,8 @@ export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: 
       },
       onFormSubmitted: () => {
         sessionStorage.removeItem("mida_pending_hubspot_lead");
+        // HubSpot may redirect immediately; this callback is already a
+        // successful submission, so record it before leaving the page.
         trackEvent("generate_lead", { form_name: "hubspot_quote", product, source, page_path: window.location.pathname, page_location: window.location.href });
       },
     });
