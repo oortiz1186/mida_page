@@ -1,12 +1,32 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
+import { trackEvent } from "../../lib/analytics";
 import { infoEmpresa } from "../../components/config/empresa";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export default function GraciasPage() {
   const [, startTransition] = useTransition();
+
+  useEffect(() => {
+    const raw = sessionStorage.getItem("mida_pending_hubspot_lead");
+    if (!raw) return;
+    sessionStorage.removeItem("mida_pending_hubspot_lead");
+    try {
+      const pending = JSON.parse(raw) as { product?: string; source?: string; at?: number };
+      if (typeof pending.at !== "number" || Date.now() - pending.at > 120000 || Date.now() < pending.at) return;
+      trackEvent("generate_lead", {
+        form_name: "hubspot_quote",
+        product: pending.product || "Cotización",
+        source: pending.source || "hubspot_quote",
+        page_path: window.location.pathname,
+        page_location: window.location.href,
+      });
+    } catch {
+      // Ignore invalid or expired markers.
+    }
+  }, []);
 
   // Estructura dinámica de la API de WhatsApp usando tus variables centrales
   const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumero}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminado)}`;
