@@ -17,6 +17,7 @@ type HubSpotWindow = Window & {
         formId: string;
         target: string;
         onFormReady?: () => void;
+        onFormSubmit?: () => void;
         onFormSubmitted?: () => void;
       }) => void;
     };
@@ -92,7 +93,15 @@ export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: 
         setStatus("ready");
         trackEvent("quote_form_view", { product, source, page_path: window.location.pathname, page_location: window.location.href });
       },
+      onFormSubmit: () => {
+        // This is not a confirmed lead. The marker is only consumed if HubSpot
+        // redirects to our success page after a valid submission.
+        sessionStorage.setItem("mida_pending_hubspot_lead", JSON.stringify({
+          product, source, at: Date.now(),
+        }));
+      },
       onFormSubmitted: () => {
+        sessionStorage.removeItem("mida_pending_hubspot_lead");
         trackEvent("generate_lead", { form_name: "hubspot_quote", product, source, page_path: window.location.pathname, page_location: window.location.href });
       },
     });
