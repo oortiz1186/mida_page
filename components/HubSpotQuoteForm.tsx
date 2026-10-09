@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { trackEvent } from "../lib/analytics";
 
 const portal = "51341002";
 const formId = "6cd98886-d87e-4dbe-bd9f-b32b03324164";
@@ -16,20 +17,48 @@ type HubSpotWindow = Window & {
         formId: string;
         target: string;
         onFormReady?: () => void;
+        onFormSubmit?: () => void;
+        onFormSubmitted?: () => void;
       }) => void;
     };
   };
 };
 
-export default function HubSpotQuoteForm({ product }: { product: string }) {
-  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+export default function HubSpotQuoteForm({ product, source = "hubspot_quote" }: { product: string; source?: string }) {
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const renderedRef = useRef(false);
 
   useEffect(() => {
     const url = new URL(window.location.href);
     url.searchParams.set("producto_de_interes", product);
     window.history.replaceState({}, "", url.toString());
-  }, [product]);
+  }, [product, source]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || shouldLoad) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setShouldLoad(true);
+      setStatus("loading");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setShouldLoad(true);
+        setStatus("loading");
+        observer.disconnect();
+      },
+      { rootMargin: "800px 0px" },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
 
   useEffect(() => {
     if (status !== "loading") return;
@@ -55,25 +84,51 @@ export default function HubSpotQuoteForm({ product }: { product: string }) {
     target.innerHTML = "";
     renderedRef.current = true;
 
+    // Capture native submissions as a fallback when HubSpot redirects before
+    // its JavaScript callback fires. This does not count a conversion.
+    target.addEventListener("submit", () => {
+      sessionStorage.setItem("mida_pending_hubspot_lead", JSON.stringify({
+        product, source, at: Date.now(),
+      }));
+    }, true);
+
     hubspot.forms.create({
       region: "na1",
       portalId: portal,
       formId,
       target: `#${targetId}`,
-      onFormReady: () => setStatus("ready"),
+      onFormReady: () => {
+        setStatus("ready");
+        trackEvent("quote_form_view", { product, source, page_path: window.location.pathname, page_location: window.location.href });
+      },
+      onFormSubmit: () => {
+        // This is not a confirmed lead. The marker is only consumed if HubSpot
+        // redirects to our success page after a valid submission.
+        sessionStorage.setItem("mida_pending_hubspot_lead", JSON.stringify({
+          product, source, at: Date.now(),
+        }));
+      },
+      onFormSubmitted: () => {
+        sessionStorage.removeItem("mida_pending_hubspot_lead");
+        // HubSpot may redirect immediately; this callback is already a
+        // successful submission, so record it before leaving the page.
+        trackEvent("generate_lead", { form_name: "hubspot_quote", product, source, page_path: window.location.pathname, page_location: window.location.href });
+      },
     });
-  }, []);
+  }, [product]);
 
   return (
-    <section id="cotizacion" className="py-20 px-6 bg-white border-t border-gray-100 scroll-mt-28">
-      <Script
-        id="hubspot-forms-script"
-        src="https://js.hsforms.net/forms/embed/v2.js"
-        strategy="afterInteractive"
-        onLoad={renderForm}
-        onReady={renderForm}
-        onError={() => setStatus("error")}
-      />
+    <section ref={sectionRef} id="cotizacion" className="py-20 px-6 bg-white border-t border-gray-100 scroll-mt-28">
+      {shouldLoad && (
+        <Script
+          id="hubspot-forms-script"
+          src="https://js.hsforms.net/forms/embed/v2.js"
+          strategy="afterInteractive"
+          onLoad={renderForm}
+          onReady={renderForm}
+          onError={() => setStatus("error")}
+        />
+      )}
 
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
@@ -81,13 +136,7 @@ export default function HubSpotQuoteForm({ product }: { product: string }) {
           <h2 className="mt-3 text-3xl md:text-4xl font-black text-mida-deep">Solicita tu cotización</h2>
         </div>
 
-        {status === "loading" && (
-          <div className="min-h-[180px] flex items-center justify-center text-center text-sm text-gray-500" role="status">
-            Cargando formulario de cotización...
-          </div>
-        )}
-
-        <div id={targetId} className={status === "loading" ? "min-h-[1px]" : "min-h-[560px]"} />
+        <div id={targetId} className={status === "ready" ? "min-h-[560px]" : "min-h-[1px]"} />
         <p className="mt-5 text-center text-xs leading-5 text-gray-500">
           Al enviar este formulario, tus datos serán tratados para atender tu solicitud de cotización y dar seguimiento comercial. Consulta nuestro{" "}
           <a href="/aviso-de-privacidad" className="font-semibold text-mida-primary underline underline-offset-2">Aviso de Privacidad</a>.

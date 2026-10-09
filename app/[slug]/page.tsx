@@ -5,6 +5,9 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import HubSpotQuoteForm from "../../components/HubSpotQuoteForm";
 import QuoteLink from "../../components/QuoteLink";
+import RelatedPromotions from "../../components/RelatedPromotions";
+import ProductExtras from "../../components/ProductExtras";
+import ViewTracker from "../../components/ViewTracker";
 import { getSeoPage, seoPages } from "../../lib/seoPages";
 
 export function generateStaticParams() {
@@ -50,6 +53,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
   return (
     <main className="bg-white min-h-screen">
       <Navbar />
+      {page.productPage && <ViewTracker eventName="view_product" params={{ product: page.h1 }} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
 
       <section className="pt-36 pb-20 bg-gradient-to-br from-mida-deep via-mida-deep to-mida-primary text-white px-6 relative overflow-hidden">
@@ -66,7 +70,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           </div>
           {page.productPage && page.image && (
             <div className="bg-white rounded-[2rem] p-8 flex items-center justify-center min-h-64 shadow-2xl ring-1 ring-white/20">
-              <Image src={page.image} alt={`${page.h1} | MIDA`} width={240} height={180} className="max-h-44 w-auto object-contain" priority />
+              <Image src={page.image} alt={`${page.h1} | MIDA`} width={240} height={180} className={`max-h-44 w-auto object-contain ${page.slug === "contpaqi-escritorio-virtual" ? "scale-[1.65]" : ""}`} priority />
             </div>
           )}
         </div>
@@ -104,6 +108,8 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           </div>
         </div>
       </section>
+
+      {page.productPage && <RelatedPromotions productSlug={page.slug} />}
 
       {page.productPage && page.youtubeVideoId && (
         <section className="py-20 px-6 bg-white border-y border-gray-100">
@@ -211,6 +217,8 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           </div>
         </section>
       )}
+
+      {page.productPage && <ProductExtras page={page} />}
 
       <section className="py-16 px-6 bg-mida-deep text-white">
         <div className="max-w-4xl mx-auto text-center">

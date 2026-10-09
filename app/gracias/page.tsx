@@ -1,12 +1,50 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
+import { trackEvent } from "../../lib/analytics";
 import { infoEmpresa } from "../../components/config/empresa";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export default function GraciasPage() {
   const [, startTransition] = useTransition();
+
+  useEffect(() => {
+    const guid = new URLSearchParams(window.location.search).get("submissionGuid");
+    if (!guid || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(guid)) return;
+
+    const key = "mida_hubspot_lead_" + guid.toLowerCase();
+    if (localStorage.getItem(key)) return;
+
+    // HubSpot's embedded form may redirect without firing callbacks in our
+    // page. The submission GUID is provided by the HubSpot redirect; it is
+    // not a server-side verification of a completed submission.
+    const raw = sessionStorage.getItem("mida_pending_hubspot_lead");
+    sessionStorage.removeItem("mida_pending_hubspot_lead");
+    let product = "Cotización";
+    let source = "hubspot_redirect";
+    if (raw) {
+      try {
+        const pending = JSON.parse(raw) as { product?: string; source?: string; at?: number };
+        if (typeof pending.at === "number" && pending.at <= Date.now() && Date.now() - pending.at < 300000) {
+          product = pending.product || product;
+          source = pending.source || source;
+        }
+      } catch {
+        // A malformed optional marker should not break the thank-you page.
+      }
+    }
+
+    // Persist before tracking to prevent double counting on refresh.
+    localStorage.setItem(key, String(Date.now()));
+    trackEvent("generate_lead", {
+      form_name: "hubspot_quote",
+      product,
+      source,
+      page_path: window.location.pathname,
+      page_location: window.location.href,
+    });
+  }, []);
 
   // Estructura dinámica de la API de WhatsApp usando tus variables centrales
   const urlWhatsApp = `https://wa.me/${infoEmpresa.whatsappNumero}?text=${encodeURIComponent(infoEmpresa.whatsappMensajePredeterminado)}`;

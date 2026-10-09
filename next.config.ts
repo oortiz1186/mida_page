@@ -4,11 +4,11 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"} https://www.googletagmanager.com https://www.google.com https://www.gstatic.com https://google.com https://recaptcha.net https://www.recaptcha.net https://static.cloudflareinsights.com https://js.hsforms.net https://*.hsforms.net https://*.hsforms.com`,
+  `script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"} https://www.googletagmanager.com https://www.google.com https://www.gstatic.com https://google.com https://recaptcha.net https://www.recaptcha.net https://static.cloudflareinsights.com https://connect.facebook.net https://js.hsforms.net https://*.hsforms.net https://*.hsforms.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://formspree.io https://www.google-analytics.com https://region1.google-analytics.com https://www.google.com https://cloudflareinsights.com https://*.hubspot.com https://*.hubapi.com https://*.hsforms.com https://*.hsforms.net",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://formspree.io https://www.google-analytics.com https://region1.google-analytics.com https://www.google.com https://cloudflareinsights.com https://www.facebook.com https://connect.facebook.net https://*.hubspot.com https://*.hubapi.com https://*.hsforms.com https://*.hsforms.net",
   "frame-src https://www.google.com https://recaptcha.google.com https://google.com https://recaptcha.net https://www.recaptcha.net https://www.youtube.com https://www.youtube-nocookie.com https://*.hsforms.com https://*.hsforms.net https://*.hubspot.com",
   "form-action 'self' https://formspree.io https://*.hsforms.com https://*.hubspot.com",
   "base-uri 'self'",
@@ -17,6 +17,14 @@ const contentSecurityPolicy = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+      },
+    ],
+  },
   async headers() {
     return [
       {
