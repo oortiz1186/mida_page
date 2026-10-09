@@ -70,7 +70,7 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
           </div>
           {page.productPage && page.image && (
             <div className="bg-white rounded-[2rem] p-8 flex items-center justify-center min-h-64 shadow-2xl ring-1 ring-white/20">
-              <Image src={page.image} alt={`${page.h1} | MIDA`} width={240} height={180} className="max-h-44 w-auto object-contain" priority />
+              <Image src={page.image} alt={`${page.h1} | MIDA`} width={240} height={180} className={`max-h-44 w-auto object-contain ${page.slug === "contpaqi-escritorio-virtual" ? "scale-[1.65]" : ""}`} priority />
             </div>
           )}
         </div>
