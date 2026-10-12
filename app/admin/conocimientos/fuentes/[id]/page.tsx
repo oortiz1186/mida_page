@@ -20,7 +20,7 @@ export default async function EditKnowledgeSourcePage({
         <Link href="/admin/conocimientos" className="text-blue-700 underline">← Volver a conocimientos</Link>
         <KnowledgeSourceForm id={data.id} initialValue={{
           title: data.title,
-          source_type: data.source_type,
+          source_type: data.source_type as "official_url" | "manual" | "internal" | "faq",
           url: data.url ?? "",
           product: data.product ?? "",
           version: data.version ?? "",
