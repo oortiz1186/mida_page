@@ -24,7 +24,7 @@ export default async function EditKnowledgeSourcePage({
           url: data.url ?? "",
           product: data.product ?? "",
           version: data.version ?? "",
-          reviewed_at: data.reviewed_at ?? "",
+          reviewed_at: data.reviewed_at?.slice(0, 10) ?? "",
         }} />
       </div>
     </main>
