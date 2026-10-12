@@ -1,5 +1,5 @@
 import "server-only";
-import { findPublishedKnowledge } from "@/lib/knowledge";
+import { searchKnowledge } from "@/lib/knowledge-search";
 
 const MAX_CONTEXT_CHARS = 8500;
 const MAX_ARTICLE_CHARS = 1700;
@@ -13,7 +13,7 @@ export async function buildKnowledgeContext(question: string): Promise<string> {
   const normalized = question.trim().slice(0, MAX_QUESTION_CHARS);
   if (normalized.length < 3) return "";
 
-  const articles = await findPublishedKnowledge(normalized, 5);
+  const articles = await searchKnowledge(normalized, 5);
   if (!articles.length) return "";
 
   const intro = [
