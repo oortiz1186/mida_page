@@ -40,3 +40,27 @@ for each row execute function public.knowledge_validate_publication();
 
 -- Ensure no role other than privileged backend can invoke the helper directly.
 revoke all on function public.knowledge_validate_publication() from public, anon, authenticated;
+
+-- Prevent removing a source's review while it supports published articles.
+create or replace function public.knowledge_prevent_source_unreview()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  if new.reviewed_at is null and old.reviewed_at is not null and exists (
+    select 1 from public.knowledge_articles a
+    where a.source_id = old.id and a.status = 'published'
+  ) then
+    raise exception 'Cannot remove review from a source used by published articles';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_knowledge_prevent_source_unreview on public.knowledge_sources;
+create trigger trg_knowledge_prevent_source_unreview
+before update of reviewed_at on public.knowledge_sources
+for each row execute function public.knowledge_prevent_source_unreview();
+
+revoke all on function public.knowledge_prevent_source_unreview() from public, anon, authenticated;
