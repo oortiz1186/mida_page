@@ -25,11 +25,11 @@ export default async function EditKnowledgeArticlePage({
         <KnowledgeArticleForm id={data.id} sources={sources} initialValue={{
           title: data.title,
           slug: data.slug,
-          category: data.category,
+          category: data.category as "producto" | "comparativa" | "licenciamiento" | "precio" | "promocion" | "faq" | "soporte",
           product: data.product ?? "",
           product_version: data.product_version ?? "",
           content: data.content,
-          status: data.status,
+          status: data.status as "draft" | "published" | "archived",
           source_id: data.source_id ?? "",
           reviewed_at: data.reviewed_at?.slice(0, 10) ?? "",
         }} />
