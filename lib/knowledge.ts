@@ -52,13 +52,26 @@ export async function findPublishedKnowledge(query: string, limit = 5): Promise<
   if (search.length < 3) return [];
   const safeLimit = Math.min(Math.max(Math.trunc(limit), 1), 10);
   // Escape characters that can alter the PostgREST filter expression.
-  const escaped = search.replace(/[%,().*\\]/g, " ").replace(/\s+/g, " ").trim();
-  if (escaped.length < 3) return [];
+  const stopwords = new Set(["para", "como", "cual", "cuanto", "quiero", "necesito", "tengo", "sobre", "contpaqi", "ayuda", "puedo", "entre", "desde", "donde", "porque", "precio", "precios"]);
+  const tokens = search
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9 ]/g, " ")
+    .split(/\s+/)
+    .filter((token) => token.length >= 3 && !stopwords.has(token))
+    .slice(0, 5);
+  if (!tokens.length) return [];
+  const filters = tokens.flatMap((token) => [
+    `title.ilike.%${token}%`,
+    `content.ilike.%${token}%`,
+    `product.ilike.%${token}%`,
+  ]).join(",");
   const { data, error } = await supabase
     .from("knowledge_articles")
     .select("id,title,slug,category,product,product_version,content,status,source_id,reviewed_at,updated_at")
     .eq("status", "published")
-    .or(`title.ilike.%${escaped}%,content.ilike.%${escaped}%,product.ilike.%${escaped}%`)
+    .or(filters)
     .order("reviewed_at", { ascending: false })
     .limit(safeLimit);
   if (error) {
