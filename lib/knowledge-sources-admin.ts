@@ -61,7 +61,16 @@ export async function listKnowledgeSourcesForAdmin(context: KnowledgeAdminContex
     .select("id,title,source_type,url,product,version,reviewed_at,created_at")
     .order("created_at", { ascending: false }).limit(100);
   if (error) throw new Error("No se pudieron consultar las fuentes.");
-  return data ?? [];
+  return (data ?? []) as Array<{
+    id: string;
+    title: string;
+    source_type: KnowledgeSourceInput["source_type"];
+    url: string | null;
+    product: string | null;
+    version: string | null;
+    reviewed_at: string | null;
+    created_at: string;
+  }>;
 }
 
 export async function saveKnowledgeSourceForAdmin(
