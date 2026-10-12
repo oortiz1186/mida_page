@@ -95,6 +95,18 @@ export default async function AdminPage() {
           </article>
         </div>
 
+        {profile.role === "admin" && (
+          <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 className="text-xl font-black text-mida-deep">Conocimientos IA</h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Administra artículos y fuentes verificadas para el asistente de MIDA.
+            </p>
+            <Link href="/admin/conocimientos" className="mt-4 inline-block rounded-xl bg-mida-primary px-5 py-3 text-sm font-bold text-white">
+              Administrar conocimientos
+            </Link>
+          </div>
+        )}
+
         <div className="mt-8 rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm text-slate-500">
           Sesión activa como <strong className="capitalize text-slate-700">{profile.role}</strong>.
         </div>
