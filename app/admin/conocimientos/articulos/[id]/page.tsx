@@ -31,7 +31,7 @@ export default async function EditKnowledgeArticlePage({
           content: data.content,
           status: data.status,
           source_id: data.source_id ?? "",
-          reviewed_at: data.reviewed_at ?? "",
+          reviewed_at: data.reviewed_at?.slice(0, 10) ?? "",
         }} />
       </div>
     </main>
