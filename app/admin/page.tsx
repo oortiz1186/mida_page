@@ -95,6 +95,7 @@ export default async function AdminPage() {
           </article>
         </div>
 
+        {profile.role === "admin" && <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6"><h3 className="text-xl font-black text-mida-deep">Casos de éxito</h3><p className="mt-2 text-sm text-slate-600">Registra proyectos, conserva borradores y publica historias con autorización del cliente.</p><Link href="/admin/casos-de-exito" className="mt-4 inline-block rounded-xl bg-mida-primary px-5 py-3 text-sm font-bold text-white">Administrar casos de éxito</Link></div>}
         {profile.role === "admin" && (
           <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
             <h3 className="text-xl font-black text-mida-deep">Conocimientos IA</h3>
