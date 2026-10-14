@@ -14,10 +14,6 @@ export async function buildKnowledgeContext(question: string): Promise<string> {
   if (normalized.length < 3) return "";
 
   const articles = await searchKnowledge(normalized, 5);
-  if (process.env.MIDA_KNOWLEDGE_DEBUG === "true" && process.env.MIDA_KNOWLEDGE_ENABLED === "true") {
-    console.info("[Conocimientos IA] Artículos recuperados:", articles.length);
-    console.info("[Conocimientos IA] Títulos:", articles.map(article => article.title));
-  }
   if (!articles.length) return "";
 
   const intro = [
