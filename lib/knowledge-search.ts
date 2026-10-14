@@ -1,5 +1,6 @@
 import "server-only";
 import { supabase } from "@/lib/supabase";
+import { findPublishedKnowledge } from "@/lib/knowledge";
 import type { KnowledgeArticle } from "@/lib/knowledge";
 
 const STOPWORDS = new Set(["para","como","cual","cuanto","quiero","necesito","tengo","sobre","contpaqi","ayuda","puedo","entre","desde","donde","porque","precio","precios","sistema","sistemas","este","esta","hacer","usar","tiene","puede","empresa","empresas","los","las","una","que","por","del","con","mas","informacion","saber","explica"]);
@@ -43,7 +44,7 @@ export async function searchKnowledge(question: string, limit = 5): Promise<Know
     console.error("Error buscando artículos publicados del blog:", error.code);
     return [];
   }
-  return (data ?? []).map(post => {
+  const blogResults = (data ?? []).map(post => {
     const content = plainText(String(post.content ?? ""));
     const excerpt = plainText(String(post.excerpt ?? ""));
     const titleText = normalized(String(post.title ?? ""));
@@ -65,5 +66,5 @@ export async function searchKnowledge(question: string, limit = 5): Promise<Know
     return { article, score, titleMatches, excerptMatches, contentMatches };
   }).filter(item => item.titleMatches > 0 || item.excerptMatches > 0 || item.contentMatches >= 2)
     .sort((a, b) => b.score - a.score)
-    .slice(0, safeLimit).map(item => item.article);
+    .slice(0, safeLimit).map(item => item.article);\n  const aiArticles = await findPublishedKnowledge(question, safeLimit);\n  return [...aiArticles, ...blogResults].slice(0, safeLimit);
 }
