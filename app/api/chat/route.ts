@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { MIDA_PROMPT } from "@/lib/midaPrompt";
 import { supabase } from "@/lib/supabase";
+import { buildKnowledgeContext } from "@/lib/knowledge-context";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
@@ -471,6 +472,16 @@ export async function POST(req: Request) {
       });
     }
 
+    let knowledgeContext = "";
+    if (process.env.MIDA_KNOWLEDGE_ENABLED === "true") {
+      try {
+        const question = messages[messages.length - 1].content;
+        knowledgeContext = await buildKnowledgeContext(question);
+      } catch (error) {
+        console.error("ERROR CONSULTANDO CONOCIMIENTOS MIDA:", error);
+      }
+    }
+
     const contents = messages.map((message) => ({
       role: message.role === "assistant" ? "model" : "user",
       parts: [{ text: message.content }],
@@ -488,7 +499,7 @@ export async function POST(req: Request) {
           system_instruction: {
             parts: [
               {
-                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.`,
+                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.${knowledgeContext ? `\n\n${knowledgeContext}` : ""}`,
               },
             ],
           },
