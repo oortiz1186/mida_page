@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Certificaciones CONTPAQi de nuestros asesores | MIDA",
-  description: "Conoce las especialidades de certificación del equipo MIDA en siete sistemas CONTPAQi: Contabilidad, Bancos, Nóminas, Comercial Premium, Comercial Pro, Factura Electrónica y Punto de Venta.",
+  description: "Conoce las especialidades de certificación del equipo MIDA en seis sistemas CONTPAQi: Contabilidad, Bancos, Nóminas, Comercial Premium, Comercial Pro y Factura Electrónica.",
   alternates: { canonical: "/certificaciones" },
 };
 
@@ -17,7 +17,6 @@ const systems = [
   { title: "CONTPAQi Comercial Premium", description: "Administración comercial, inventarios, compras, ventas y facturación.", href: "/contpaqi-comercial-premium", logo: "/images/productos/comercial_premium.png" },
   { title: "CONTPAQi Comercial Pro", description: "Gestión comercial, ventas, compras, clientes e inventarios.", href: "/contpaqi-comercial-pro", logo: "/images/productos/comercial_pro.png" },
   { title: "CONTPAQi Factura Electrónica", description: "Emisión, timbrado y administración de CFDI.", href: "/contpaqi-factura-electronica", logo: "/images/productos/factura_electronica.png" },
-  { title: "CONTPAQi Punto de Venta", description: "Ventas de mostrador, cajas, inventarios y tickets.", href: "/contpaqi-punto-de-venta", logo: "/logo/logo-contpaqi-2026.png" },
 ];
 
 export default function CertificacionesPage() {
@@ -29,7 +28,7 @@ export default function CertificacionesPage() {
           <div className="mx-auto max-w-7xl px-6">
             <p className="text-sm font-bold uppercase tracking-widest text-blue-200">Certificaciones MIDA</p>
             <h1 className="mt-4 max-w-4xl text-4xl md:text-5xl font-black leading-tight">Asesores certificados en soluciones CONTPAQi</h1>
-            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-white/85">En MIDA contamos con asesores certificados en siete soluciones CONTPAQi para ofrecer atención especializada en procesos contables, financieros, laborales y comerciales.</p>
+            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-white/85">En MIDA contamos con asesores certificados en seis soluciones CONTPAQi para ofrecer atención especializada en procesos contables, financieros, laborales y comerciales.</p>
           </div>
         </section>
         <section className="py-20">
