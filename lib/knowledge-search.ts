@@ -31,16 +31,14 @@ export async function searchKnowledge(question: string, limit = 5): Promise<Know
   const tokens = knowledgeTokens(question);
   if (!tokens.length) return [];
   const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(10, Math.trunc(limit))) : 5;
-  const filters = tokens.flatMap(token => [
-    `title.ilike.%${token}%`,
-    `excerpt.ilike.%${token}%`,
-    `content.ilike.%${token}%`,
-  ]).join(",");
+  // Recuperamos un conjunto acotado de publicaciones y comparamos sin acentos
+  // en JavaScript. ILIKE sobre texto original no garantiza coincidencia
+  // entre "automatizacion" y "automatización".
   const { data, error } = await supabase.from("blog_posts")
     .select("id,title,slug,excerpt,content,status,published_at,updated_at")
     .eq("status", "published")
-    .or(filters)
-    .limit(60);
+    .order("published_at", { ascending: false, nullsFirst: false })
+    .limit(100);
   if (error) {
     console.error("Error buscando artículos publicados del blog:", error.code);
     return [];
@@ -60,7 +58,7 @@ export async function searchKnowledge(question: string, limit = 5): Promise<Know
       reviewed_at: post.published_at ?? null, updated_at: post.updated_at,
     };
     return { article, score };
-  }).filter(item => item.score >= 5)
+  }).filter(item => item.score >= 3)
     .sort((a,b) => b.score - a.score)
     .slice(0, safeLimit).map(item => item.article);
 }
