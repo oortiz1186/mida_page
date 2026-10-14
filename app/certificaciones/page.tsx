@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -10,13 +11,13 @@ export const metadata: Metadata = {
 };
 
 const systems = [
-  { title: "CONTPAQi Contabilidad", description: "Contabilidad electrónica, pólizas, estados financieros y obligaciones fiscales.", href: "/contpaqi-contabilidad" },
-  { title: "CONTPAQi Bancos", description: "Control de cuentas bancarias, flujo de efectivo y conciliaciones.", href: "/contpaqi-bancos" },
-  { title: "CONTPAQi Nóminas", description: "Cálculo de nómina, timbrado de recibos y obligaciones laborales.", href: "/contpaqi-nominas" },
-  { title: "CONTPAQi Comercial Premium", description: "Administración comercial, inventarios, compras, ventas y facturación.", href: "/contpaqi-comercial-premium" },
-  { title: "CONTPAQi Comercial Pro", description: "Gestión comercial, ventas, compras, clientes e inventarios.", href: "/contpaqi-comercial-pro" },
-  { title: "CONTPAQi Factura Electrónica", description: "Emisión, timbrado y administración de CFDI.", href: "/contpaqi-factura-electronica" },
-  { title: "CONTPAQi Punto de Venta", description: "Ventas de mostrador, cajas, inventarios y tickets.", href: "/contpaqi-punto-de-venta" },
+  { title: "CONTPAQi Contabilidad", description: "Contabilidad electrónica, pólizas, estados financieros y obligaciones fiscales.", href: "/contpaqi-contabilidad", logo: "/images/productos/contabilidad.png" },
+  { title: "CONTPAQi Bancos", description: "Control de cuentas bancarias, flujo de efectivo y conciliaciones.", href: "/contpaqi-bancos", logo: "/images/productos/bancos-2026.png" },
+  { title: "CONTPAQi Nóminas", description: "Cálculo de nómina, timbrado de recibos y obligaciones laborales.", href: "/contpaqi-nominas", logo: "/images/productos/nominas.png" },
+  { title: "CONTPAQi Comercial Premium", description: "Administración comercial, inventarios, compras, ventas y facturación.", href: "/contpaqi-comercial-premium", logo: "/images/productos/comercial_premium.png" },
+  { title: "CONTPAQi Comercial Pro", description: "Gestión comercial, ventas, compras, clientes e inventarios.", href: "/contpaqi-comercial-pro", logo: "/images/productos/comercial_pro.png" },
+  { title: "CONTPAQi Factura Electrónica", description: "Emisión, timbrado y administración de CFDI.", href: "/contpaqi-factura-electronica", logo: "/images/productos/factura_electronica.png" },
+  { title: "CONTPAQi Punto de Venta", description: "Ventas de mostrador, cajas, inventarios y tickets.", href: "/contpaqi-punto-de-venta", logo: "/logo/logo-contpaqi-2026.png" },
 ];
 
 export default function CertificacionesPage() {
@@ -38,7 +39,7 @@ export default function CertificacionesPage() {
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {systems.map((system, index) => (
                 <Link key={system.title} href={system.href} aria-label={`Conocer más sobre ${system.title}`} className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm group block hover:border-mida-primary/40 hover:shadow-lg hover:-translate-y-1 transition-all">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 font-black text-mida-primary">{String(index + 1).padStart(2, "0")}</span>
+                  <div className="flex items-center justify-between gap-4"><Image src={system.logo} alt={`Logotipo de ${system.title}`} width={160} height={88} className="h-16 w-auto max-w-[180px] object-contain object-left" /><span className="text-xs font-bold text-mida-primary/60">{String(index + 1).padStart(2, "0")}</span></div>
                   <h3 className="mt-6 text-xl font-bold text-mida-deep group-hover:text-mida-primary transition-colors">{system.title}</h3>
                   <p className="mt-4 text-gray-600 leading-relaxed">{system.description}</p>
               <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-mida-primary">Conocer sistema <span aria-hidden="true">→</span></span>
