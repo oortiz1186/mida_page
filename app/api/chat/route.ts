@@ -330,6 +330,10 @@ function getSalesDetails(messages: ChatMessage[]) {
     ["CONTPAQi Comercial Pro", /\bcomercial pro\b/],
     ["CONTPAQi Factura Electrónica", /\bfactura electronica\b/],
     ["CONTPAQi Vende", /\bvende\b/],
+    ["CONTPAQi XML en línea", /\bxml en linea\b/],
+    ["CONTPAQi Optimiza", /\boptimiza\b/],
+    ["CONTPAQi Colabora", /\bcolabora\b/],
+    ["CONTPAQi Escritorio Virtual", /\bescritorio virtual\b/],
   ] as const;
   const product = products.find(([, pattern]) => pattern.test(normalized))?.[0] ?? null;
   // El último dato explícito de usuarios tiene prioridad si el cliente lo corrige.
@@ -347,6 +351,16 @@ function buildSalesPhoneRequest(messages: ChatMessage[]) {
     product ? `el producto ${product}` : null,
     users ? `para ${users} ${users === 1 ? "usuario" : "usuarios"}` : null,
   ].filter(Boolean).join(" ");
+  const lastUser = normalizeText(messages.filter(message => message.role === "user").at(-1)?.content ?? "");
+  const asksRequirements = /(?:que|cual(?:es)?) (?:informacion|datos|requisitos) (?:necesitas|requieren|ocupan)|que sigue|como (?:preparan|preparar) (?:mi|la) (?:cotizacion|renovacion)/.test(lastUser);
+  if (asksRequirements) {
+    const missing = [
+      !product ? "el sistema CONTPAQi que utilizas o necesitas" : null,
+      !users ? "la cantidad de usuarios" : null,
+    ].filter(Boolean);
+    const summary = [product, users ? `${users} ${users === 1 ? "usuario" : "usuarios"}` : null].filter(Boolean).join(", ");
+    return `Para preparar tu ${intent.toLowerCase()}${summary ? ` de ${summary}` : ""}, ${missing.length ? `sería útil conocer ${missing.join(" y ")}. ` : ""}necesito tu número de teléfono a 10 dígitos para canalizar tu solicitud con ventas. Un asesor podrá confirmar los datos adicionales y la propuesta.`;
+  }
   return details
     ? `Perfecto, tengo registrada tu solicitud de ${intent.toLowerCase()} de ${details}. Para canalizarla con ventas, solo necesito tu número de teléfono a 10 dígitos.`
     : "Con gusto te canalizo con el área de ventas. Compárteme por favor tu número de teléfono a 10 dígitos para que un asesor comercial pueda contactarte.";
