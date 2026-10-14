@@ -46,19 +46,24 @@ export async function searchKnowledge(question: string, limit = 5): Promise<Know
   return (data ?? []).map(post => {
     const content = plainText(String(post.content ?? ""));
     const excerpt = plainText(String(post.excerpt ?? ""));
-    const score = tokens.reduce((total, token) =>
-      total + (normalized(post.title).includes(token) ? 6 : 0)
-      + (normalized(excerpt).includes(token) ? 3 : 0)
-      + (normalized(content).includes(token) ? 1 : 0), 0);
+    const titleText = normalized(String(post.title ?? ""));
+    const excerptText = normalized(excerpt);
+    const contentText = normalized(content);
+    const titleMatches = tokens.filter(token => titleText.includes(token)).length;
+    const excerptMatches = tokens.filter(token => excerptText.includes(token)).length;
+    const contentMatches = tokens.filter(token => contentText.includes(token)).length;
+    // La coincidencia en título prevalece; una mención aislada en el cuerpo
+    // no convierte un artículo de otro tema en una referencia relevante.
+    const score = titleMatches * 10 + excerptMatches * 3 + contentMatches;
     const article: KnowledgeArticle = {
       id: post.id, title: post.title, slug: post.slug,
       category: "faq", product: null, product_version: null,
-      content: `Origen: https://mida.mx/blog/${post.slug}\n${excerpt}\n${content}`.slice(0, 7000),
+      content: `Origen: https://mida.mx/blog/${post.slug}\\n${excerpt}\\n${content}`.slice(0, 7000),
       status: "published", source_id: null,
       reviewed_at: post.published_at ?? null, updated_at: post.updated_at,
     };
-    return { article, score };
-  }).filter(item => item.score >= 3)
-    .sort((a,b) => b.score - a.score)
+    return { article, score, titleMatches, excerptMatches, contentMatches };
+  }).filter(item => item.titleMatches > 0 || item.excerptMatches > 0 || item.contentMatches >= 2)
+    .sort((a, b) => b.score - a.score)
     .slice(0, safeLimit).map(item => item.article);
 }
