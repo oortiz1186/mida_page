@@ -50,7 +50,7 @@ export default async function AdminPage() {
       <section className="mx-auto max-w-7xl px-6 py-10">
         <div className="mb-8">
           <h2 className="text-3xl font-black text-mida-deep">Administrar contenido</h2>
-          <p className="mt-2 text-slate-600">Gestiona artículos, promociones, casos de éxito y las fuentes de conocimiento del asistente de MIDA.</p>
+          <p className="mt-2 text-slate-600">Gestiona contenido, conocimientos IA, casos de éxito y reportes de marketing de MIDA.</p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
@@ -115,6 +115,16 @@ export default async function AdminPage() {
               </div>
               <div className="flex flex-wrap gap-3 p-7">
                 <Link href="/admin/conocimientos" className="rounded-xl bg-mida-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-mida-deep">Administrar conocimientos</Link>
+              </div>
+            </article>
+            <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+              <div className="flex-1 border-b border-slate-100 p-7">
+                <span className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-mida-primary">Marketing y posicionamiento</span>
+                <h3 className="mt-4 text-2xl font-black text-mida-deep">Analítica y SEO</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">Consulta reportes de Google Analytics, Search Console, PageSpeed y Meta en un solo lugar.</p>
+              </div>
+              <div className="flex flex-wrap gap-3 p-7">
+                <Link href="/admin/analitica" className="rounded-xl bg-mida-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-mida-deep">Ver reportes</Link>
               </div>
             </article>
           </>
