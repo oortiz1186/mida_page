@@ -77,6 +77,22 @@ function isSupportConversation(text: string) {
   return supportPhrases.some(phrase => hasPhrase(normalized, phrase));
 }
 
+// Conserva la intención comercial en respuestas de seguimiento, sin secuestrar
+// preguntas informativas ni cambios explícitos hacia soporte.
+function isCommercialFollowUp(text: string) {
+  const normalized = normalizeText(text);
+  if (/^(que es|como funciona|cual es|cuales son|explicame|que significa)\b/.test(normalized)) {
+    return false;
+  }
+  return [
+    "cotizacion", "cotizar", "renovacion", "renovar", "licencia",
+    "usuarios", "usuario", "precio", "costo", "presupuesto",
+    "que sigue", "siguiente paso", "que necesitas", "que informacion",
+    "mis datos", "mi telefono", "mi numero", "contactarme",
+  ].some(phrase => hasPhrase(normalized, phrase)) ||
+    /^\s*(?:necesito|son|serian|tengo|utilizo|uso)\s+\d+\s+usuarios?\b/.test(normalized);
+}
+
 function extractPhone(text: string) {
   const matches = text.match(/(?:\+?52\s*)?(?:1\s*)?(?:\d[\s().-]*){10}/g);
   if (!matches?.length) return null;
@@ -340,8 +356,21 @@ export async function POST(req: Request) {
     const previousUserMessage = messages.slice(0, -1).reverse()
       .find(message => message.role === "user")?.content ?? "";
     const intentMessage = phoneOnlyFollowUp ? previousUserMessage : latestMessage;
-    const salesConversation = isSalesConversation(intentMessage);
-    const supportConversation = isSupportConversation(intentMessage);
+    const explicitSales = isSalesConversation(intentMessage);
+    const explicitSupport = isSupportConversation(intentMessage);
+    const earlierUserMessages = messages.slice(0, -1)
+      .filter(message => message.role === "user")
+      .map(message => message.content);
+    const recentCommercialIntent = earlierUserMessages
+      .slice(-6).some(isSalesConversation);
+    const latestIsInformational = /^(que es|como funciona|cual es|cuales son|explicame|que significa)\b/
+      .test(normalizeText(latestMessage));
+    const salesConversation = explicitSales ||
+      (!explicitSupport && recentCommercialIntent &&
+        (phoneOnlyFollowUp || (!latestIsInformational && isCommercialFollowUp(latestMessage))));
+    const supportConversation = explicitSupport ||
+      (!salesConversation && phoneOnlyFollowUp &&
+        earlierUserMessages.slice(-6).some(isSupportConversation));
     const phone = extractPhone(userConversation);
 
     if (salesConversation) {
