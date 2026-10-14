@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = infoEmpresa.dominio.replace(/\/$/, "");
-  const routes = ["", "/servicios", "/contpaqi", "/equipamiento", "/contacto", "/cursos", "/promociones", ...seoPages.map((page) => `/${page.slug}`)];
+  const routes = ["", "/servicios", "/contpaqi", "/equipamiento", "/contacto", "/cursos", "/promociones", "/certificaciones", "/casos-de-exito", ...seoPages.map((page) => `/${page.slug}`)];
 
   const staticEntries: MetadataRoute.Sitemap = routes.map((route) => ({
     url: `${baseUrl}${route}`,
