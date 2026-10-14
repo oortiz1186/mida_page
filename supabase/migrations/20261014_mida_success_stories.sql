@@ -17,4 +17,28 @@ create table if not exists public.mida_success_stories (
 );
 create index if not exists mida_success_stories_status_idx on public.mida_success_stories(status);
 alter table public.mida_success_stories enable row level security;
--- No anonymous policies: public reads go through server code with explicit published + consent filter.
+-- Public visitors may read only authorized published cases.
+create policy "Public can read authorized success stories"
+on public.mida_success_stories for select
+to anon, authenticated
+using (status = 'published' and consent_confirmed = true);
+
+-- Active blog administrators can manage all stories, including drafts.
+create policy "Active admins can read all success stories"
+on public.mida_success_stories for select
+to authenticated
+using ((select public.is_blog_admin()));
+
+create policy "Active admins can create success stories"
+on public.mida_success_stories for insert
+to authenticated
+with check ((select public.is_blog_admin()));
+
+create policy "Active admins can update success stories"
+on public.mida_success_stories for update
+to authenticated
+using ((select public.is_blog_admin()))
+with check ((select public.is_blog_admin()));
+
+-- No delete policy: archived stories remain recoverable.
+
