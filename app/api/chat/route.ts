@@ -313,8 +313,48 @@ function buildUnassignedSupportNotification(
   return `🟡 NUEVO CLIENTE / SOPORTE SIN ASESOR DESDE MIDA.MX\n\nTeléfono del cliente: ${phone}\n\nEl cliente solicita soporte desde el chat web y no se encontró un asesor asignado.\n\nÚltimos mensajes:\n${lastUserMessages(messages)}`;
 }
 
+function getSalesDetails(messages: ChatMessage[]) {
+  const userTexts = messages.filter(message => message.role === "user").map(message => message.content);
+  const normalized = normalizeText(userTexts.join("\n"));
+  const intent = /\\brenov(?:ar|acion|acion de)\\b|\\brenovar\\b/.test(normalized)
+    ? "Renovación"
+    : /\\bcotiz(?:ar|acion)\\b/.test(normalized) ? "Cotización"
+    : /\\bcomprar|adquirir\\b/.test(normalized) ? "Compra"
+    : /\\bcontratar\\b/.test(normalized) ? "Contratación" : "Atención comercial";
+
+  const products = [
+    ["CONTPAQi Contabilidad", /\\bcontabilidad\\b/],
+    ["CONTPAQi Nóminas", /\\bnominas?\\b/],
+    ["CONTPAQi Bancos", /\\bbancos\\b/],
+    ["CONTPAQi Comercial Premium", /\\bcomercial premium\\b/],
+    ["CONTPAQi Comercial Pro", /\\bcomercial pro\\b/],
+    ["CONTPAQi Factura Electrónica", /\\bfactura electronica\\b/],
+    ["CONTPAQi Vende", /\\bvende\\b/],
+  ] as const;
+  const product = products.find(([, pattern]) => pattern.test(normalized))?.[0] ?? null;
+  // El último dato explícito de usuarios tiene prioridad si el cliente lo corrige.
+  let users: number | null = null;
+  for (const text of userTexts) {
+    const match = normalizeText(text).match(/\\b(\\d{1,4})\\s+usuarios?\\b/);
+    if (match) users = Number(match[1]);
+  }
+  return { intent, product, users };
+}
+
+function buildSalesPhoneRequest(messages: ChatMessage[]) {
+  const { intent, product, users } = getSalesDetails(messages);
+  const details = [
+    product ? `el producto ${product}` : null,
+    users ? `para ${users} ${users === 1 ? "usuario" : "usuarios"}` : null,
+  ].filter(Boolean).join(" ");
+  return details
+    ? `Perfecto, tengo registrada tu solicitud de ${intent.toLowerCase()} de ${details}. Para canalizarla con ventas, solo necesito tu número de teléfono a 10 dígitos.`
+    : "Con gusto te canalizo con el área de ventas. Compárteme por favor tu número de teléfono a 10 dígitos para que un asesor comercial pueda contactarte.";
+}
+
 function buildSalesNotification(phone: string, messages: ChatMessage[]) {
-  return `🔔 NUEVA OPORTUNIDAD DE VENTA DESDE MIDA.MX\n\nTeléfono del prospecto: ${phone}\n\nEl prospecto mostró interés de compra, cotización, renovación o contratación desde el chat web.\n\nÚltimos mensajes:\n${lastUserMessages(messages)}`;
+  const { intent, product, users } = getSalesDetails(messages);
+  return `🔔 NUEVA OPORTUNIDAD DE VENTA DESDE MIDA.MX\n\nTeléfono del prospecto: ${phone}\nTipo de solicitud: ${intent}\nProducto: ${product ?? "No especificado"}\nUsuarios: ${users ?? "No especificado"}\n\nÚltimos mensajes:\n${lastUserMessages(messages)}`;
 }
 
 export async function POST(req: Request) {
@@ -376,8 +416,7 @@ export async function POST(req: Request) {
     if (salesConversation) {
       if (!phone) {
         return NextResponse.json({
-          reply:
-            "Con gusto te canalizo con el área de ventas. Compárteme por favor tu número de teléfono a 10 dígitos para que un asesor comercial pueda contactarte.",
+          reply: buildSalesPhoneRequest(messages),
         });
       }
 
