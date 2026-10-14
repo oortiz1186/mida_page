@@ -11,44 +11,56 @@ export function knowledgeTokens(question: string): string[] {
     .filter(word => word.length >= 3 && !STOPWORDS.has(word)))).slice(0, 6);
 }
 
-function normalized(text: string) {
-  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function normalized(value: string) {
+  return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-function relevance(article: KnowledgeArticle, tokens: string[]) {
-  const title = normalized(article.title);
-  const product = normalized(article.product ?? "");
-  const content = normalized(article.content);
-  return tokens.reduce((score, token) =>
-    score + (title.includes(token) ? 6 : 0)
-          + (product.includes(token) ? 5 : 0)
-          + (content.includes(token) ? 1 : 0), 0);
+function plainText(html: string) {
+  return html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ").replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ").trim();
 }
 
-/** Search is server-only. Results must be treated as untrusted reference data. */
+/** Lee el Blog MIDA sin copiar artículos a knowledge_articles.
+ * Sólo contenido publicado; se devuelve como referencia no confiable para el modelo.
+ */
 export async function searchKnowledge(question: string, limit = 5): Promise<KnowledgeArticle[]> {
   const tokens = knowledgeTokens(question);
   if (!tokens.length) return [];
   const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(10, Math.trunc(limit))) : 5;
   const filters = tokens.flatMap(token => [
     `title.ilike.%${token}%`,
-    `product.ilike.%${token}%`,
+    `excerpt.ilike.%${token}%`,
     `content.ilike.%${token}%`,
   ]).join(",");
-  const { data, error } = await supabase.from("knowledge_articles")
-    .select("id,title,slug,category,product,product_version,content,status,source_id,reviewed_at,updated_at")
+  const { data, error } = await supabase.from("blog_posts")
+    .select("id,title,slug,excerpt,content,status,published_at,updated_at")
     .eq("status", "published")
-    .not("source_id", "is", null)
-    .not("reviewed_at", "is", null)
     .or(filters)
     .limit(60);
   if (error) {
-    console.error("Error buscando conocimiento:", error.code);
+    console.error("Error buscando artículos publicados del blog:", error.code);
     return [];
   }
-  return ((data ?? []) as KnowledgeArticle[])
-    .map(article => ({ article, score: relevance(article, tokens) }))
-    .filter(entry => entry.score >= 5)
-    .sort((a, b) => b.score - a.score || (b.article.reviewed_at ?? "").localeCompare(a.article.reviewed_at ?? ""))
-    .slice(0, safeLimit).map(entry => entry.article);
+  return (data ?? []).map(post => {
+    const content = plainText(String(post.content ?? ""));
+    const excerpt = plainText(String(post.excerpt ?? ""));
+    const score = tokens.reduce((total, token) =>
+      total + (normalized(post.title).includes(token) ? 6 : 0)
+      + (normalized(excerpt).includes(token) ? 3 : 0)
+      + (normalized(content).includes(token) ? 1 : 0), 0);
+    const article: KnowledgeArticle = {
+      id: post.id, title: post.title, slug: post.slug,
+      category: "faq", product: null, product_version: null,
+      content: `Origen: https://mida.mx/blog/${post.slug}\n${excerpt}\n${content}`.slice(0, 7000),
+      status: "published", source_id: null,
+      reviewed_at: post.published_at ?? null, updated_at: post.updated_at,
+    };
+    return { article, score };
+  }).filter(item => item.score >= 5)
+    .sort((a,b) => b.score - a.score)
+    .slice(0, safeLimit).map(item => item.article);
 }
