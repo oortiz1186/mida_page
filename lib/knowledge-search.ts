@@ -2,7 +2,7 @@ import "server-only";
 import { supabase } from "@/lib/supabase";
 import type { KnowledgeArticle } from "@/lib/knowledge";
 
-const STOPWORDS = new Set(["para","como","cual","cuanto","quiero","necesito","tengo","sobre","contpaqi","ayuda","puedo","entre","desde","donde","porque","precio","precios","sistema","sistemas","este","esta","hacer","usar","tiene","puede"]);
+const STOPWORDS = new Set(["para","como","cual","cuanto","quiero","necesito","tengo","sobre","contpaqi","ayuda","puedo","entre","desde","donde","porque","precio","precios","sistema","sistemas","este","esta","hacer","usar","tiene","puede","empresa","empresas","los","las","una","que","por","del","con","mas","informacion","saber","explica"]);
 
 export function knowledgeTokens(question: string): string[] {
   return Array.from(new Set(question.slice(0, 250).toLowerCase()
