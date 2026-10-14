@@ -44,54 +44,37 @@ function normalizeText(text: string) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+function hasPhrase(text: string, phrase: string) {
+  const escaped = phrase.replace(/[.*+?^$\{\}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^a-z0-9])${escaped}(?=$|[^a-z0-9])`).test(text);
+}
+
 function isSalesConversation(text: string) {
   const normalized = normalizeText(text);
-  const salesWords = [
-    "cotizacion",
-    "cotizar",
-    "precio",
-    "precios",
-    "comprar",
-    "compra",
-    "costo",
-    "cuanto cuesta",
-    "licencia",
-    "licencias",
-    "renovar",
-    "renovacion",
-    "contratar",
-    "adquirir",
-    "venta",
-    "ventas",
-    "quiero informacion para comprar",
-    "me interesa comprar",
+  // Se requiere una intención comercial explícita; el tema "punto de venta"
+  // o una pregunta sobre licencias no deben solicitar un teléfono.
+  const salesPhrases = [
+    "quiero cotizar", "necesito cotizar", "solicito cotizacion",
+    "quiero una cotizacion", "me pueden cotizar", "quiero comprar",
+    "necesito comprar", "me interesa comprar", "quiero contratar",
+    "necesito contratar", "quiero renovar", "necesito renovar",
+    "quiero adquirir", "contactar a ventas", "hablar con ventas",
+    "contactar a un vendedor", "quiero que me llamen",
   ];
-
-  return salesWords.some((word) => normalized.includes(word));
+  return salesPhrases.some(phrase => hasPhrase(normalized, phrase));
 }
 
 function isSupportConversation(text: string) {
   const normalized = normalizeText(text);
-  const supportWords = [
-    "soporte",
-    "asesoria",
-    "asesor",
-    "necesito ayuda",
-    "solicito ayuda",
-    "ayuda tecnica",
-    "error",
-    "falla",
-    "problema",
-    "no funciona",
-    "no abre",
-    "no factura",
-    "no timbra",
-    "no puedo",
-    "tengo un detalle",
-    "me marca",
+  const supportPhrases = [
+    "necesito soporte", "solicito soporte", "quiero soporte",
+    "necesito ayuda", "solicito ayuda", "ayuda tecnica",
+    "hablar con mi asesor", "contactar a mi asesor",
+    "tengo un error", "me marca error", "tengo una falla",
+    "tengo un problema", "no funciona", "no abre", "no timbra",
+    "no puedo facturar", "no puedo timbrar", "tengo un detalle",
   ];
-
-  return supportWords.some((word) => normalized.includes(word));
+  return supportPhrases.some(phrase => hasPhrase(normalized, phrase));
 }
 
 function extractPhone(text: string) {
@@ -350,8 +333,15 @@ export async function POST(req: Request) {
       .map((message) => message.content)
       .join("\n");
 
-    const salesConversation = isSalesConversation(userConversation);
-    const supportConversation = isSupportConversation(userConversation);
+    const latestMessage = messages[messages.length - 1].content;
+    const latestPhone = extractPhone(latestMessage);
+    const phoneOnlyFollowUp = Boolean(latestPhone) &&
+      normalizeText(latestMessage).replace(/[^a-z0-9]/g, "").replace(/^(521|52)/, "").length === 10;
+    const previousUserMessage = messages.slice(0, -1).reverse()
+      .find(message => message.role === "user")?.content ?? "";
+    const intentMessage = phoneOnlyFollowUp ? previousUserMessage : latestMessage;
+    const salesConversation = isSalesConversation(intentMessage);
+    const supportConversation = isSupportConversation(intentMessage);
     const phone = extractPhone(userConversation);
 
     if (salesConversation) {
