@@ -8,7 +8,6 @@ const systems = [
   { title: "CONTPAQi Comercial Premium", description: "Administración comercial, inventarios, compras, ventas y facturación.", href: "/contpaqi-comercial-premium", logo: "/images/productos/comercial_premium.png" },
   { title: "CONTPAQi Comercial Pro", description: "Gestión comercial, ventas, compras, clientes e inventarios.", href: "/contpaqi-comercial-pro", logo: "/images/productos/comercial_pro.png" },
   { title: "CONTPAQi Factura Electrónica", description: "Emisión, timbrado y administración de CFDI.", href: "/contpaqi-factura-electronica", logo: "/images/productos/factura_electronica.png" },
-  { title: "CONTPAQi Punto de Venta", description: "Ventas de mostrador, cajas, inventarios y tickets.", href: "/contpaqi-punto-de-venta", logo: "/logo/logo-contpaqi-2026.png" },
 ];
 
 export default function HomeCertifications() {
