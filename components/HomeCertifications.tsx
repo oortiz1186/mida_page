@@ -1,13 +1,13 @@
 import Link from "next/link";
 
 const systems = [
-  { title: "CONTPAQi Contabilidad", description: "Contabilidad electrónica, pólizas, estados financieros y obligaciones fiscales." },
-  { title: "CONTPAQi Bancos", description: "Control de cuentas bancarias, flujo de efectivo y conciliaciones." },
-  { title: "CONTPAQi Nóminas", description: "Cálculo de nómina, timbrado de recibos y obligaciones laborales." },
-  { title: "CONTPAQi Comercial Premium", description: "Administración comercial, inventarios, compras, ventas y facturación." },
-  { title: "CONTPAQi Comercial Pro", description: "Gestión comercial, ventas, compras, clientes e inventarios." },
-  { title: "CONTPAQi Factura Electrónica", description: "Emisión, timbrado y administración de CFDI." },
-  { title: "CONTPAQi Punto de Venta", description: "Ventas de mostrador, cajas, inventarios y tickets." },
+  { title: "CONTPAQi Contabilidad", description: "Contabilidad electrónica, pólizas, estados financieros y obligaciones fiscales.", href: "/contpaqi-contabilidad" },
+  { title: "CONTPAQi Bancos", description: "Control de cuentas bancarias, flujo de efectivo y conciliaciones.", href: "/contpaqi-bancos" },
+  { title: "CONTPAQi Nóminas", description: "Cálculo de nómina, timbrado de recibos y obligaciones laborales.", href: "/contpaqi-nominas" },
+  { title: "CONTPAQi Comercial Premium", description: "Administración comercial, inventarios, compras, ventas y facturación.", href: "/contpaqi-comercial-premium" },
+  { title: "CONTPAQi Comercial Pro", description: "Gestión comercial, ventas, compras, clientes e inventarios.", href: "/contpaqi-comercial-pro" },
+  { title: "CONTPAQi Factura Electrónica", description: "Emisión, timbrado y administración de CFDI.", href: "/contpaqi-factura-electronica" },
+  { title: "CONTPAQi Punto de Venta", description: "Ventas de mostrador, cajas, inventarios y tickets.", href: "/contpaqi-punto-de-venta" },
 ];
 
 export default function HomeCertifications() {
@@ -24,11 +24,12 @@ export default function HomeCertifications() {
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {systems.map((system, index) => (
-            <article key={system.title} className="rounded-2xl bg-white border border-gray-100 p-6 shadow-sm">
+            <Link key={system.title} href={system.href} aria-label={`Conocer más sobre ${system.title}`} className="rounded-2xl bg-white border border-gray-100 p-6 shadow-sm group block hover:border-mida-primary/40 hover:shadow-lg hover:-translate-y-1 transition-all">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-mida-primary font-black">{String(index + 1).padStart(2, "0")}</span>
-              <h3 className="mt-4 text-lg font-bold text-mida-deep">{system.title}</h3>
+              <h3 className="mt-4 text-lg font-bold text-mida-deep group-hover:text-mida-primary transition-colors">{system.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">{system.description}</p>
-            </article>
+              <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-mida-primary">Conocer sistema <span aria-hidden="true">→</span></span>
+            </Link>
           ))}
         </div>
       </div>
