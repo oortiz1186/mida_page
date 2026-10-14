@@ -8,6 +8,7 @@ import CTA from "../components/CTA";
 import Footer from "../components/Footer";
 import HomePromotions from "../components/HomePromotions";
 import HomeCertifications from "../components/HomeCertifications";
+import HomeSuccessStories from "../components/HomeSuccessStories";
 import SolutionFinder from "../components/SolutionFinder";
 
 export const metadata = {
@@ -27,6 +28,7 @@ export default function Home() {
         <SolutionFinder />
         <Services />
         <HomeCertifications />
+        <HomeSuccessStories />
         <SolutionLinks />
         <CTA />
       </div>
