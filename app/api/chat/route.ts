@@ -316,26 +316,26 @@ function buildUnassignedSupportNotification(
 function getSalesDetails(messages: ChatMessage[]) {
   const userTexts = messages.filter(message => message.role === "user").map(message => message.content);
   const normalized = normalizeText(userTexts.join("\n"));
-  const intent = /\\brenov(?:ar|acion|acion de)\\b|\\brenovar\\b/.test(normalized)
+  const intent = /\brenov(?:ar|acion|acion de)\b|\brenovar\b/.test(normalized)
     ? "Renovación"
-    : /\\bcotiz(?:ar|acion)\\b/.test(normalized) ? "Cotización"
-    : /\\bcomprar|adquirir\\b/.test(normalized) ? "Compra"
-    : /\\bcontratar\\b/.test(normalized) ? "Contratación" : "Atención comercial";
+    : /\bcotiz(?:ar|acion)\b/.test(normalized) ? "Cotización"
+    : /\bcomprar|adquirir\b/.test(normalized) ? "Compra"
+    : /\bcontratar\b/.test(normalized) ? "Contratación" : "Atención comercial";
 
   const products = [
-    ["CONTPAQi Contabilidad", /\\bcontabilidad\\b/],
-    ["CONTPAQi Nóminas", /\\bnominas?\\b/],
-    ["CONTPAQi Bancos", /\\bbancos\\b/],
-    ["CONTPAQi Comercial Premium", /\\bcomercial premium\\b/],
-    ["CONTPAQi Comercial Pro", /\\bcomercial pro\\b/],
-    ["CONTPAQi Factura Electrónica", /\\bfactura electronica\\b/],
-    ["CONTPAQi Vende", /\\bvende\\b/],
+    ["CONTPAQi Contabilidad", /\bcontabilidad\b/],
+    ["CONTPAQi Nóminas", /\bnominas?\b/],
+    ["CONTPAQi Bancos", /\bbancos\b/],
+    ["CONTPAQi Comercial Premium", /\bcomercial premium\b/],
+    ["CONTPAQi Comercial Pro", /\bcomercial pro\b/],
+    ["CONTPAQi Factura Electrónica", /\bfactura electronica\b/],
+    ["CONTPAQi Vende", /\bvende\b/],
   ] as const;
   const product = products.find(([, pattern]) => pattern.test(normalized))?.[0] ?? null;
   // El último dato explícito de usuarios tiene prioridad si el cliente lo corrige.
   let users: number | null = null;
   for (const text of userTexts) {
-    const match = normalizeText(text).match(/\\b(\\d{1,4})\\s+usuarios?\\b/);
+    const match = normalizeText(text).match(/\b(\d{1,4})\s+usuarios?\b/);
     if (match) users = Number(match[1]);
   }
   return { intent, product, users };
