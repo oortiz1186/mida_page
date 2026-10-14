@@ -66,5 +66,7 @@ export async function searchKnowledge(question: string, limit = 5): Promise<Know
     return { article, score, titleMatches, excerptMatches, contentMatches };
   }).filter(item => item.titleMatches > 0 || item.excerptMatches > 0 || item.contentMatches >= 2)
     .sort((a, b) => b.score - a.score)
-    .slice(0, safeLimit).map(item => item.article);\n  const aiArticles = await findPublishedKnowledge(question, safeLimit);\n  return [...aiArticles, ...blogResults].slice(0, safeLimit);
+    .slice(0, safeLimit).map(item => item.article);
+  const aiArticles = await findPublishedKnowledge(question, safeLimit);
+  return [...aiArticles, ...blogResults].slice(0, safeLimit);
 }
