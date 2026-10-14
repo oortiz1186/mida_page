@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { supabase } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   title: "Casos de éxito | MIDA",
@@ -15,7 +16,10 @@ const topics = [
   { title: "Infraestructura tecnológica", description: "Proyectos relacionados con servidores, redes y equipamiento empresarial." },
 ];
 
-export default function CasosDeExitoPage() {
+export const dynamic = "force-dynamic";
+export default async function CasosDeExitoPage() {
+  const {data:stories,error} = await supabase.from("mida_success_stories").select("id,title,slug,client_name,sector,challenge,solution,results,testimonial").eq("status","published").eq("consent_confirmed",true).order("updated_at",{ascending:false});
+  if(error) console.error("[success-stories] Public listing unavailable",error.code);
   return (
     <main className="min-h-screen bg-white">
       <Navbar />
