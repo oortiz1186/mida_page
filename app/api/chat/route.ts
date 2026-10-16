@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { MIDA_PROMPT } from "@/lib/midaPrompt";
+import { buildKnowledgeContext } from "@/lib/knowledge-context";
 import { supabase } from "@/lib/supabase";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -471,6 +472,18 @@ export async function POST(req: Request) {
       });
     }
 
+    // Opt-in: OFF by default. Existing sales/support routing remains unchanged.
+    const knowledgeEnabled = process.env.MIDA_KNOWLEDGE_ENABLED === "true";
+    let knowledgeContext = "";
+    if (knowledgeEnabled) {
+      try {
+        const lastQuestion = messages[messages.length - 1].content;
+        knowledgeContext = await buildKnowledgeContext(lastQuestion);
+      } catch (error) {
+        console.error("Knowledge context unavailable:", error);
+      }
+    }
+
     const contents = messages.map((message) => ({
       role: message.role === "assistant" ? "model" : "user",
       parts: [{ text: message.content }],
@@ -488,7 +501,7 @@ export async function POST(req: Request) {
           system_instruction: {
             parts: [
               {
-                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.`,
+                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.\n\n${knowledgeEnabled ? (knowledgeContext || "No hay fichas verificadas relevantes para esta consulta. No inventes datos específicos, precios ni versiones.") : ""}`,
               },
             ],
           },
