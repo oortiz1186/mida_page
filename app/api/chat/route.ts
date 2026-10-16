@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { MIDA_PROMPT } from "@/lib/midaPrompt";
 import { supabase } from "@/lib/supabase";
+import { buildKnowledgeContext } from "@/lib/knowledge-context";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
@@ -43,52 +44,53 @@ function normalizeText(text: string) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+function hasPhrase(text: string, phrase: string) {
+  const escaped = phrase.replace(/[.*+?^$\{\}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^a-z0-9])${escaped}(?=$|[^a-z0-9])`).test(text);
+}
+
 function isSalesConversation(text: string) {
   const normalized = normalizeText(text);
-  const salesWords = [
-    "cotizacion",
-    "cotizar",
-    "precio",
-    "precios",
-    "comprar",
-    "compra",
-    "costo",
-    "cuanto cuesta",
-    "licencia",
-    "licencias",
-    "renovar",
-    "renovacion",
-    "contratar",
-    "adquirir",
-    "venta",
-    "ventas",
-    "quiero informacion para comprar",
-    "me interesa comprar",
+  // Se requiere una intención comercial explícita; el tema "punto de venta"
+  // o una pregunta sobre licencias no deben solicitar un teléfono.
+  const salesPhrases = [
+    "quiero cotizar", "necesito cotizar", "solicito cotizacion",
+    "quiero una cotizacion", "me pueden cotizar", "quiero comprar",
+    "necesito comprar", "me interesa comprar", "quiero contratar",
+    "necesito contratar", "quiero renovar", "necesito renovar",
+    "quiero adquirir", "contactar a ventas", "hablar con ventas",
+    "contactar a un vendedor", "quiero que me llamen",
   ];
-
-  return salesWords.some((word) => normalized.includes(word));
+  return salesPhrases.some(phrase => hasPhrase(normalized, phrase));
 }
 
 function isSupportConversation(text: string) {
   const normalized = normalizeText(text);
-  const supportWords = [
-    "soporte",
-    "asesoria",
-    "asesor",
-    "ayuda",
-    "error",
-    "falla",
-    "problema",
-    "no funciona",
-    "no abre",
-    "no factura",
-    "no timbra",
-    "no puedo",
-    "tengo un detalle",
-    "me marca",
+  const supportPhrases = [
+    "necesito soporte", "solicito soporte", "quiero soporte",
+    "necesito ayuda", "solicito ayuda", "ayuda tecnica",
+    "hablar con mi asesor", "contactar a mi asesor",
+    "tengo un error", "me marca error", "tengo una falla",
+    "tengo un problema", "no funciona", "no abre", "no timbra",
+    "no puedo facturar", "no puedo timbrar", "tengo un detalle",
   ];
+  return supportPhrases.some(phrase => hasPhrase(normalized, phrase));
+}
 
-  return supportWords.some((word) => normalized.includes(word));
+// Conserva la intención comercial en respuestas de seguimiento, sin secuestrar
+// preguntas informativas ni cambios explícitos hacia soporte.
+function isCommercialFollowUp(text: string) {
+  const normalized = normalizeText(text);
+  if (/^(que es|como funciona|cual es|cuales son|explicame|que significa)\b/.test(normalized)) {
+    return false;
+  }
+  return [
+    "cotizacion", "cotizar", "renovacion", "renovar", "licencia",
+    "usuarios", "usuario", "precio", "costo", "presupuesto",
+    "que sigue", "siguiente paso", "que necesitas", "que informacion",
+    "mis datos", "mi telefono", "mi numero", "contactarme",
+  ].some(phrase => hasPhrase(normalized, phrase)) ||
+    /^\s*(?:necesito|son|serian|tengo|utilizo|uso)\s+\d+\s+usuarios?\b/.test(normalized);
 }
 
 function extractPhone(text: string) {
@@ -311,8 +313,62 @@ function buildUnassignedSupportNotification(
   return `🟡 NUEVO CLIENTE / SOPORTE SIN ASESOR DESDE MIDA.MX\n\nTeléfono del cliente: ${phone}\n\nEl cliente solicita soporte desde el chat web y no se encontró un asesor asignado.\n\nÚltimos mensajes:\n${lastUserMessages(messages)}`;
 }
 
+function getSalesDetails(messages: ChatMessage[]) {
+  const userTexts = messages.filter(message => message.role === "user").map(message => message.content);
+  const normalized = normalizeText(userTexts.join("\n"));
+  const intent = /\brenov(?:ar|acion|acion de)\b|\brenovar\b/.test(normalized)
+    ? "Renovación"
+    : /\bcotiz(?:ar|acion)\b/.test(normalized) ? "Cotización"
+    : /\bcomprar|adquirir\b/.test(normalized) ? "Compra"
+    : /\bcontratar\b/.test(normalized) ? "Contratación" : "Atención comercial";
+
+  const products = [
+    ["CONTPAQi Contabilidad", /\bcontabilidad\b/],
+    ["CONTPAQi Nóminas", /\bnominas?\b/],
+    ["CONTPAQi Bancos", /\bbancos\b/],
+    ["CONTPAQi Comercial Premium", /\bcomercial premium\b/],
+    ["CONTPAQi Comercial Pro", /\bcomercial pro\b/],
+    ["CONTPAQi Factura Electrónica", /\bfactura electronica\b/],
+    ["CONTPAQi Vende", /\bvende\b/],
+    ["CONTPAQi XML en línea", /\bxml en linea\b/],
+    ["CONTPAQi Optimiza", /\boptimiza\b/],
+    ["CONTPAQi Colabora", /\bcolabora\b/],
+    ["CONTPAQi Escritorio Virtual", /\bescritorio virtual\b/],
+  ] as const;
+  const product = products.find(([, pattern]) => pattern.test(normalized))?.[0] ?? null;
+  // El último dato explícito de usuarios tiene prioridad si el cliente lo corrige.
+  let users: number | null = null;
+  for (const text of userTexts) {
+    const match = normalizeText(text).match(/\b(\d{1,4})\s+usuarios?\b/);
+    if (match) users = Number(match[1]);
+  }
+  return { intent, product, users };
+}
+
+function buildSalesPhoneRequest(messages: ChatMessage[]) {
+  const { intent, product, users } = getSalesDetails(messages);
+  const details = [
+    product ? `el producto ${product}` : null,
+    users ? `para ${users} ${users === 1 ? "usuario" : "usuarios"}` : null,
+  ].filter(Boolean).join(" ");
+  const lastUser = normalizeText(messages.filter(message => message.role === "user").at(-1)?.content ?? "");
+  const asksRequirements = /(?:que|cual(?:es)?) (?:informacion|datos|requisitos) (?:necesitas|requieren|ocupan)|que sigue|como (?:preparan|preparar) (?:mi|la) (?:cotizacion|renovacion)/.test(lastUser);
+  if (asksRequirements) {
+    const missing = [
+      !product ? "el sistema CONTPAQi que utilizas o necesitas" : null,
+      !users ? "la cantidad de usuarios" : null,
+    ].filter(Boolean);
+    const summary = [product, users ? `${users} ${users === 1 ? "usuario" : "usuarios"}` : null].filter(Boolean).join(", ");
+    return `Para preparar tu ${intent.toLowerCase()}${summary ? ` de ${summary}` : ""}, ${missing.length ? `sería útil conocer ${missing.join(" y ")}. ` : ""}necesito tu número de teléfono a 10 dígitos para canalizar tu solicitud con ventas. Un asesor podrá confirmar los datos adicionales y la propuesta.`;
+  }
+  return details
+    ? `Perfecto, tengo registrada tu solicitud de ${intent.toLowerCase()} de ${details}. Para canalizarla con ventas, solo necesito tu número de teléfono a 10 dígitos.`
+    : "Con gusto te canalizo con el área de ventas. Compárteme por favor tu número de teléfono a 10 dígitos para que un asesor comercial pueda contactarte.";
+}
+
 function buildSalesNotification(phone: string, messages: ChatMessage[]) {
-  return `🔔 NUEVA OPORTUNIDAD DE VENTA DESDE MIDA.MX\n\nTeléfono del prospecto: ${phone}\n\nEl prospecto mostró interés de compra, cotización, renovación o contratación desde el chat web.\n\nÚltimos mensajes:\n${lastUserMessages(messages)}`;
+  const { intent, product, users } = getSalesDetails(messages);
+  return `🔔 NUEVA OPORTUNIDAD DE VENTA DESDE MIDA.MX\n\nTeléfono del prospecto: ${phone}\nTipo de solicitud: ${intent}\nProducto: ${product ?? "No especificado"}\nUsuarios: ${users ?? "No especificado"}\n\nÚltimos mensajes:\n${lastUserMessages(messages)}`;
 }
 
 export async function POST(req: Request) {
@@ -347,15 +403,34 @@ export async function POST(req: Request) {
       .map((message) => message.content)
       .join("\n");
 
-    const salesConversation = isSalesConversation(userConversation);
-    const supportConversation = isSupportConversation(userConversation);
+    const latestMessage = messages[messages.length - 1].content;
+    const latestPhone = extractPhone(latestMessage);
+    const phoneOnlyFollowUp = Boolean(latestPhone) &&
+      normalizeText(latestMessage).replace(/[^a-z0-9]/g, "").replace(/^(521|52)/, "").length === 10;
+    const previousUserMessage = messages.slice(0, -1).reverse()
+      .find(message => message.role === "user")?.content ?? "";
+    const intentMessage = phoneOnlyFollowUp ? previousUserMessage : latestMessage;
+    const explicitSales = isSalesConversation(intentMessage);
+    const explicitSupport = isSupportConversation(intentMessage);
+    const earlierUserMessages = messages.slice(0, -1)
+      .filter(message => message.role === "user")
+      .map(message => message.content);
+    const recentCommercialIntent = earlierUserMessages
+      .slice(-6).some(isSalesConversation);
+    const latestIsInformational = /^(que es|como funciona|cual es|cuales son|explicame|que significa)\b/
+      .test(normalizeText(latestMessage));
+    const salesConversation = explicitSales ||
+      (!explicitSupport && recentCommercialIntent &&
+        (phoneOnlyFollowUp || (!latestIsInformational && isCommercialFollowUp(latestMessage))));
+    const supportConversation = explicitSupport ||
+      (!salesConversation && phoneOnlyFollowUp &&
+        earlierUserMessages.slice(-6).some(isSupportConversation));
     const phone = extractPhone(userConversation);
 
     if (salesConversation) {
       if (!phone) {
         return NextResponse.json({
-          reply:
-            "Con gusto te canalizo con el área de ventas. Compárteme por favor tu número de teléfono a 10 dígitos para que un asesor comercial pueda contactarte.",
+          reply: buildSalesPhoneRequest(messages),
         });
       }
 
@@ -471,6 +546,16 @@ export async function POST(req: Request) {
       });
     }
 
+    let knowledgeContext = "";
+    if (process.env.MIDA_KNOWLEDGE_ENABLED === "true") {
+      try {
+        const question = messages[messages.length - 1].content;
+        knowledgeContext = await buildKnowledgeContext(question);
+      } catch (error) {
+        console.error("ERROR CONSULTANDO CONOCIMIENTOS MIDA:", error);
+      }
+    }
+
     const contents = messages.map((message) => ({
       role: message.role === "assistant" ? "model" : "user",
       parts: [{ text: message.content }],
@@ -488,7 +573,7 @@ export async function POST(req: Request) {
           system_instruction: {
             parts: [
               {
-                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.`,
+                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.${knowledgeContext ? `\n\n${knowledgeContext}` : ""}`,
               },
             ],
           },
