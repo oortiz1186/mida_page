@@ -9,7 +9,7 @@ const EVOLUTION_INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || "mida";
 const WHATSAPP_VENTAS = process.env.WHATSAPP_VENTAS;
 const WHATSAPP_GRUPO_ASESORES = process.env.WHATSAPP_GRUPO_ASESORES;
 
-const MAX_MESSAGES = 12;
+const MAX_MESSAGES = 40;
 const MAX_MESSAGE_LENGTH = 1200;
 const NOTIFICATION_COOLDOWN_MS = 10 * 60 * 1000;
 const NOTIFICATION_STORE_TTL_MS = 60 * 60 * 1000;
@@ -139,6 +139,41 @@ function missingLeadData(messages: ChatMessage[]) {
   if (!data.company) return "Gracias. ¿De qué empresa nos contactas? (Por ejemplo: Empresa: Comercial ABC).";
   if (!data.issue) return "Cuéntame brevemente qué necesitas. Puedes escribir: Problema: ...";
   return null;
+}
+
+async function recordLead(input: {
+  phone: string;
+  category: "sales" | "support";
+  destination: string;
+  messages: ChatMessage[];
+}) {
+  const data = leadData(input.messages);
+  const { data: row, error } = await supabase
+    .from("web_chat_requests")
+    .insert({
+      customer_name: data.name,
+      company_name: data.company,
+      phone: input.phone,
+      description: data.issue,
+      category: input.category,
+      destination: input.destination,
+      status: "pending",
+      transcript: input.messages,
+    })
+    .select("id")
+    .single();
+  if (error || !row?.id) {
+    console.error("CHAT WEB: no se pudo registrar solicitud", error?.code);
+    return null;
+  }
+  return String(row.id);
+}
+
+async function updateLead(id: string, status: "accepted" | "failed") {
+  const { error } = await supabase.from("web_chat_requests")
+    .update({ status, notified_at: status === "accepted" ? new Date().toISOString() : null })
+    .eq("id", id);
+  if (error) console.error("CHAT WEB: no se pudo actualizar solicitud", error.code);
 }
 
 function extractPhone(text: string) {
@@ -495,7 +530,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
           reply:
-            "Identifiqué a tu asesor, pero en este momento no pude enviarle la notificación automática. Puedes continuar aquí y nuestro equipo dará seguimiento.",
+            "Registré tu solicitud, pero no pude notificar a tu asesor. Por favor comunícate con MIDA al 477 329 5727.",
         });
       }
 
