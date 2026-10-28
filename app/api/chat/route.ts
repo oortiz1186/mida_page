@@ -9,7 +9,7 @@ const EVOLUTION_INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || "mida";
 const WHATSAPP_VENTAS = process.env.WHATSAPP_VENTAS;
 const WHATSAPP_GRUPO_ASESORES = process.env.WHATSAPP_GRUPO_ASESORES;
 
-const MAX_MESSAGES = 12;
+const MAX_MESSAGES = 40;
 const MAX_MESSAGE_LENGTH = 1200;
 const NOTIFICATION_COOLDOWN_MS = 10 * 60 * 1000;
 const NOTIFICATION_STORE_TTL_MS = 60 * 60 * 1000;
@@ -64,6 +64,9 @@ function isSalesConversation(text: string) {
     "ventas",
     "quiero informacion para comprar",
     "me interesa comprar",
+    "actualizacion de version",
+    "actualizar version",
+    "actualizar mi sistema",
   ];
 
   return salesWords.some((word) => normalized.includes(word));
@@ -86,9 +89,91 @@ function isSupportConversation(text: string) {
     "no puedo",
     "tengo un detalle",
     "me marca",
+    "necesito que me atiendan",
+    "asistencia tecnica",
+    "me pueden apoyar",
   ];
 
   return supportWords.some((word) => normalized.includes(word));
+}
+
+function extractField(messages: ChatMessage[], field: "nombre" | "empresa" | "problema") {
+  const pattern = field === "nombre"
+    ? /(?:mi nombre es|me llamo|nombre\s*:)\s*([^\n.,;]+)/i
+    : field === "empresa"
+      ? /(?:mi empresa es|empresa\s*:|soy de la empresa)\s*([^\n.,;]+)/i
+      : /(?:problema\s*:|necesito ayuda con|el problema es|me falla|no puedo)\s*([^\n]+)/i;
+  for (const message of [...messages].reverse()) {
+    if (message.role !== "user") continue;
+    const match = message.content.match(pattern);
+    if (match?.[1]?.trim()) return match[1].trim().slice(0, 160);
+  }
+  return null;
+}
+
+function advisorAnswer(messages: ChatMessage[]): "yes" | "no" | null {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const message = messages[i];
+    if (message.role !== "assistant" || !/tienes (un )?asesor|cuentas con (un )?asesor/i.test(message.content)) continue;
+    const next = messages.slice(i + 1).find((m) => m.role === "user");
+    if (!next) return null;
+    const answer = normalizeText(next.content.trim());
+    if (/^(no|ninguno|no tengo|aun no|todavia no)\b/.test(answer)) return "no";
+    if (/^(si|claro|ya tengo|tengo asesor)\b/.test(answer)) return "yes";
+    return null;
+  }
+  return null;
+}
+
+function leadData(messages: ChatMessage[]) {
+  return {
+    name: extractField(messages, "nombre"),
+    company: extractField(messages, "empresa"),
+    issue: extractField(messages, "problema"),
+  };
+}
+
+function missingLeadData(messages: ChatMessage[]) {
+  const data = leadData(messages);
+  if (!data.name) return "Para registrar tu solicitud, dime tu nombre completo (por ejemplo: Mi nombre es Ana López).";
+  if (!data.company) return "Gracias. ¿De qué empresa nos contactas? (Por ejemplo: Empresa: Comercial ABC).";
+  if (!data.issue) return "Cuéntame brevemente qué necesitas. Puedes escribir: Problema: ...";
+  return null;
+}
+
+async function recordLead(input: {
+  phone: string;
+  category: "sales" | "support";
+  destination: string;
+  messages: ChatMessage[];
+}) {
+  const data = leadData(input.messages);
+  const { data: row, error } = await supabase
+    .from("web_chat_requests")
+    .insert({
+      customer_name: data.name,
+      company_name: data.company,
+      phone: input.phone,
+      description: data.issue,
+      category: input.category,
+      destination: input.destination,
+      status: "pending",
+      transcript: input.messages,
+    })
+    .select("id")
+    .single();
+  if (error || !row?.id) {
+    console.error("CHAT WEB: no se pudo registrar solicitud", error?.code);
+    return null;
+  }
+  return String(row.id);
+}
+
+async function updateLead(id: string, status: "accepted" | "failed") {
+  const { error } = await supabase.from("web_chat_requests")
+    .update({ status, notified_at: status === "accepted" ? new Date().toISOString() : null })
+    .eq("id", id);
+  if (error) console.error("CHAT WEB: no se pudo actualizar solicitud", error.code);
 }
 
 function extractPhone(text: string) {
@@ -351,7 +436,14 @@ export async function POST(req: Request) {
     const supportConversation = isSupportConversation(userConversation);
     const phone = extractPhone(userConversation);
 
-    if (salesConversation) {
+    // Support takes precedence when a customer describes a technical failure
+    // and also mentions a license or another commercial keyword.
+    const routeToSupport = supportConversation && (!salesConversation ||
+      /error|falla|problema|no funciona|no abre|no factura|no timbra|soporte|ayuda/i.test(normalizeText(userConversation)));
+
+    if (salesConversation && !routeToSupport) {
+      const missing = missingLeadData(messages);
+      if (missing) return NextResponse.json({ reply: missing });
       if (!phone) {
         return NextResponse.json({
           reply:
@@ -404,7 +496,7 @@ export async function POST(req: Request) {
         });
       }
 
-      let advisor = mentionedAdvisor;
+      let advisor = advisorStatus === "no" ? null : mentionedAdvisor;
       let clientName: string | null = null;
 
       if (!advisor) {
@@ -413,7 +505,7 @@ export async function POST(req: Request) {
         clientName = assigned.client?.name || null;
       }
 
-      if (advisor?.whatsapp) {
+      if (advisorStatus === "yes" && !advisor?.whatsapp) {\n        return NextResponse.json({ reply: "No pude identificar un número de WhatsApp válido para tu asesor. Por favor confirma su nombre o indica si prefieres que lo canalicemos al equipo general de soporte." });\n      }\n\n      if (advisor?.whatsapp) {
         const notificationKey = `support:${phone}:${advisor.id}`;
 
         if (!canNotify(notificationKey)) {
@@ -438,7 +530,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
           reply:
-            "Identifiqué a tu asesor, pero en este momento no pude enviarle la notificación automática. Puedes continuar aquí y nuestro equipo dará seguimiento.",
+            "Registré tu solicitud, pero no pude notificar a tu asesor. Por favor comunícate con MIDA al 477 329 5727.",
         });
       }
 
