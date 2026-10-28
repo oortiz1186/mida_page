@@ -402,220 +402,84 @@ function buildSalesNotification(phone: string, messages: ChatMessage[]) {
 
 export async function POST(req: Request) {
   try {
-    if (!GEMINI_API_KEY) {
-      return NextResponse.json(
-        { error: "El asistente no está configurado correctamente." },
-        { status: 500 },
-      );
-    }
-
-    const contentType = req.headers.get("content-type") || "";
-    if (!contentType.toLowerCase().includes("application/json")) {
-      return NextResponse.json(
-        { error: "Tipo de contenido no permitido." },
-        { status: 415 },
-      );
-    }
+    if (!GEMINI_API_KEY) return NextResponse.json({ error: "Chat no configurado" }, { status: 500 });
+    if (!(req.headers.get("content-type") || "").includes("application/json"))
+      return NextResponse.json({ error: "Content type inválido" }, { status: 415 });
 
     const body = await req.json();
     const messages = sanitizeMessages(body?.messages);
+    if (!messages) return NextResponse.json({ error: "Conversación inválida" }, { status: 400 });
 
-    if (!messages) {
-      return NextResponse.json(
-        { error: "Conversación inválida o demasiado grande." },
-        { status: 400 },
-      );
-    }
+    const conversation = messages.filter(m => m.role === "user").map(m => m.content).join("\n");
+    const normalized = normalizeText(conversation);
+    const support = isSupportConversation(conversation);
+    const sales = isSalesConversation(conversation);
+    const technical = /soporte|falla|error|problema|no funciona|no abre|no timbra|no factura|ayuda/.test(normalized);
+    const category: "support" | "sales" | null = support && (technical || !sales) ? "support" : sales ? "sales" : support ? "support" : null;
 
-    const userConversation = messages
-      .filter((message) => message.role === "user")
-      .map((message) => message.content)
-      .join("\n");
-
-    const salesConversation = isSalesConversation(userConversation);
-    const supportConversation = isSupportConversation(userConversation);
-    const phone = extractPhone(userConversation);
-
-    // Support takes precedence when a customer describes a technical failure
-    // and also mentions a license or another commercial keyword.
-    const routeToSupport = supportConversation && (!salesConversation ||
-      /error|falla|problema|no funciona|no abre|no factura|no timbra|soporte|ayuda/i.test(normalizeText(userConversation)));
-
-    if (salesConversation && !routeToSupport) {
+    if (category) {
       const missing = missingLeadData(messages);
       if (missing) return NextResponse.json({ reply: missing });
-      if (!phone) {
-        return NextResponse.json({
-          reply:
-            "Con gusto te canalizo con el área de ventas. Compárteme por favor tu número de teléfono a 10 dígitos para que un asesor comercial pueda contactarte.",
-        });
-      }
+      const phone = extractPhone(conversation);
+      if (!phone) return NextResponse.json({ reply: "Compárteme un teléfono de contacto a 10 dígitos, por favor." });
 
-      const notificationKey = `sales:${phone}`;
-      if (!canNotify(notificationKey)) {
-        return NextResponse.json({
-          reply:
-            "Tu solicitud ya fue canalizada con ventas recientemente. Un asesor comercial se pondrá en contacto contigo.",
-        });
-      }
+      let destination = "sales";
+      let whatsapp = WHATSAPP_VENTAS;
+      let advisor: Advisor | null = null;
 
-      if (WHATSAPP_VENTAS) {
-        const sent = await sendWhatsApp(
-          WHATSAPP_VENTAS,
-          buildSalesNotification(phone, messages),
-        );
-
-        if (sent) {
-          markNotified(notificationKey);
-          return NextResponse.json({
-            reply:
-              "Gracias. Ya canalicé tu solicitud con ventas y envié tus datos al área comercial. Un asesor se pondrá en contacto contigo.",
-          });
+      if (category === "support") {
+        const status = advisorAnswer(messages);
+        if (!status) return NextResponse.json({ reply: "¿Ya tienes un asesor de MIDA? Responde sí o no, por favor." });
+        if (status === "yes") {
+          const explicitName = conversation.match(/(?:mi asesor es|me atiende|asesor\s*:)\s*([^\n.,;]+)/i)?.[1]?.trim();
+          if (!explicitName) return NextResponse.json({ reply: "¿Cómo se llama tu asesor? Escribe: Mi asesor es Nombre Apellido." });
+          advisor = await findMentionedAdvisor(explicitName);
+          if (!advisor?.whatsapp) return NextResponse.json({ reply: "No pude identificar a ese asesor. Confirma su nombre completo o escribe 'No tengo asesor' para canalizarte al equipo general." });
+          destination = "advisor:" + advisor.id;
+          whatsapp = advisor.whatsapp;
+        } else {
+          destination = "advisor_group";
+          whatsapp = WHATSAPP_GRUPO_ASESORES;
         }
       }
 
-      return NextResponse.json({
-        reply:
-          "Gracias. Identifiqué que necesitas atención de ventas, pero en este momento no pude enviar la notificación automática. Puedes continuar aquí y daremos seguimiento a tu solicitud.",
-      });
+      const key = category + ":" + destination + ":" + phone;
+      if (!canNotify(key)) return NextResponse.json({ reply: "Ya se envió recientemente una notificación para este número. Si es otra solicitud, comunícate al 477 329 5727." });
+
+      const id = await recordLead({ phone, category, destination, messages });
+      if (!id) return NextResponse.json({ reply: "No pude registrar tu solicitud. Por favor llama al 477 329 5727." });
+      const notice = category === "sales"
+        ? buildSalesNotification(phone, messages)
+        : advisor
+          ? buildSupportNotification(advisor, phone, messages)
+          : buildUnassignedSupportNotification(phone, messages);
+      const sent = whatsapp ? await sendWhatsApp(whatsapp, notice) : false;
+      await updateLead(id, sent ? "accepted" : "failed");
+      if (sent) {
+        markNotified(key);
+        return NextResponse.json({ reply: "Tu solicitud quedó registrada y la notificación fue aceptada por nuestro sistema de WhatsApp. Un integrante del equipo podrá revisarla." });
+      }
+      return NextResponse.json({ reply: "Registré tu solicitud, pero falló el envío de WhatsApp. Por favor llama al 477 329 5727 e indica que ya escribiste por el chat." });
     }
 
-    if (supportConversation) {
-      const mentionedAdvisor = await findMentionedAdvisor(userConversation);
-
-      if (!phone) {
-        if (mentionedAdvisor) {
-          return NextResponse.json({
-            reply: `Claro. Para avisarle a ${mentionedAdvisor.name} y que pueda contactarte, compárteme por favor tu número de teléfono a 10 dígitos.`,
-          });
-        }
-
-        return NextResponse.json({
-          reply:
-            "Claro, con gusto te canalizo con soporte. Compárteme por favor tu número de teléfono a 10 dígitos para verificar si ya tienes un asesor asignado en MIDA.",
-        });
-      }
-
-      let advisor = advisorStatus === "no" ? null : mentionedAdvisor;
-      let clientName: string | null = null;
-
-      if (!advisor) {
-        const assigned = await findAssignedAdvisor(phone);
-        advisor = assigned.advisor;
-        clientName = assigned.client?.name || null;
-      }
-
-      if (advisorStatus === "yes" && !advisor?.whatsapp) {\n        return NextResponse.json({ reply: "No pude identificar un número de WhatsApp válido para tu asesor. Por favor confirma su nombre o indica si prefieres que lo canalicemos al equipo general de soporte." });\n      }\n\n      if (advisor?.whatsapp) {
-        const notificationKey = `support:${phone}:${advisor.id}`;
-
-        if (!canNotify(notificationKey)) {
-          return NextResponse.json({
-            reply: `Tu solicitud ya fue enviada recientemente a ${advisor.name}. Te contactará para apoyarte.`,
-          });
-        }
-
-        const sent = await sendWhatsApp(
-          advisor.whatsapp,
-          buildSupportNotification(advisor, phone, messages),
-        );
-
-        if (sent) {
-          markNotified(notificationKey);
-          return NextResponse.json({
-            reply: clientName
-              ? `Gracias, ${clientName}. Ya notifiqué a tu asesor ${advisor.name} sobre tu solicitud de soporte. Te contactará para ayudarte.`
-              : `Gracias. Ya notifiqué a tu asesor ${advisor.name} sobre tu solicitud de soporte. Te contactará para ayudarte.`,
-          });
-        }
-
-        return NextResponse.json({
-          reply:
-            "Registré tu solicitud, pero no pude notificar a tu asesor. Por favor comunícate con MIDA al 477 329 5727.",
-        });
-      }
-
-      const notificationKey = `support-group:${phone}`;
-      if (!canNotify(notificationKey)) {
-        return NextResponse.json({
-          reply:
-            "Tu solicitud ya fue enviada recientemente al equipo de soporte. Un asesor disponible se pondrá en contacto contigo.",
-        });
-      }
-
-      if (WHATSAPP_GRUPO_ASESORES) {
-        const sent = await sendWhatsApp(
-          WHATSAPP_GRUPO_ASESORES,
-          buildUnassignedSupportNotification(phone, messages),
-        );
-
-        if (sent) {
-          markNotified(notificationKey);
-          return NextResponse.json({
-            reply:
-              "Gracias. No encontré un asesor asignado a tu número, así que ya notifiqué al equipo de soporte de MIDA. Un asesor disponible se pondrá en contacto contigo.",
-          });
-        }
-      }
-
-      return NextResponse.json({
-        reply:
-          "No encontré un asesor asignado y en este momento no pude notificar automáticamente al equipo. Puedes continuar aquí y daremos seguimiento a tu solicitud.",
-      });
-    }
-
-    const contents = messages.map((message) => ({
-      role: message.role === "assistant" ? "model" : "user",
-      parts: [{ text: message.content }],
+    const contents = messages.map(m => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }]
     }));
-
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": GEMINI_API_KEY,
-        },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [
-              {
-                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.`,
-              },
-            ],
-          },
-          contents,
-        }),
-        cache: "no-store",
-      },
-    );
-
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_API_KEY },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: MIDA_PROMPT + "\nCANAL WEB: No prometas canalizaciones ni notificaciones. Para soporte o ventas, pide al cliente describir su solicitud explícitamente." }] },
+        contents
+      }),
+      cache: "no-store"
+    });
+    if (!response.ok) return NextResponse.json({ reply: "No pude responder ahora. Intenta nuevamente." }, { status: 502 });
     const data = await response.json();
-
-    if (!response.ok) {
-      console.error("ERROR CHAT GEMINI:", response.status);
-      return NextResponse.json(
-        {
-          reply:
-            "Gracias por escribirnos. En este momento no pude generar una respuesta automática. Puedes intentar nuevamente en unos momentos.",
-        },
-        { status: 502 },
-      );
-    }
-
-    const reply =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
-      "Hola 👋 ¿En qué podemos ayudarte hoy?";
-
-    return NextResponse.json(
-      { reply },
-      { headers: { "Cache-Control": "no-store" } },
-    );
+    return NextResponse.json({ reply: data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "¿En qué podemos ayudarte?" });
   } catch (error) {
     console.error("ERROR API CHAT:", error);
-    return NextResponse.json(
-      { error: "No se pudo procesar el mensaje." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "No se pudo procesar el mensaje." }, { status: 500 });
   }
 }
