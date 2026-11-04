@@ -220,6 +220,22 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
 
       {page.productPage && <ProductExtras page={page} />}
 
+      {!page.productPage && page.faqs && page.faqs.length > 0 && (
+        <section className="py-20 px-6 bg-slate-50" aria-labelledby="preguntas-frecuentes">
+          <div className="max-w-4xl mx-auto">
+            <h2 id="preguntas-frecuentes" className="text-3xl md:text-4xl font-black text-mida-deep">Preguntas frecuentes sobre {page.h1}</h2>
+            <div className="mt-8 space-y-4">
+              {page.faqs.map((faq) => (
+                <div key={faq.question} className="rounded-2xl bg-white border border-gray-100 p-6">
+                  <h3 className="text-lg font-bold text-mida-deep">{faq.question}</h3>
+                  <p className="mt-3 text-gray-600 leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="py-16 px-6 bg-mida-deep text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-black">{page.productPage ? "¿Quieres conocer esta solución?" : "¿Quieres revisar esta solución para tu empresa?"}</h2>
