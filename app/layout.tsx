@@ -29,12 +29,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": ["Organization", "LocalBusiness"],
+    "@id": `${infoEmpresa.dominio}/#organization`,
     name: infoEmpresa.nombre,
     url: infoEmpresa.dominio,
     logo: `${infoEmpresa.dominio}/logo/Logotipo-mida-azul.svg`,
     telephone: `+${infoEmpresa.whatsappNumero}`,
     email: infoEmpresa.correoContacto,
-    description: "Distribuidor CONTPAQi, consultoría TI, SQL, servidores y soporte empresarial en León y el Bajío.",
+    description: "MIDA es distribuidor de CONTPAQi en León, Guanajuato. Ofrece venta y renovación de licencias CONTPAQi, soporte técnico, implementación, configuración, capacitación, consultoría SQL Server, servidores y soluciones de tecnología para empresas en León y el Bajío.",
     address: {
       "@type": "PostalAddress",
       streetAddress: infoEmpresa.direccionLinea1,
