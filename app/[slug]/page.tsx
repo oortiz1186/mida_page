@@ -35,8 +35,9 @@ export default async function SeoLanding({ params }: { params: Promise<{ slug: s
   const serviceJsonLd = {
     "@context": "https://schema.org",
     "@type": "Service",
+    "@id": `https://mida.mx/${page.slug}#service`,
     name: page.h1,
-    provider: { "@type": "Organization", name: "MIDA Tech Consulting", url: "https://mida.mx" },
+    provider: { "@id": "https://mida.mx/#organization" },
     areaServed: ["León, Guanajuato", "Bajío, México"],
     description: page.description,
     url: `https://mida.mx/${page.slug}`,
