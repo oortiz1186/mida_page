@@ -561,9 +561,7 @@ export async function POST(req: Request) {
       parts: [{ text: message.content }],
     }));
 
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
-      {
+    const geminiRequest = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -573,28 +571,48 @@ export async function POST(req: Request) {
           system_instruction: {
             parts: [
               {
-                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.${knowledgeContext ? `\n\n${knowledgeContext}` : ""}`,
+                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Nunca afirmes que ya notificaste o canalizaste a una persona: solo el servidor confirma esos envíos. Mantén respuestas breves y útiles.${knowledgeContext ? `\n\n${knowledgeContext}` : ""}`,
               },
             ],
           },
           contents,
         }),
-        cache: "no-store",
-      },
-    );
+        cache: "no-store" as const,
+    };
+
+    // Un 429 puede significar cuota diaria agotada: no reintentar automáticamente.
+    let response: Response | undefined;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        response = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
+          { ...geminiRequest, signal: AbortSignal.timeout(12000) },
+        );
+      } catch (error) {
+        console.error("ERROR CHAT GEMINI CONEXION:", error instanceof Error ? error.name : "desconocido");
+        if (attempt === 0) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          continue;
+        }
+        return NextResponse.json({
+          reply: "El asistente no está disponible temporalmente. Puedes intentar nuevamente en unos momentos.",
+        });
+      }
+      if (response.status !== 503 || attempt === 1) break;
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    if (!response?.ok) {
+      const status = response?.status ?? 502;
+      console.error("ERROR CHAT GEMINI:", status, "retry-after:", response?.headers.get("retry-after") ?? "no indicado");
+      return NextResponse.json({
+        reply: status === 429
+          ? "El asistente alcanzó temporalmente su límite de consultas. Puedes intentar más tarde o solicitar atención de ventas o soporte aquí mismo."
+          : "El asistente no está disponible temporalmente. Puedes intentar nuevamente en unos momentos.",
+      });
+    }
 
     const data = await response.json();
-
-    if (!response.ok) {
-      console.error("ERROR CHAT GEMINI:", response.status);
-      return NextResponse.json(
-        {
-          reply:
-            "Gracias por escribirnos. En este momento no pude generar una respuesta automática. Puedes intentar nuevamente en unos momentos.",
-        },
-        { status: 502 },
-      );
-    }
 
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
