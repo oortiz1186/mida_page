@@ -34,6 +34,15 @@ export default function WhatsAppButton() {
 
     const userMessage: Message = { role: "user", content: text };
     const nextMessages = [...messages, userMessage];
+    const requestMessages = nextMessages
+      .filter(
+        (message) =>
+          message.content !==
+            "Tuve un problema para responder. Por favor intenta nuevamente en unos momentos." &&
+          message.content !==
+            "No pude generar una respuesta en este momento. Intenta nuevamente.",
+      )
+      .slice(-12);
 
     setMessages(nextMessages);
     setInput("");
@@ -43,7 +52,7 @@ export default function WhatsAppButton() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages }),
+        body: JSON.stringify({ messages: requestMessages }),
       });
 
       const data = await response.json();
