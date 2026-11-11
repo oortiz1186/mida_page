@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { MIDA_PROMPT } from "@/lib/midaPrompt";
 import { supabase } from "@/lib/supabase";
 import { buildKnowledgeContext } from "@/lib/knowledge-context";
+import { buildChatFallback } from "@/lib/chat-fallback";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL;
@@ -595,7 +596,7 @@ export async function POST(req: Request) {
           continue;
         }
         return NextResponse.json({
-          reply: "El asistente no está disponible temporalmente. Puedes intentar nuevamente en unos momentos.",
+          reply: await buildChatFallback(messages[messages.length - 1].content),
         });
       }
       if (response.status !== 503 || attempt === 1) break;
@@ -606,9 +607,7 @@ export async function POST(req: Request) {
       const status = response?.status ?? 502;
       console.error("ERROR CHAT GEMINI:", status, "retry-after:", response?.headers.get("retry-after") ?? "no indicado");
       return NextResponse.json({
-        reply: status === 429
-          ? "El asistente alcanzó temporalmente su límite de consultas. Puedes intentar más tarde o solicitar atención de ventas o soporte aquí mismo."
-          : "El asistente no está disponible temporalmente. Puedes intentar nuevamente en unos momentos.",
+        reply: await buildChatFallback(messages[messages.length - 1].content),
       });
     }
 
