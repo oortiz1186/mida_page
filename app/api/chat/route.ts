@@ -476,9 +476,9 @@ export async function POST(req: Request) {
       parts: [{ text: message.content }],
     }));
 
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
-      {
+    const geminiUrl =
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent";
+    const geminiRequest = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -488,20 +488,45 @@ export async function POST(req: Request) {
           system_instruction: {
             parts: [
               {
-                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Mantén respuestas breves y útiles.`,
+                text: `${MIDA_PROMPT}\n\nCANAL WEB\nEstás atendiendo al usuario dentro del chat de mida.mx. No le indiques que abra WhatsApp salvo que pida hablar con una persona. Si requiere soporte o pide hablar con su asesor, indícale que puedes canalizarlo desde este mismo chat. Si detectas interés de compra, cotización, renovación o contratación, indícale que puedes canalizarlo con ventas desde el mismo chat. Nunca afirmes que notificaste, avisaste o canalizaste a un asesor o a ventas: únicamente el servidor puede confirmar un envío real. Mantén respuestas breves y útiles.`,
               },
             ],
           },
           contents,
         }),
-        cache: "no-store",
-      },
-    );
+        cache: "no-store" as const,
+      };
 
-    const data = await response.json();
+    // Solo reintentar errores temporales del proveedor; 429 puede indicar cuota agotada.
+    let response: Response | undefined;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        response = await fetch(geminiUrl, {
+          ...geminiRequest,
+          signal: AbortSignal.timeout(12000),
+        });
+      } catch (error) {
+        console.error("ERROR CHAT GEMINI CONEXION:", error instanceof Error ? error.name : "desconocido");
+        if (attempt === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          continue;
+        }
+        return NextResponse.json(
+          { reply: "El asistente está tardando más de lo habitual. Intenta nuevamente en unos momentos." },
+          { status: 200 },
+        );
+      }
+
+      if (response.status !== 503 || attempt === 1) break;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    if (!response) {
+      return NextResponse.json({ error: "No se pudo contactar al asistente." }, { status: 502 });
+    }
 
     if (!response.ok) {
-      console.error("ERROR CHAT GEMINI:", response.status);
+      console.error("ERROR CHAT GEMINI:", response.status, "retry-after:", response.headers.get("retry-after") || "no indicado");
       return NextResponse.json(
         {
           reply:
