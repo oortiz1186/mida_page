@@ -2,6 +2,9 @@ import "server-only";
 import { searchKnowledge } from "@/lib/knowledge-search";
 
 const BASIC_RESPONSES: Array<{ terms: string[]; reply: string }> = [
+  { terms: ["horario", "a que hora", "horarios de atencion"], reply: "El horario de atención de MIDA es de lunes a viernes de 9:00 a 19:00 horas." },
+  { terms: ["telefono de mida", "correo de mida", "contacto de mida", "como los contacto"], reply: "Puedes contactar a MIDA al teléfono 477 329 5727, por WhatsApp al 477 188 8836 o por correo a dulce@mida.mx." },
+  { terms: ["renovacion de licencia", "renovar licencia", "actualizar contpaqi"], reply: "MIDA ofrece renovación de licencias y actualización de versiones CONTPAQi. Para confirmar vigencia, compatibilidad y costos, solicita una cotización a ventas aquí mismo." },
   { terms: ["contabilidad"], reply: "CONTPAQi Contabilidad es un sistema para registrar y administrar la información contable de una empresa. MIDA ofrece asesoría, licencias, implementación, capacitación y soporte para este sistema." },
   { terms: ["nominas", "nomina"], reply: "CONTPAQi Nóminas ayuda a administrar el cálculo y control de la nómina. MIDA ofrece licencias, implementación, capacitación y soporte." },
   { terms: ["bancos"], reply: "CONTPAQi Bancos ayuda a administrar movimientos bancarios y conciliaciones. MIDA puede apoyarte con licencias, implementación y soporte." },
