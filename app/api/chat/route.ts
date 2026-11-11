@@ -60,7 +60,10 @@ function isSalesConversation(text: string) {
     "necesito comprar", "me interesa comprar", "quiero contratar",
     "necesito contratar", "quiero renovar", "necesito renovar",
     "quiero adquirir", "contactar a ventas", "hablar con ventas",
-    "contactar a un vendedor", "quiero que me llamen",
+    "contactar a un vendedor", "quiero que me llamen", "requiero cotizacion", "requiero una cotizacion",
+    "requiero comprar", "requiero renovar", "requiero contratar",
+    "ocupo cotizacion", "ocupo una cotizacion", "me interesa cotizar",
+    "necesito una cotizacion", "quiero precio", "quiero una propuesta",
   ];
   return salesPhrases.some(phrase => hasPhrase(normalized, phrase));
 }
@@ -73,7 +76,11 @@ function isSupportConversation(text: string) {
     "hablar con mi asesor", "contactar a mi asesor",
     "tengo un error", "me marca error", "tengo una falla",
     "tengo un problema", "no funciona", "no abre", "no timbra",
-    "no puedo facturar", "no puedo timbrar", "tengo un detalle",
+    "no puedo facturar", "no puedo timbrar", "tengo un detalle", "requiero soporte", "requiero ayuda",
+    "requiero asistencia tecnica", "ocupo soporte", "ocupo ayuda",
+    "ocupo asistencia tecnica", "necesito asistencia tecnica",
+    "quiero asistencia tecnica", "necesito apoyo tecnico",
+    "requiero apoyo tecnico", "me puedes ayudar con un error",
   ];
   return supportPhrases.some(phrase => hasPhrase(normalized, phrase));
 }
